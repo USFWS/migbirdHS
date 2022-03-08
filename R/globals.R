@@ -8,5 +8,11 @@ utils::globalVariables(
     "ranks",
     "n_y",
     "n_n",
-    "sp_group_estimated")
+    "sp_group_estimated",
+    "has_data",
+    "ST",
+    "SpeciesGroup",
+    "speciesgroup",
+    "spp",
+    "state_name")
 )
