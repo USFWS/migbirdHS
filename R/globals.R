@@ -1,0 +1,11 @@
+utils::globalVariables(
+  c("selected_hunterID",
+    "has_hunted",
+    "has_submitted",
+    "prop",
+    "sampled_state",
+    "tot_prop",
+    "ranks",
+    "n_y",
+    "sp_group_estimated")
+)
