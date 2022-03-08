@@ -53,11 +53,15 @@ hunted <-
     if(type == "totals"){
       if(output == "table"){
         data %>%
+          select(selected_hunterID, has_hunted) %>% 
+          distinct() %>% 
           group_by(has_hunted) %>%
           summarize(n = n()) %>% 
           ungroup()
       }else if(output == "plot"){
         data %>%
+          select(selected_hunterID, has_hunted) %>% 
+          distinct() %>% 
           group_by(has_hunted) %>%
           summarize(
             n = n(),
@@ -75,6 +79,8 @@ hunted <-
     }else if(type == "state"){
       if(output == "table"){
         data %>%
+          select(selected_hunterID, has_hunted, sampled_state) %>% 
+          distinct() %>% 
           group_by(has_hunted, sampled_state) %>%
           summarize(
             n = n(),
@@ -83,27 +89,27 @@ hunted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
+            select(selected_hunterID, has_hunted, sampled_state) %>% 
+            distinct() %>% 
             group_by(has_hunted, sampled_state) %>%
-            summarize(
-              n = n(),
-              prop = n()/nrow(data)) %>% 
+            summarize(n = n()) %>% 
             ungroup() %>% 
             mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
             group_by(sampled_state) %>% 
-            mutate(tot_prop = sum(prop)) %>% 
+            mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
-            mutate(ranks = rank(tot_prop)) %>% 
-            ggplot(aes(x = reorder(sampled_state, -ranks), y = prop)) +
+            mutate(ranks = rank(tot_n)) %>% 
+            ggplot(aes(x = reorder(sampled_state, -ranks), y = n)) +
             geom_bar(
               aes(fill = has_hunted), 
               stat = "identity") +
             geom_text(
-              aes(x = reorder(sampled_state, -prop), 
-                  y = tot_prop, 
-                  label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "), 
+              aes(x = reorder(sampled_state, -ranks),
+                  y = tot_n,
+                  label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "),
                   angle = 90),
               vjust = 0.2, hjust = -0.2) +
-            labs(x = "Has hunted?", y = "Proportion", 
+            labs(x = "Has hunted?", y = "Count", 
                  col = "Has hunted?", fill = "Has hunted?") +
             scale_y_continuous(expand = expansion(mult = c(-0, 0.5))) +
             theme_classic() + 
@@ -114,6 +120,8 @@ hunted <-
     }else if(type == "species"){
       if(output == "table"){
         data %>%
+          select(selected_hunterID, has_hunted, sp_group_estimated) %>% 
+          distinct() %>% 
           group_by(has_hunted, sp_group_estimated) %>%
           summarize(
             n = n(),
@@ -122,27 +130,33 @@ hunted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
+            select(selected_hunterID, has_hunted, sp_group_estimated) %>% 
+            distinct() %>% 
+            mutate(
+              sp_group_estimated = 
+                ifelse(
+                  str_detect(sp_group_estimated, "Sea"),
+                  "Sea Ducks",
+                  sp_group_estimated)) %>% 
             group_by(has_hunted, sp_group_estimated) %>%
-            summarize(
-              n = n(),
-              prop = n()/nrow(data)) %>% 
+            summarize(n = n()) %>% 
             ungroup() %>% 
             mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
             group_by(sp_group_estimated) %>% 
-            mutate(tot_prop = sum(prop)) %>% 
+            mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
-            mutate(ranks = rank(tot_prop)) %>% 
-            ggplot(aes(x = reorder(sp_group_estimated, -ranks), y = prop)) +
+            mutate(ranks = rank(tot_n)) %>% 
+            ggplot(aes(x = reorder(sp_group_estimated, -ranks), y = n)) +
             geom_bar(
               aes(fill = has_hunted), 
               stat = "identity") +
             geom_text(
-              aes(x = reorder(sp_group_estimated, -prop), 
-                  y = tot_prop, 
-                  label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "), 
+              aes(x = reorder(sp_group_estimated, -ranks),
+                  y = tot_n,
+                  label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "),
                   angle = 90),
               vjust = 0.2, hjust = -0.2) +
-            labs(x = "Has hunted?", y = "Proportion", 
+            labs(x = "Has hunted?", y = "Count", 
                  col = "Has hunted?", fill = "Has hunted?") +
             scale_y_continuous(expand = expansion(mult = c(-0, 0.5))) +
             theme_classic() + 
