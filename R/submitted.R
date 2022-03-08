@@ -54,12 +54,16 @@ submitted <-
       if(output == "table"){
         data %>%
           filter(has_hunted == "Y") %>% 
+          select(selected_hunterID, has_submitted) %>% 
+          distinct() %>% 
           group_by(has_submitted) %>%
           summarize(n = n()) %>% 
           ungroup()
       }else if(output == "plot"){
         data %>%
           filter(has_hunted == "Y") %>%
+          select(selected_hunterID, has_submitted) %>% 
+          distinct() %>% 
           group_by(has_submitted) %>%
           summarize(
             n = n(),
@@ -78,6 +82,8 @@ submitted <-
       if(output == "table"){
         data %>%
           filter(has_hunted == "Y") %>%
+          select(selected_hunterID, has_submitted, sampled_state) %>% 
+          distinct() %>% 
           group_by(has_submitted, sampled_state) %>%
           summarize(
             n = n(),
@@ -87,6 +93,8 @@ submitted <-
         suppressWarnings(
           data %>%
             filter(has_hunted == "Y") %>%
+            select(selected_hunterID, has_submitted, sampled_state) %>% 
+            distinct() %>% 
             group_by(has_submitted, sampled_state) %>%
             summarize(
               n = n(),
@@ -119,6 +127,8 @@ submitted <-
       if(output == "table"){
         data %>%
           filter(has_hunted == "Y") %>%
+          select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
+          distinct() %>% 
           group_by(has_submitted, sp_group_estimated) %>%
           summarize(
             n = n(),
@@ -127,13 +137,15 @@ submitted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
+            filter(has_hunted == "Y") %>%
+            select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
+            distinct() %>% 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
                   sp_group_estimated)) %>% 
-            filter(has_hunted == "Y") %>%
             group_by(has_submitted, sp_group_estimated) %>%
             summarize(
               n = n(),
