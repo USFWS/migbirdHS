@@ -48,3 +48,10 @@ read_dhs <-
       message("Error: Invalid year.")
     }
   }
+
+#' @examples
+#' # Basic use
+#' read_dhs(inpath, "all")
+#' 
+#' # Reading in files for only the year 2021
+#' read_dhs(inpath, "2021")
