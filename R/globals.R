@@ -7,5 +7,6 @@ utils::globalVariables(
     "tot_prop",
     "ranks",
     "n_y",
+    "n_n",
     "sp_group_estimated")
 )
