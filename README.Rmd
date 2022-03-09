@@ -43,13 +43,7 @@ Tasks that can be accomplished with this package include:
 
 ```r 
 library(devtools)
-install_github("USFWS/migbirdMBHS", build_vignettes = TRUE)
-```
-
-## Vignette
-
-```r
-vignette(topic = "migbirdMBHS_workflow", package = "migbirdMBHS")
+install_github("USFWS/migbirdMBHS")
 ```
 
 ## USFWS Disclaimer
