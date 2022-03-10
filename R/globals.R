@@ -37,6 +37,10 @@ utils::globalVariables(
     "bag_limit",
     "days_hunted",
     "max_poss",
-    "bag_per_day"
+    "bag_per_day",
+    "tot_days",
+    "prop_tot",
+    "prop_sp",
+    "mean_days"
     )
 )
