@@ -12,6 +12,7 @@ online [Harvest Survey](https://www.fws.gov/harvestsurvey) data.
 Tasks that can be accomplished with this package include:
 
   - `read_dhs` imports data
+  - `add_seaducks` appends seaduck season info to the reference table
   - `submitted` reports proportion of non-finalized hunts
   - `hunted` reports proportion of hunters who did not hunt
   - `nodata` checks for any missing data that was expected
