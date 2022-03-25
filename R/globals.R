@@ -41,6 +41,9 @@ utils::globalVariables(
     "tot_days",
     "prop_tot",
     "prop_sp",
-    "mean_days"
+    "mean_days",
+    "n_retrieved",
+    "tot_r",
+    "mean_retrieved"
     )
 )
