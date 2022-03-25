@@ -44,6 +44,10 @@ utils::globalVariables(
     "mean_days",
     "n_retrieved",
     "tot_r",
-    "mean_retrieved"
+    "mean_retrieved",
+    "cr",
+    "hd",
+    "time_lag",
+    "created_on"
     )
 )

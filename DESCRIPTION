@@ -17,7 +17,8 @@ Imports:
     rmarkdown,
     DT,
     shiny,
-    stringi
+    stringi,
+    viridis
 Suggests:
     knitr
 VignetteBuilder: knitr
