@@ -48,6 +48,7 @@ utils::globalVariables(
     "cr",
     "hd",
     "time_lag",
-    "created_on"
+    "created_on",
+    "sum_retrieved"
     )
 )

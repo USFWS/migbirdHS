@@ -18,7 +18,8 @@ Imports:
     DT,
     shiny,
     stringi,
-    viridis
+    viridis,
+    MetBrewer
 Suggests:
     knitr
 VignetteBuilder: knitr
