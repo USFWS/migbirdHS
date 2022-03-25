@@ -19,7 +19,8 @@ Imports:
     shiny,
     stringi,
     viridis,
-    MetBrewer
+    MetBrewer,
+    treemapify
 Suggests:
     knitr
 VignetteBuilder: knitr

@@ -49,6 +49,11 @@ utils::globalVariables(
     "hd",
     "time_lag",
     "created_on",
-    "sum_retrieved"
+    "sum_retrieved",
+    "n_retrieved_tot",
+    "spp_combo",
+    "n_tot",
+    "spp_label",
+    "n_spp"
     )
 )
