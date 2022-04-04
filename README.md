@@ -37,6 +37,10 @@ library(devtools)
 install_github("USFWS/migbirdMBHS")
 ```
 
+## Function Flow
+
+<img src="vignettes/image/migbirdMBHS_flow_chart.svg" title="Overview of migbirdMBHS functions in a flowchart format." alt="Overview of migbirdMBHS functions in a flowchart format." width="100%" style="display: block; margin: auto;" />
+
 ## USFWS Disclaimer
 
 The United States Fish and Wildlife Service (FWS) GitHub project code is
