@@ -54,6 +54,13 @@ utils::globalVariables(
     "spp_combo",
     "n_tot",
     "spp_label",
-    "n_spp"
+    "n_spp",
+    "google_name",
+    "id",
+    "long",
+    "lat",
+    "group",
+    "x",
+    "y"
     )
 )

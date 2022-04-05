@@ -9,20 +9,21 @@ Imports:
     purrr,
     readr,
     magrittr,
-    rlang,
     lubridate,
     tibble,
-    ggplot2,
     lifecycle,
+    ggplot2,
     rmarkdown,
-    DT,
-    shiny,
-    stringi,
     viridis,
     MetBrewer,
-    treemapify
+    treemapify,
+    rgeos,
+    broom,
+    geojsonio,
+    cowplot
 Suggests:
-    knitr
+    knitr,
+    DT
 VignetteBuilder: knitr
 Authors@R: 
     person(given = "Abby",
