@@ -32,13 +32,14 @@ Tasks that can be accomplished with this package include:
 * `openclose` checks to see if harvest date falls outside the season
 * `huntdays` summarizes the total number of days hunted
 * `retrieved` summarizes the total number of bids retrieved
+* `retrievedmap` maps the mean retrieved per state and species
 * `responselag` visualizes time between hunt date and response date
 * `bagdays` summarizes days hunted per hunter and species group
 * `bagspp` summarizes species hunted by popularity
 * `compare` visualizes differences between daily and season data
 * `proofHS` [coming soon]
 * `correctHS` [coming soon]
-* Automated report writing with `writeReport` [coming soon]
+* Automated report writing with `reportHS` [coming soon]
 
 ## Installation
 
