@@ -64,10 +64,11 @@ read_dhs <-
           str_subset(year) %>% 
           map(~read_csv(paste0(path, .))) %>% 
           set_names(
+            paste(
               str_extract(
-                list.files(path) %>% 
-                  str_subset(year), 
-                "daily_records|season_totals|all_seasons")) %>% 
+                list.files(path), "daily_records|season_totals|all_seasons"),
+              "0000",
+              sep = "_")) %>% 
           list2env(.GlobalEnv)
       }
       else{
