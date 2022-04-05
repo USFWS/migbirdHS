@@ -4,12 +4,14 @@
 \alias{read_dhs}
 \title{Read in Harvest Survey data}
 \usage{
-read_dhs(path, year)
+read_dhs(path, year, report = F)
 }
 \arguments{
 \item{path}{Directory containing the Harvest Survey daily, season, and/or reference data files}
 
 \item{year}{Season for which files should be read in}
+
+\item{report}{Default is FALSE; should be used as TRUE in report template only}
 }
 \description{
 The \code{read_dhs} function reads in daily, season, and reference Harvest Survey .csv data files from a specified filepath. It will automatically read in all files by default unless a year is specified.
