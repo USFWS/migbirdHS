@@ -137,7 +137,8 @@ overdays <-
       bind_rows(specialdates) %>%
       distinct()
     
-    if(str_detect(deparse(substitute(data)), "daily") == TRUE){
+    if(str_detect(deparse(substitute(data)), "daily") == TRUE | 
+       str_detect(deparse(substitute(data)), "tibblelist\\[2\\]") == TRUE){
       # Daily records
       suppressMessages(
         overday_table <-
@@ -164,7 +165,7 @@ overdays <-
         message("No records found with too many days hunted.")}
     }
     else if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-            str_detect(deparse(substitute(data)), "3")){
+            str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
       # If a season totals table was used in this function, exclude daily
       # records from the season totals table. This allows the season totals data
       # to be evaluated separately from daily data
@@ -184,7 +185,7 @@ overdays <-
           )
         message("Notice: season data filtered to exclude daily records.")
       # Additional statement for report template compatibility
-      }else if(str_detect(deparse(substitute(data)), "3")){
+      }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
         datayr <- 
           data %>% 
           select(season) %>% 
