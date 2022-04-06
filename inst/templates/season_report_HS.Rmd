@@ -27,7 +27,7 @@ inpath <- params$inpath
 outpath <- params$outpath
 
 # Read data 
-read_dhs(inpath, year = as.character(params$year), report = T)
+read_dhs(inpath, year = as.character(params$year))
 
 # Add seaducks to the season metadata
 all_seasons <- paste0("all_seasons", as.character(params$year))
