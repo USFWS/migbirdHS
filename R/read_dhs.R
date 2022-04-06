@@ -67,7 +67,7 @@ read_dhs <-
             paste(
               str_extract(
                 list.files(path), "daily_records|season_totals|all_seasons"),
-              "0000",
+              as.character(params$year),
               sep = "_")) %>% 
           list2env(.GlobalEnv)
       }
