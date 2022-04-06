@@ -133,7 +133,8 @@ overbags <-
       bind_rows(special_table) %>%
       distinct()
     
-    if(str_detect(deparse(substitute(data)), "daily") == TRUE){
+    if(str_detect(deparse(substitute(data)), "daily") == TRUE | 
+       str_detect(deparse(substitute(data)), "tibblelist\\[2\\]")){
       bag_errors <-
         data %>% 
         left_join(
@@ -210,7 +211,7 @@ overbags <-
         )
       }
     }else if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-             str_detect(deparse(substitute(data)), "3")){
+             str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
       # If a season totals table was used in this function, exclude daily
       # records from the season totals table. This allows the season totals data
       # to be evaluated separately from daily data
@@ -229,7 +230,8 @@ overbags <-
                 pull())
           )
         message("Notice: season data filtered to exclude daily records.")
-        }else if(str_detect(deparse(substitute(data)), "3")){
+        # Additional statement for report template compatibility
+        }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
           datayr <- 
             data %>% 
             select(season) %>% 
