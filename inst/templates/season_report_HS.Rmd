@@ -30,7 +30,7 @@ outpath <- params$outpath
 read_dhs(inpath, year = as.character(params$year))
 
 # Add seaducks to the season metadata
-all_seasons <- paste0("all_seasons", as.character(params$year))
+all_seasons <- paste0("all_seasons_", as.character(params$year))
 assign(all_seasons, add_seaducks(get(all_seasons)), envir = .GlobalEnv)
 ```
 
