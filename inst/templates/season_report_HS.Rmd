@@ -32,6 +32,8 @@ read_dhs(inpath, year = as.character(params$year))
 # Add seaducks to the season metadata
 all_seasons <- paste0("all_seasons_", as.character(params$year))
 assign(all_seasons, add_seaducks(get(all_seasons)), envir = .GlobalEnv)
+
+rm(all_seasons)
 ```
 
 ## Introduction
@@ -44,7 +46,7 @@ For the season data, what species are missing per state?
 
 ```{r, nodata2, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  nodata(data = season_totals, ref_data = all_seasons, species = "all"), 
+  nodata(data = get(paste0("season_totals_", as.character(params$year))), ref_data = get(paste0("all_seasons_", as.character(params$year))), species = "all"), 
   options = list(pageLength = 5))
 ```
 
@@ -52,7 +54,7 @@ For the daily data, what species are missing per state?
 
 ```{r, nodata4, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  nodata(data = daily_records, ref_data = all_seasons, species = "all"), 
+  nodata(data = get(paste0("daily_records_", as.character(params$year))), ref_data = get(paste0("all_seasons_", as.character(params$year))), species = "all"), 
   options = list(pageLength = 5))
 ```
 
@@ -67,7 +69,7 @@ How many records were finalized in the season data? (Records must also have answ
 
 ```{r, submitted1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 knitr::kable(
-  submitted(season_totals) %>% 
+  submitted(get(paste0("season_totals_", as.character(params$year)))) %>% 
     rename(`Has submitted?` = has_submitted) %>% 
     mutate(prop = round(n/sum(n), 2)))
 ```
@@ -76,7 +78,7 @@ knitr::kable(
 
 ```{r, submitted2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-submitted(season_totals, type = "state", output = "plot") +
+submitted(get(paste0("season_totals_", as.character(params$year))), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -89,7 +91,7 @@ How many records were finalized in the daily data? (Records must also have answe
 
 ```{r, submitted4, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 knitr::kable(
-  submitted(daily_records) %>% 
+  submitted(get(paste0("daily_records_", as.character(params$year)))) %>% 
     rename(`Has submitted?` = has_submitted) %>% 
     mutate(prop = round(n/sum(n), 2)))
 ```
@@ -98,7 +100,7 @@ knitr::kable(
 
 ```{r, submitted5, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-submitted(daily_records, type = "state", output = "plot") +
+submitted(get(paste0("daily_records_", as.character(params$year))), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -115,7 +117,7 @@ How many hunters hunted in the season data?
 ```{r, hunted1, message = FALSE, warning = FALSE, echo = FALSE}
 
 knitr::kable(
-  hunted(season_totals) %>% 
+  hunted(get(paste0("season_totals_", as.character(params$year)))) %>% 
     rename(`Has hunted?` = has_hunted) %>% 
     mutate(prop = round(n/sum(n), 2)))
 ```
@@ -124,7 +126,7 @@ knitr::kable(
 
 ```{r, hunted2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-hunted(season_totals, type = "state", output = "plot") +
+hunted(get(paste0("season_totals_", as.character(params$year))), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -137,7 +139,7 @@ How many hunters hunted in the daily data?
 
 ```{r, hunted5, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-hunted(daily_records, type = "state", output = "plot") +
+hunted(get(paste0("daily_records_", as.character(params$year))), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -146,7 +148,7 @@ hunted(daily_records, type = "state", output = "plot") +
 
 ```{r, hunted6, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-hunted(daily_records, type = "species", output = "plot") +
+hunted(get(paste0("daily_records_", as.character(params$year))), type = "species", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -158,7 +160,7 @@ Are there any group hunts in the daily data that we can identify via comments?
 
 ```{r, party, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  partyhunt(daily_records) %>% 
+  partyhunt(get(paste0("daily_records_", as.character(params$year)))) %>% 
     select(-unretrieved), 
   options = list(pageLength = 3))
 ```
@@ -172,7 +174,7 @@ Are there any hunts submitted with an impossible number of days hunted?
 
 ```{r, overdays1, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  overdays(season_totals, all_seasons)
+  overdays(get(paste0("season_totals_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))))
 )
 ```
 
@@ -180,7 +182,7 @@ datatable(
 
 ```{r, overdays2, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  overdays(daily_records, all_seasons) 
+  overdays(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year)))) 
 )
 ```
 
@@ -192,7 +194,7 @@ What values are over the limit per species and state in the season totals data? 
 
 ```{r, overbags1, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  overbags(season_totals, all_seasons) 
+  overbags(get(paste0("season_totals_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year)))) 
 )
 ```
 
@@ -202,7 +204,7 @@ datatable(
 What values in the retrieved field of daily data were over the limit per species and state?
 
 ```{r, overbags2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
-overbags(daily_records, all_seasons) %>% 
+overbags(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year)))) %>% 
   rename(
     state = sampled_state,
     sp = sp_group_estimated) %>% 
@@ -231,7 +233,7 @@ overbags(daily_records, all_seasons) %>%
 
 ```{r, overbags3, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  overbags(daily_records, all_seasons, summary = T) %>% 
+  overbags(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))), summary = T) %>% 
     rename(
       state = sampled_state,
       sp = sp_group_estimated) %>% 
@@ -245,7 +247,7 @@ datatable(
 ```{r, overbags4, message = FALSE, warning = FALSE, echo = F}
 
 datatable(
-  overbags(daily_records, all_seasons, summary = F) %>% 
+  overbags(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))), summary = F) %>% 
     rename(
       state = sampled_state,
       sp = sp_group_estimated) %>% 
@@ -265,7 +267,7 @@ datatable(
       names_from = sp) %>% 
     mutate(over = "Y") %>% 
     bind_rows(
-      overbags(daily_records, all_seasons, over = F) %>% 
+      overbags(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))), over = F) %>% 
         rename(
           sp = sp_group_estimated,
           state = sampled_state) %>% 
@@ -358,7 +360,7 @@ What harvest dates in the daily data fell outside of the legal hunting season pe
 
 ```{r, openclose2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-openclose(daily_records, all_seasons, summary = T) %>% 
+openclose(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))), summary = T) %>% 
   rename(
     sp = sp_group_estimated,
     state = sampled_state) %>% 
@@ -395,14 +397,14 @@ openclose(daily_records, all_seasons, summary = T) %>%
 ```
 
 ```{r, openclose1, message = FALSE, warning = FALSE, echo = F}
-datatable(openclose(daily_records, all_seasons, summary = T))
+datatable(openclose(get(paste0("daily_records_", as.character(params$year))), get(paste0("all_seasons_", as.character(params$year))), summary = T))
 ```
 
 ## Retrieved map
 
 ```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, out.width = 700, fig.align = "center", echo  = F}
 
-retrievedmap(daily_records)
+retrievedmap(get(paste0("daily_records_", as.character(params$year))))
 
 ```
 
@@ -412,14 +414,14 @@ For the daily data, how many birds were retrieved on average per hunter?
 
 ```{r, retrieved2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-retrieved(daily_records, output = "plot", average = T) +
+retrieved(get(paste0("daily_records_", as.character(params$year))), output = "plot", average = T) +
   theme(legend.position = "bottom") +
   scale_fill_manual(
     values = 
       met.brewer("Hokusai3", 
-                 length(unique(daily_records$sp_group_estimated))))
+                 length(unique(get(paste0("daily_records_", as.character(params$year)))$sp_group_estimated))))
 
-datatable(retrieved(daily_records, average = T))
+datatable(retrieved(get(paste0("daily_records_", as.character(params$year))), average = T))
 ```
 
 
@@ -429,7 +431,7 @@ What is the proportion of birds that were successfully hunted? Each hunter's pur
 
 ```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-bagspp(daily_records, output = "popular")
+bagspp(get(paste0("daily_records_", as.character(params$year))), output = "popular")
 ```
 
 
@@ -439,23 +441,23 @@ In the daily data, how many days were spent hunting per species on average for e
 
 ```{r, huntdays3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-huntdays(daily_records, type = "species", output = "plot", average = T)
+huntdays(get(paste0("daily_records_", as.character(params$year))), type = "species", output = "plot", average = T)
 ```
 
 How about by state?
 
 ```{r, huntdays2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-huntdays(daily_records, output = "plot", average = T) +
+huntdays(get(paste0("daily_records_", as.character(params$year))), output = "plot", average = T) +
   theme(legend.position = "bottom") + 
   scale_fill_manual(
     values = met.brewer("Hokusai3",
-                        length(unique(daily_records$sp_group_estimated))))
+                        length(unique(get(paste0("daily_records_", as.character(params$year)))$sp_group_estimated))))
 ```
 
 ```{r, huntdays1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-datatable(huntdays(daily_records, average = T))
+datatable(huntdays(get(paste0("daily_records_", as.character(params$year))), average = T))
 ```
 
 ## Comparing submitted vs. non-submit
@@ -463,17 +465,17 @@ datatable(huntdays(daily_records, average = T))
 What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups?
 
 ```{r, compare1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_records, season_totals, type = "line")
+compare(get(paste0("daily_records_", as.character(params$year))), get(paste0("season_totals_", as.character(params$year))), type = "line")
 ```
 
 What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. 
 
 ```{r, compare2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_records, season_totals, type = "days")
+compare(get(paste0("daily_records_", as.character(params$year))), get(paste0("season_totals_", as.character(params$year))), type = "days")
 ```
 
 What is the distribution of number of birds retrieved per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values.
 
 ```{r, compare3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_records, season_totals, type = "retrieved")
+compare(get(paste0("daily_records_", as.character(params$year))), get(paste0("season_totals_", as.character(params$year))), type = "retrieved")
 ```
