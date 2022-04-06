@@ -61,6 +61,7 @@ utils::globalVariables(
     "lat",
     "group",
     "x",
-    "y"
+    "y",
+    "season"
     )
 )
