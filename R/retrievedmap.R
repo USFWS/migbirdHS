@@ -85,9 +85,8 @@ retrievedmap <-
               color = "white") +
             geom_text(
               data = centers, 
-              aes(x = x, y = y, label = id), nudge_y = 0, size = 3) +
-            labs(title = .x, fill = "Mean\nRetrieved") + 
-            theme_void() +
+              aes(x = x, y = y, label = id), nudge_y = 0, size = 2.5) +
+            labs(title = .x, fill = "Mean\nRetrieved") +             theme_void() +
             scale_fill_gradientn(
               colors = c("#ffffb2",  "#fb9e4f", "#e91332"),
               na.value = "white") +
