@@ -29,7 +29,7 @@ Tasks that can be accomplished with this package include:
   - `compare` visualizes differences between daily and season data
   - `proofHS` \[coming soon\]
   - `correctHS` \[coming soon\]
-  - Automated report writing with `reportHS` \[coming soon\]
+  - Automated report writing with `reportHS`
 
 ## Installation
 
@@ -57,5 +57,6 @@ product or activity by FWS or the United States Government.
 
 ## License
 
-This project is licensed under the terms of the Creative Commons Zero
-v1.0 Universal license.
+This project is licensed under the terms of the [Creative Commons Zero
+v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+license.

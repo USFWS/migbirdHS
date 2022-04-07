@@ -39,7 +39,7 @@ Tasks that can be accomplished with this package include:
 * `compare` visualizes differences between daily and season data
 * `proofHS` [coming soon]
 * `correctHS` [coming soon]
-* Automated report writing with `reportHS` [coming soon]
+* Automated report writing with `reportHS` 
 
 ## Installation
 
@@ -58,4 +58,4 @@ The United States Fish and Wildlife Service (FWS) GitHub project code is provide
 
 ## License
 
-This project is licensed under the terms of the Creative Commons Zero v1.0 Universal license.
+This project is licensed under the terms of the [Creative Commons Zero v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/) license.
