@@ -1,0 +1,153 @@
+---
+title: "Online Harvest Survey Analytics Report"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    toc: true
+    number_sections: true
+params:
+  inpath:
+    value: x
+  year:
+    value: x
+---
+
+```{r, libs, message = FALSE, warning = FALSE, echo = FALSE}
+
+library(tidyverse)
+library(lubridate)
+library(viridis)
+library(MetBrewer)
+library(treemapify)
+
+# Input path
+inpath <- params$inpath
+
+# Read data 
+read_dhs(inpath, year = as.character(params$year))
+
+# Add seaducks to the season metadata
+all_seasons <- paste0("all_seasons_", as.character(params$year))
+assign(all_seasons, add_seaducks(get(all_seasons)), envir = .GlobalEnv)
+
+# Write tibble names to list for function compatibility
+tibblelist <-
+  vector("list", 3) %>% 
+  set_names(
+    all_seasons,
+    paste0("daily_records_", as.character(params$year)),
+    paste0("season_totals_", as.character(params$year)))
+```
+
+## Introduction
+
+This is the `r params$year` survey analytics report for Harvest Survey online data.
+
+## Response lag
+
+What is the distribution of response lag?
+
+```{r, responselag1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+responselag(get(names(tibblelist[2])), type = "count")
+```
+
+What is the relationship between time lag and number of birds retrieved?
+
+```{r, responselag2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+responselag(get(names(tibblelist[2])), type = "lag")
+```
+
+What is the relationship between response date and harvest date? Larger and darker circles indicate more birds retrieved. The dotted lines are guides to show (from top to bottom), a time lag of 0, 30, 60, 90, and 120 days.
+
+```{r, responselag3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+responselag(get(names(tibblelist[2])), type = "date")
+```
+
+
+## Retrieved birds by number of days hunted
+
+In the daily data, what is the relationship between number of birds retrieved and number of days spent hunting?
+
+```{r, bagdays2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+bagdays(get(names(tibblelist[2])), output = "plot")
+```
+
+```{r, bagdays1, message = FALSE, warning = FALSE, echo = F}
+DT::datatable(bagdays(get(names(tibblelist[2])), output = "table"))
+```
+
+
+## Harvest over time
+
+### Daily
+
+```{r, bagovertime_d, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+
+get(names(tibblelist[2])) %>% 
+  mutate(
+    sp_group_estimated =
+      ifelse(
+        str_detect(sp_group_estimated, "Sea"),
+        "Sea Ducks",
+        sp_group_estimated)) %>% 
+  group_by(harvested_date, sp_group_estimated) %>% 
+  summarize(sum_daily_retrieved = sum(retrieved)) %>% 
+  ungroup() %>% 
+  ggplot(
+    aes(x = harvested_date, y = sum_daily_retrieved, 
+        color = sp_group_estimated, fill = sp_group_estimated)) + 
+  geom_jitter(alpha = 0.3) +
+  geom_line() +
+  labs(x = "Date harvested", y = "Number of birds retrieved") +
+  theme_classic() +
+  theme(legend.position = "none") +
+  scale_fill_manual(
+    values = 
+      met.brewer(
+        "Hokusai3",
+        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+  scale_color_manual(
+    values = 
+      met.brewer(
+        "Hokusai3",
+        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+  facet_wrap(~sp_group_estimated, ncol = 1) 
+  
+```
+
+### Weekly
+
+```{r, bagovertime_w, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+
+get(names(tibblelist[2])) %>% 
+  mutate(
+    sp_group_estimated =
+      ifelse(
+        str_detect(sp_group_estimated, "Sea"),
+        "Sea Ducks",
+        sp_group_estimated)) %>% 
+  mutate(harvested_wk = lubridate::week(harvested_date)) %>% 
+  group_by(harvested_wk, sp_group_estimated) %>% 
+  summarize(sum_weekly_retrieved = sum(retrieved)) %>% 
+  ungroup() %>% 
+  ggplot(
+    aes(x = harvested_wk, y = sum_weekly_retrieved, 
+        color = sp_group_estimated, fill = sp_group_estimated)) + 
+  geom_jitter(alpha = 0.3) +
+  geom_line() +
+  labs(x = "Week harvested", y = "Number of birds retrieved") +
+  theme_classic() +
+  theme(legend.position = "none") +
+  scale_fill_manual(
+    values = 
+      met.brewer(
+        "Hokusai3",
+        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+  scale_color_manual(
+    values = 
+      met.brewer(
+        "Hokusai3",
+        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+  facet_wrap(~sp_group_estimated, ncol = 1) 
+  
+```
