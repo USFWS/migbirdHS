@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# migbirdMBHS <img width=150px src="man/figures/logo.png" align="right" />
+# migbirdMBHS <img width=150px src="man/figures/logo.svg" align="right" />
 
 ## Overview
 
