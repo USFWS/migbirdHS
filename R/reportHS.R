@@ -32,7 +32,6 @@ reportHS <-
         params =
           list(
             inpath = inpath,
-            outpath = outpath,
             year = year),
         output_file = file,
         output_dir = outpath,
@@ -51,7 +50,6 @@ reportHS <-
         params =
           list(
             inpath = inpath,
-            outpath = outpath,
             year = year),
         output_file = file,
         output_dir = outpath,

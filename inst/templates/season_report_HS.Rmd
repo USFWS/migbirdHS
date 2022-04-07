@@ -1,5 +1,5 @@
 ---
-title: "Online Harvest Survey Data Annual Summary Report"
+title: "Online Harvest Survey Annual Summary Report"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
@@ -7,8 +7,6 @@ output:
     number_sections: true
 params:
   inpath:
-    value: x
-  outpath:
     value: x
   year:
     value: x
@@ -22,9 +20,6 @@ library(DT)
 
 # Input path
 inpath <- params$inpath
-
-# Path to write data
-outpath <- params$outpath
 
 # Read data 
 read_dhs(inpath, year = as.character(params$year))
