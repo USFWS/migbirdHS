@@ -20,7 +20,7 @@ Imports:
     rgeos,
     broom,
     geojsonio,
-    cowplot
+    patchwork
 Suggests:
     knitr,
     DT

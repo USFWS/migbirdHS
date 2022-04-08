@@ -409,7 +409,7 @@ datatable(openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summar
 
 ## Retrieved map
 
-```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, out.width = 700, fig.align = "center", echo  = F}
+```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, fig.asp = 1.1, fig.width = 8, fig.align = "center", echo  = F}
 
 retrievedmap(get(names(tibblelist[2])))
 

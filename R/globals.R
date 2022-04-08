@@ -62,6 +62,7 @@ utils::globalVariables(
     "group",
     "x",
     "y",
-    "season"
+    "season",
+    "output"
     )
 )

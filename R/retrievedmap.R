@@ -23,15 +23,20 @@
 #' @importFrom ggplot2 theme_void
 #' @importFrom ggplot2 scale_fill_gradientn
 #' @importFrom ggplot2 coord_map
-#' @importFrom cowplot plot_grid
+#' @importFrom patchwork wrap_plots
 #'  
 #' @param data Daily data table
+#' @param output Default is "grid"
+#'  \itemize{
+#'  \item "grid" - returns a single plot with a map for each species arranged in a grid
+#'  \item "series" - returns each individual species plot in the "Plots" pane; toggle using the GUI left and right arrows
+#'  }
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
 #' @references \url{https://github.com/USFWS/migbirdMBHS}
 #' 
 retrievedmap <- 
-  function(data){
+  function(data, output = "grid"){
     spdf <- 
       spdf_retrievedmap
     
@@ -94,7 +99,13 @@ retrievedmap <-
         }
       )
     
-    plot_grid(
-      plotlist = plot_list,
-      ncol = 2)
+    if(output == "series"){
+      print(plot_list)
+    }
+    else if(output == "grid"){
+      wrap_plots(plot_list, ncol = 2)
+    }
+    else{
+      message("Error: Invalid `ouput`. Use 'grid' or 'series'.")
+    }
   }
