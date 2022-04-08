@@ -24,6 +24,8 @@
 #' @importFrom ggplot2 scale_fill_gradientn
 #' @importFrom ggplot2 coord_map
 #' @importFrom patchwork wrap_plots
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 unit
 #'  
 #' @param data Daily data table
 #' @param output Default is "grid"
@@ -103,7 +105,9 @@ retrievedmap <-
       print(plot_list)
     }
     else if(output == "grid"){
-      wrap_plots(plot_list, ncol = 2)
+      wrap_plots(
+        map(plot_list, ~.x + theme(plot.margin = unit(c(0,0,0,.5), "cm"))), 
+        ncol = 2)
     }
     else{
       message("Error: Invalid `ouput`. Use 'grid' or 'series'.")
