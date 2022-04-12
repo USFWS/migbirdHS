@@ -45,55 +45,70 @@
 
 overbags <-
   function(data, ref_data, state = NA, over = T, summary = F){
-    ref_table <-
-      ref_data %>% 
-      rename_all(~tolower(.)) %>%
-      filter(st != "PR") %>% 
-      filter(!str_detect(speciesgroup, "Swan")) %>% 
-      mutate(
-        spp = 
-          case_when(
-            str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
-            str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
-            speciesgroup == "Brant" ~ "Brant",
-            speciesgroup == "CAGO" ~ "Geese",
-            speciesgroup == "Geese" ~ "Geese",
-            speciesgroup == "Ducks" ~ "Ducks",
-            speciesgroup == "AMWO" ~ "Woodcock",
-            speciesgroup == "COSN" ~ "Snipe",
-            speciesgroup == "MODO" ~ "Mourning Dove",
-            speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
-            speciesgroup == "Mergansers" ~ "Ducks",
-            speciesgroup == "Rails" ~ "Rails",
-            speciesgroup == "COMO-PUGA" ~ "Gallinules",
-            # For NM "AMCO-COMO", set as "Coots" (they have a separate
-            # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
-            speciesgroup =="AMCO-COMO" & st == "NM" ~ "Coots", 
-            # **The "MODO-WWDO" category below should be used for MODO and WWDO
-            speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
-            # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
-            # "Brant"
-            speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
-            # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
-            # "Coots" AND "Gallinules"
-            speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
-              "CootsGallinules", 
-            speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
-            TRUE ~ NA_character_)) %>% 
-      filter(!is.na(spp)) %>% 
-      select(seasonyear, state = st, speciesgroup, spp, bag, possession) %>% 
-      group_by(seasonyear, state, spp) %>% 
-      summarize(
-        max_bag = max(bag, na.rm = T),
-        max_poss = max(possession, na.rm = T)) %>% 
-      ungroup() %>% 
-      left_join(
-        tibble(
-          state = datasets::state.abb,
-          sampled_state = datasets::state.name),
-        by = "state") %>% 
-      select(-c("state", "seasonyear")) %>%
-      rename(sp_group_estimated = spp)
+    suppressMessages(
+      ref_table <-
+        ref_data %>% 
+        rename_all(~tolower(.)) %>%
+        filter(st != "PR" & st != "HI") %>% 
+        filter(seasontype != "ExFalc") %>% 
+        filter(!str_detect(speciesgroup, "Swan")) %>% 
+        mutate(
+          speciesgroup = 
+            ifelse(
+              is.na(speciesgroup),
+              species,
+              speciesgroup)) %>%
+        mutate(
+          speciesgroup = 
+            case_when(
+              species == "Brant" ~ "Brant",
+              str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
+              TRUE ~ speciesgroup)) %>% 
+        mutate(
+          spp = 
+            case_when(
+              str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
+              str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
+              speciesgroup == "Brant" ~ "Brant",
+              speciesgroup == "CAGO" ~ "Geese",
+              speciesgroup == "Geese" ~ "Geese",
+              speciesgroup == "Ducks" ~ "Ducks",
+              speciesgroup == "AMWO" ~ "Woodcock",
+              speciesgroup == "COSN" ~ "Snipe",
+              speciesgroup == "MODO" ~ "Mourning Dove",
+              speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
+              speciesgroup == "Mergansers" ~ "Ducks",
+              speciesgroup == "Rails" ~ "Rails",
+              speciesgroup == "COMO-PUGA" ~ "Gallinules",
+              # For NM "AMCO-COMO", set as "Coots" (they have a separate
+              # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
+              speciesgroup =="AMCO-COMO" & st == "NM" ~ "Coots", 
+              # **The "MODO-WWDO" category below should be used for MODO and WWDO
+              speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+              # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+              # "Brant"
+              speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
+              # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+              # "Coots" AND "Gallinules"
+              speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
+                "CootsGallinules", 
+              speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
+              TRUE ~ NA_character_)) %>% 
+        filter(!is.na(spp)) %>% 
+        select(seasonyear, state = st, speciesgroup, spp, bag, possession) %>% 
+        group_by(seasonyear, state, spp) %>% 
+        summarize(
+          max_bag = max(bag),
+          max_poss = max(possession)) %>% 
+        ungroup() %>% 
+        left_join(
+          tibble(
+            state = datasets::state.abb,
+            sampled_state = datasets::state.name),
+          by = "state") %>% 
+        select(-c("state", "seasonyear")) %>%
+        rename(sp_group_estimated = spp)
+    )
     
     # Duplicate the "Doves" lines so they apply to MODO and WWDO
     # Duplicate the "GeeseBrant" lines so they apply to Geese and Brant

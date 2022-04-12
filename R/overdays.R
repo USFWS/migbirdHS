@@ -33,8 +33,9 @@ overdays <-
       dates <- 
         ref_data %>% 
         rename_all(~tolower(.)) %>% 
-        filter(st != "PR") %>% 
+        filter(st != "PR" & st != "HI") %>% 
         filter(seasontype != "ExFalc") %>% 
+        filter(!str_detect(speciesgroup, "Swan")) %>% 
         mutate(
           speciesgroup = 
             ifelse(
