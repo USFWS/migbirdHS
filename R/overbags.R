@@ -84,8 +84,8 @@ overbags <-
       select(seasonyear, state = st, speciesgroup, spp, bag, possession) %>% 
       group_by(seasonyear, state, spp) %>% 
       summarize(
-        max_bag = max(bag),
-        max_poss = max(possession)) %>% 
+        max_bag = max(bag, na.rm = T),
+        max_poss = max(possession, na.rm = T)) %>% 
       ungroup() %>% 
       left_join(
         tibble(
@@ -163,7 +163,7 @@ overbags <-
               bag_errors %>% 
                 group_by(sampled_state, sp_group_estimated, bag_limit) %>% 
                 summarize(
-                  max = max(retrieved),
+                  max = max(retrieved, na.rm = T),
                   mean = round(mean(retrieved), 1),
                   min = min(retrieved),
                   n = n()) %>% 
@@ -181,7 +181,7 @@ overbags <-
               filter(sampled_state == state) %>% 
               group_by(sampled_state, sp_group_estimated, bag_limit) %>% 
               summarize(
-                max = max(retrieved),
+                max = max(retrieved, na.rm = T),
                 mean = round(mean(retrieved), 1),
                 min = min(retrieved),
                 n = n()) %>% 
