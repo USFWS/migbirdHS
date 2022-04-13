@@ -68,7 +68,7 @@ refcheck <-
                 "CootsGallinules", 
               speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
               TRUE ~ NA_character_)) %>% 
-        filter(is.na(spp) | is.na(bag)) %>%
+        filter(is.na(spp)) %>%
         select(seasonyear, state = st, speciesgroup, spp, bag)
       
       }
