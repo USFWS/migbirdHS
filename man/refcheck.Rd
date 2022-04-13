@@ -4,10 +4,16 @@
 \alias{refcheck}
 \title{Check for errors in the reference table}
 \usage{
-refcheck(ref_data)
+refcheck(ref_data, type = "species")
 }
 \arguments{
 \item{ref_data}{A reference data table}
+
+\item{type}{Defaults to "species"
+\itemize{
+\item "species" - returns species values
+\item "season" - returns hunting season open and close dates
+}}
 }
 \description{
 The \code{refcheck} function checks for issues in the all_seasons Harvest Survey reference table.
