@@ -63,6 +63,8 @@ utils::globalVariables(
     "x",
     "y",
     "season",
-    "output"
+    "output",
+    "errors",
+    "surveyID"
     )
 )

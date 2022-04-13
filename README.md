@@ -27,7 +27,7 @@ Tasks that can be accomplished with this package include:
   - `bagdays` summarizes days hunted per hunter and species group
   - `bagspp` summarizes species hunted by popularity
   - `compare` visualizes differences between daily and season data
-  - `proofHS` \[coming soon\]
+  - `proofHS` looks for and flags errors in daily and season data
   - `correctHS` \[coming soon\]
   - Automated report writing with `reportHS`
 
@@ -35,7 +35,7 @@ Tasks that can be accomplished with this package include:
 
 ``` r
 library(devtools)
-install_github("USFWS/migbirdMBHS")
+install_github("USFWS/migbirdMBHS", upgrade = F, quiet = T)
 ```
 
 ## Function Flow
