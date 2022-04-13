@@ -13,6 +13,7 @@ Tasks that can be accomplished with this package include:
 
   - `read_dhs` imports data
   - `add_seaducks` appends seaduck season info to the reference table
+  - `refcheck` double checks the reference table covers all cases
   - `submitted` reports proportion of non-finalized hunts
   - `hunted` reports proportion of hunters who did not hunt
   - `nodata` checks for any missing data that was expected
