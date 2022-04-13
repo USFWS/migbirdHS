@@ -42,8 +42,9 @@ openclose <-
     dates <- 
       ref_data %>% 
       rename_all(~tolower(.)) %>% 
-      filter(st != "PR") %>% 
+      filter(st != "PR" & st != "HI") %>% 
       filter(seasontype != "ExFalc") %>% 
+      filter(!str_detect(speciesgroup, "Swan")) %>% 
       mutate(
         speciesgroup = 
           ifelse(
@@ -57,7 +58,6 @@ openclose <-
             species == "MODO" ~ "MODO",
             str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
             TRUE ~ speciesgroup)) %>% 
-      filter(!is.na(speciesgroup) & !str_detect(speciesgroup, "Swan")) %>% 
       select(seasonyear, state = st, speciesgroup, open, close) %>% 
       mutate(
         spp = 
