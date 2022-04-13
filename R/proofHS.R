@@ -43,6 +43,7 @@ proofHS <-
           speciesgroup = 
             case_when(
               species == "Brant" ~ "Brant",
+              species == "MODO" ~ "MODO",
               str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
               TRUE ~ speciesgroup)) %>% 
         mutate(

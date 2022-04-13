@@ -46,6 +46,7 @@ overdays <-
           speciesgroup = 
             case_when(
               species == "Brant" ~ "Brant",
+              species == "MODO" ~ "MODO",
               str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
               TRUE ~ speciesgroup)) %>% 
         filter(!is.na(speciesgroup) & !str_detect(speciesgroup, "Swan")) %>% 
