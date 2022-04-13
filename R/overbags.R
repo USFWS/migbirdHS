@@ -85,6 +85,7 @@ overbags <-
               speciesgroup =="AMCO-COMO" & st == "NM" ~ "Coots", 
               # **The "MODO-WWDO" category below should be used for MODO and WWDO
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+              speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
               # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
               # "Brant"
               speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
@@ -121,7 +122,7 @@ overbags <-
       bind_rows(
         ref_table %>% 
           filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-winged Dove")) %>% 
+          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
       bind_rows(
         ref_table %>% 
           filter(sp_group_estimated == "GeeseBrant") %>% 

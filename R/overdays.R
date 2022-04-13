@@ -71,6 +71,7 @@ overdays <-
               speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
               # **The "MODO-WWDO" category below should be used for MODO and WWDO
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+              speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
               # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
               # "Brant"
               speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
