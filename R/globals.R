@@ -65,6 +65,9 @@ utils::globalVariables(
     "season",
     "output",
     "errors",
-    "surveyID"
+    "surveyID",
+    "party_size",
+    "original_retrieved",
+    "new_retrieved"
     )
 )

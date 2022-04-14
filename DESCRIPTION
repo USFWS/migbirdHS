@@ -8,19 +8,20 @@ Imports:
     stringr,
     purrr,
     readr,
+    tibble,
+    rlang,
     magrittr,
     lubridate,
-    tibble,
-    lifecycle,
+    broom,
     ggplot2,
-    rmarkdown,
+    rgeos,
+    geojsonio,
+    patchwork,
+    treemapify,
     viridis,
     MetBrewer,
-    treemapify,
-    rgeos,
-    broom,
-    geojsonio,
-    patchwork
+    rmarkdown,
+    lifecycle
 Suggests:
     knitr,
     DT
