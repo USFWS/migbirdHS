@@ -18,6 +18,7 @@
 #' @importFrom rlang parse_expr
 #' @importFrom utils write.csv
 #' @importFrom dplyr relocate
+#' @importFrom rlang na_dbl
 #' 
 #' @param data Daily data table
 #' @param outpath Path to write the change log .csv; must end with a forward slash
@@ -95,7 +96,11 @@ partyproof <-
         i <- i + 1
       }else if(ANSWER == "Y"){
         message("Next row.")
-        i <- i + 1}
+        i <- i + 1
+      }else{
+        message("Whoops. Enter a number, fraction, or 'Y'.")
+        i <- i
+      }
     }
     
     if(i == total + 1){
