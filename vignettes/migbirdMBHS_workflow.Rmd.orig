@@ -1,0 +1,177 @@
+---
+title: "The migbirdMBHS Workflow"
+package: migbirdMBHS
+output:
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The migbirdMBHS Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Table of Contents
+
+- [Introduction](#introduction)
+    - [Installation](#installation)
+    - [Functions overview](#functions-overview)
+- [Part A: Data Import and Cleaning](#part-a-data-import-and-cleaning)
+    - [read_dhs](#read_dhs)
+    - [add_seaducks](#add_seaducks)
+    - [refcheck](#refcheck)
+- [Part B: Data Checking and Visualization](#part-b-data-checking-and-visualization)
+    - [nodata](#nodata)
+    - [submitted](#submitted)
+    - [hunted](#hunted)
+    - [overdays](#overdays)
+    - [overbags](#overbags)
+    - [retrieved](#retrieved)
+    - [bagspp](#bagspp)
+    - [openclose](#openclose)
+    - [partyhunt](#partyhunt)
+    - [huntdays](#huntdays)
+    - [compare](#compare)
+    - [retrievedmap](#retrievedmap)
+    - [bagdays](#bagdays)
+    - [responselag](#responselag)
+- [Part C: Data Proofing, Correction, and Writing)(#part-c-data-proofing-correction-and-writing)
+    - Proofing and correction
+        - [partyproof](#partyproof)
+        - [proofHS](#proofhs)
+        - [correctHS](#correctHS)
+    - Writing
+        - [reportHS](#reporths)
+- [Troubleshooting](#troubleshooting)
+    - [Issue reporting](#issue-reporting)
+
+## Introduction
+
+The *migbirdMBHS* package was created for the U.S. Fish and Wildlife Service (USFWS) to process online (Harvest Survey)[https://www.fws.gov/harvestsurvey/] data.
+
+### Installation
+
+The package can be installed from the USFWS GitHub repository using:
+```{r, install, message = FALSE, eval = FALSE}
+library(devtools)
+install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
+```
+
+### Functions overview
+
+The flowchart below is a visual guide to the order in which functions are used. Some functions are only used situationally and some require manual input from the user. The general process of handling Harvest Survey data is demonstrated here; every function in the *migbirdMBHS* package is included.
+
+```{r flowchart_svg, echo = FALSE, fig.cap = "Overview of migbirdMBHS functions in a flowchart format.", out.width = "100%", dev = "svg", fig.align = "center"}
+knitr::include_graphics("image/migbirdMBHS_flow_chart.svg")
+```
+
+## Part A: Data Import and Cleaning
+
+### read_dhs
+
+The first step is to import the three .csv files containing Harvest Survey data: "daily_records", "season_totals", and "all_seasons". These files are read in to the R Global Environment with the `read_dhs` function, and are used together or separately in all subsequent functions.
+
+The `read_dhs` function will read in 3 files for a specific year (e.g. `year = "2019"`), or all files for all available years in a given directory (e.g. `year = "all"`). In the example below, we will read in data for 2020. The tibbles added to the global environment are given a 4-digit suffix that corresponds to their survey year (e.g. "season_totals_2020").
+
+```{r, read_dhs_chunk, message = FALSE, warning = FALSE}
+library(migbirdMBHS)
+
+read_dhs("C:/HarvestSurvey/", year = "2020")
+```
+
+### add_seaducks
+
+Text...
+
+### refcheck
+
+Text...
+
+## Part B: Data Checking and Visualization
+
+### nodata
+
+Text...
+
+### submitted
+
+Text...
+
+### hunted
+
+Text...
+
+### overdays
+
+Text...
+
+### overbags
+
+Text...
+
+### retrieved
+
+Text...
+
+### bagspp
+
+Text...
+
+### openclose
+
+Text...
+
+### partyhunt
+
+Text...
+
+### huntdays
+
+Text...
+
+### compare
+
+Text...
+
+### retrievedmap
+
+Text...
+
+### bagdays
+
+Text...
+
+### responselag
+
+Text...
+
+
+
+## Part C: Data Proofing, Correction, and Writing
+
+### partyproof
+
+Text...
+
+### proofHS
+
+Text...
+
+### correctHS
+
+Text...
+
+### reportHS
+
+Text...
+
+
+
+## Troubleshooting
+
+### Issue reporting
+
+If you find a bug in the package, it's advised to [create an issue](https://github.com/USFWS/migbirdMBHS/issues) at the package's GitHub repo, https://github.com/USFWS/migbirdMBHS.
+
+<b>Questions?</b>
+
+Contact Abby Walter, abby_walter@fws.gov
+
