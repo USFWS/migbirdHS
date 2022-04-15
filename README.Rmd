@@ -47,7 +47,13 @@ Tasks that can be accomplished with this package include:
 
 ```r 
 library(devtools)
-install_github("USFWS/migbirdMBHS", upgrade = F, quiet = T)
+install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
+```
+
+## Vignette
+
+``` r
+vignette(topic = "migbirdMBHS_workflow", package = "migbirdMBHS")
 ```
 
 ## Function Flow
