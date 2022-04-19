@@ -262,14 +262,24 @@ proofHS <-
             ifelse(
               bag_per_day > max_bag,
               paste(errors, "overbag", sep = "-"),
-              errors)) %>% 
+              errors),
+          overbag = 
+            ifelse(
+              bag_per_day > max_bag,
+              bag_per_day - max_bag,
+              NA)) %>% 
         # Flag overdays
         mutate(
           errors = 
             ifelse(
-              days_hunted >= season_length,
+              days_hunted > season_length,
               paste(errors, "overdays", sep = "-"),
-              errors)) %>% 
+              errors),
+          overday = 
+            ifelse(
+              days_hunted > season_length,
+              days_hunted - season_length,
+              NA)) %>% 
         # Remove the x from errors
         mutate(
           errors =
@@ -308,35 +318,59 @@ proofHS <-
         ungroup() %>% 
         mutate(
           harvested_date = ymd(harvested_date),
-          errors = "x") %>% 
+          errors = "x",
+          overbag = NA,
+          overday = NA,
+          early = NA,
+          late = NA) %>% 
         # Flag overbags
         mutate(
           errors = 
             ifelse(
               retrieved > max_bag,
               paste(errors, "overbag", sep = "-"),
-              errors)) %>% 
+              errors),
+          overbag = 
+            ifelse(
+              retrieved > max_bag,
+              retrieved - max_bag,
+              NA)) %>% 
         # Flag overdays
         mutate(
           errors = 
             ifelse(
-              n_days >= season_length,
+              n_days > season_length,
               paste(errors, "overdays", sep = "-"),
-              errors)) %>% 
+              errors),
+          overday = 
+            ifelse(
+              n_days > season_length,
+              n_days - season_length,
+              NA)) %>% 
         # Flag early hunts
         mutate(
           errors = 
             ifelse(
               harvested_date < open,
               paste(errors, "early_hunt", sep = "-"),
-              errors)) %>% 
+              errors),
+          early = 
+            ifelse(
+              harvested_date < open,
+              open - harvested_date,
+              NA)) %>% 
         # Flag late hunts
         mutate(
           errors = 
             ifelse(
               harvested_date > close,
               paste(errors, "late_hunt", sep = "-"),
-              errors)) %>% 
+              errors),
+          late = 
+            ifelse(
+              harvested_date > close,
+              harvested_date - close,
+              NA)) %>% 
         # Remove the x from errors
         mutate(
           errors =
