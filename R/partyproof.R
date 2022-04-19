@@ -27,6 +27,103 @@
 partyproof <- 
   function(data, outpath){
     
+    ref_table <-
+      ref_data %>% 
+      rename_all(~tolower(.)) %>%
+      filter(st != "PR" & st != "HI") %>% 
+      filter(seasontype != "ExFalc") %>% 
+      filter(!str_detect(speciesgroup, "Swan")) %>% 
+      mutate(
+        speciesgroup = 
+          ifelse(
+            is.na(speciesgroup),
+            species,
+            speciesgroup)) %>%
+      mutate(
+        speciesgroup = 
+          case_when(
+            species == "Brant" ~ "Brant",
+            species == "MODO" ~ "MODO",
+            str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
+            TRUE ~ speciesgroup)) %>% 
+      mutate(
+        spp = 
+          case_when(
+            str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
+            str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
+            speciesgroup == "Brant" ~ "Brant",
+            speciesgroup == "CAGO" ~ "Geese",
+            speciesgroup == "Geese" ~ "Geese",
+            speciesgroup == "Ducks" ~ "Ducks",
+            speciesgroup == "AMWO" ~ "Woodcock",
+            speciesgroup == "COSN" ~ "Snipe",
+            speciesgroup == "MODO" ~ "Mourning Dove",
+            speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
+            speciesgroup == "Mergansers" ~ "Ducks",
+            speciesgroup == "Rails" ~ "Rails",
+            speciesgroup == "COMO-PUGA" ~ "Gallinules",
+            # For NM "AMCO-COMO", set as "Coots" (they have a separate
+            # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
+            speciesgroup =="AMCO-COMO" & st == "NM" ~ "Coots", 
+            # **The "MODO-WWDO" category below should be used for MODO and WWDO
+            speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+            speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
+            # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+            # "Brant"
+            speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
+            # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+            # "Coots" AND "Gallinules"
+            speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
+              "CootsGallinules", 
+            speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
+            TRUE ~ NA_character_)) %>% 
+      filter(!is.na(spp)) %>% 
+      select(seasonyear, state = st, speciesgroup, spp, bag) %>% 
+      group_by(seasonyear, state, spp) %>% 
+      summarize(max_bag = max(bag)) %>% 
+      ungroup() %>% 
+      left_join(
+        tibble(
+          state = datasets::state.abb,
+          sampled_state = datasets::state.name),
+        by = "state") %>% 
+      select(-c("state", "seasonyear")) %>%
+      rename(sp_group_estimated = spp) 
+    
+    special_table <-
+      ref_table %>% 
+      filter(sp_group_estimated == "MODO-WWDO") %>% 
+      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      bind_rows(
+        ref_table %>% 
+          filter(sp_group_estimated == "MODO-WWDO") %>% 
+          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+      bind_rows(
+        ref_table %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Geese")) %>% 
+      bind_rows(
+        ref_table %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Brant")) %>% 
+      bind_rows(
+        ref_table %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Coots")) %>% 
+      bind_rows(
+        ref_table %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Gallinules")) 
+    
+    # Remove specialdates spp from the original dates df
+    ref_table <-
+      ref_table %>% 
+      filter(
+        !sp_group_estimated %in% 
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+      bind_rows(special_table) %>%
+      distinct()
+    
     partytable <- 
       data %>% 
       mutate(
@@ -67,7 +164,9 @@ partyproof <-
               str_remove(., "group of "),
             TRUE ~ NA_character_)) %>% 
       rename(original_retrieved = retrieved) %>% 
-      mutate(new_retrieved = NA) 
+      mutate(new_retrieved = NA) %>% 
+      left_join(ref_table, by = c("sp_group_estimated", "sampled_state")) %>% 
+      arrange(desc(party_size))
     
     i <- 1
     total <- 
@@ -77,31 +176,14 @@ partyproof <-
       nrow()
     
     while(i != total + 1){
-      message("\nWhat should the retrieved value be?")
+      message(
+        paste0(
+          "\nWhat should the retrieved value be? Max bag is ", 
+          partytable$max_bag[i], "."))
       message(paste0("Entry: ", i, "/", total))
-      cat(
-        paste(
-          "Retrieved: ", 
-          partytable %>% 
-            slice(i) %>% 
-            select(original_retrieved) %>% 
-            pull()), 
-        "\n")
-      cat(
-        paste(
-          "Party size: ", 
-          partytable %>% 
-            slice(i) %>% 
-            select(party_size) %>% 
-            pull()), 
-        "\n")
-      cat(
-        paste(
-          "Comment: ", 
-          partytable %>% 
-            slice(i) %>% 
-            select(comment) %>% 
-            pull()))
+      cat(paste("Retrieved: ", partytable$original_retrieved[i]), "\n")
+      cat(paste("Party size: ", partytable$party_size[i]), "\n")
+      cat(paste("Comment: ", partytable$comment[i]))
       ANSWER <- toupper(scan(what = character(), nmax = 1, quiet = T))
       
       if(str_detect(ANSWER, "[0-9]{1,2}") == TRUE){
@@ -151,7 +233,9 @@ partyproof <-
                 !is.na(new_retrieved) ~ new_retrieved,
                 is.na(new_retrieved) ~ original_retrieved,
                 TRUE ~ na_dbl)) %>% 
-          select(-c("original_retrieved", "new_retrieved", "party_size")) %>%
+          select(
+            -c("original_retrieved", "new_retrieved", "party_size", 
+               "max_bag")) %>%
           relocate(retrieved, .before = "unretrieved")
       )
     }
