@@ -9,8 +9,6 @@
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_remove
 #' @importFrom dplyr rename
-#' @importFrom dplyr arrange
-#' @importFrom dplyr desc
 #' @importFrom dplyr select
 #' @importFrom dplyr filter
 #' @importFrom dplyr slice
@@ -44,16 +42,34 @@ partyproof <-
             str_detect(comment, "[0-9]{1,2} hunter") & retrieved != 0 ~ 
               str_extract(comment, "[0-9]{1,2} hunter") %>% 
               str_remove(., " hunter"),
+            str_detect(comment, "[0-9]{1,2} people") & retrieved != 0 ~ 
+              str_extract(comment, "[0-9]{1,2} people") %>% 
+              str_remove(., " people"),
             str_detect(comment, "party of [0-9]{1,2}") & retrieved != 0 ~ 
               str_extract(comment, "party of [0-9]{1,2}") %>% 
+              str_remove(., "party of "),
+            str_detect(
+              comment, 
+              "party of one|two|three|four|five|six|seven|eight|nine|ten") & 
+              retrieved != 0 ~ 
+              str_extract(
+                comment, 
+                "party of one|two|three|four|five|six|seven|eight|nine|ten") %>% 
               str_remove(., "party of "),
             str_detect(comment, "group of [0-9]{1,2}") & retrieved != 0 ~ 
               str_extract(comment, "group of [0-9]{1,2}") %>% 
               str_remove(., "group of "),
+            str_detect(
+              comment, 
+              "group of one|two|three|four|five|six|seven|eight|nine|ten") & 
+              retrieved != 0 ~ 
+              str_extract(
+                comment, 
+                "group of one|two|three|four|five|six|seven|eight|nine|ten") %>% 
+              str_remove(., "group of "),
             TRUE ~ NA_character_)) %>% 
       rename(original_retrieved = retrieved) %>% 
-      mutate(new_retrieved = NA) %>% 
-      arrange(desc(party_size))
+      mutate(new_retrieved = NA) 
     
     i <- 1
     total <- 
