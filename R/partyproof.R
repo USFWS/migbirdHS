@@ -49,23 +49,21 @@ partyproof <-
               str_extract(comment, "party of [0-9]{1,2}") %>% 
               str_remove(., "party of "),
             str_detect(
-              comment, 
-              "party of one|two|three|four|five|six|seven|eight|nine|ten") & 
+              comment, "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") & 
               retrieved != 0 ~ 
               str_extract(
                 comment, 
-                "party of one|two|three|four|five|six|seven|eight|nine|ten") %>% 
+                "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") %>% 
               str_remove(., "party of "),
             str_detect(comment, "group of [0-9]{1,2}") & retrieved != 0 ~ 
               str_extract(comment, "group of [0-9]{1,2}") %>% 
               str_remove(., "group of "),
             str_detect(
-              comment, 
-              "group of one|two|three|four|five|six|seven|eight|nine|ten") & 
+              comment, "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") & 
               retrieved != 0 ~ 
               str_extract(
                 comment, 
-                "group of one|two|three|four|five|six|seven|eight|nine|ten") %>% 
+                "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") %>% 
               str_remove(., "group of "),
             TRUE ~ NA_character_)) %>% 
       rename(original_retrieved = retrieved) %>% 
