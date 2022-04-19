@@ -4,10 +4,12 @@
 \alias{partyproof}
 \title{Adjust group hunts reported in Harvest Survey daily data}
 \usage{
-partyproof(data, outpath)
+partyproof(data, ref_data, outpath)
 }
 \arguments{
 \item{data}{Daily data table}
+
+\item{ref_data}{Reference data table for the same year as the daily data}
 
 \item{outpath}{Path to write the change log .csv; must end with a forward slash}
 }

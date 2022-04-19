@@ -3,29 +3,37 @@
 #' The \code{partyproof} function checks for, and allows the user to edit, any group hunts in the daily Harvest Survey data. Comments are parsed to determine party size. Adjustments to number of birds retrieved must be entered manually, and if deemed necessary, the retrieved value will be divided by the party size. A report file is written out as a .csv to record all changes made.
 #' 
 #' @importFrom dplyr %>%
+#' @importFrom dplyr rename_all
+#' @importFrom dplyr filter
+#' @importFrom stringr str_detect
 #' @importFrom dplyr mutate
 #' @importFrom dplyr case_when
-#' @importFrom stringr str_detect
+#' @importFrom dplyr select
+#' @importFrom dplyr group_by 
+#' @importFrom dplyr summarize
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr left_join
+#' @importFrom dplyr rename
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr distinct 
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_remove
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom dplyr filter
-#' @importFrom dplyr slice
-#' @importFrom dplyr pull
+#' @importFrom dplyr arrange
+#' @importFrom dplyr desc
 #' @importFrom rlang parse_expr
 #' @importFrom utils write.csv
 #' @importFrom dplyr relocate
 #' @importFrom rlang na_dbl
 #' 
 #' @param data Daily data table
+#' @param ref_data Reference data table for the same year as the daily data
 #' @param outpath Path to write the change log .csv; must end with a forward slash
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
 #' @references \url{https://github.com/USFWS/migbirdMBHS}
 #' 
 partyproof <- 
-  function(data, outpath){
+  function(data, ref_data, outpath){
     
     ref_table <-
       ref_data %>% 
