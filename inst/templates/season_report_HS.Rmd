@@ -377,9 +377,6 @@ datatable(
 \
 \
 \
-\
-\
-\
 
 
 ## Identify out-of-season take
@@ -448,7 +445,7 @@ season_corrected <- correctHS(season_proofed)
 
 ### Season
 
-```{r, errors_season, message = FALSE, warning = FALSE, echo = F}
+```{r, errors_season, message = FALSE, warning = FALSE, echo = F, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center"}
 
 errorsHS <-
   function(data){
@@ -461,7 +458,8 @@ errorsHS <-
       mutate(prop = n/nrow(data %>% filter(errors != "none"))) %>% 
       ggplot() +
       geom_bar(aes(x = errors, y = prop), stat = "identity") + 
-      geom_text(aes(x = errors, y = prop, label = n), nudge_y = .1) +
+      geom_text(aes(x = errors, y = prop, label = n), nudge_y = .05) +
+      labs(y = "Proportion") +
       theme_classic()
   }
 
@@ -471,7 +469,7 @@ errorsHS(season_proofed)
 
 ### Daily
 
-```{r, errors_daily, message = FALSE, warning = FALSE, echo = F}
+```{r, errors_daily, message = FALSE, warning = FALSE, echo = F, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center"}
 
 errorsHS(daily_proofed)
 
