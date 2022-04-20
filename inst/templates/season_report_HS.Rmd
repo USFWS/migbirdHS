@@ -183,7 +183,7 @@ Are there any hunts submitted with an impossible number of days hunted?
 
 ### Season
 
-```{r, overdays1, message = FALSE, warning = FALSE, echo = F}
+```{r, overdays1, warning = FALSE, echo = F}
 datatable(
   overdays(get(names(tibblelist[3])), get(names(tibblelist[1])))
 )
@@ -191,7 +191,7 @@ datatable(
 
 ### Daily 
 
-```{r, overdays2, message = FALSE, warning = FALSE, echo = F}
+```{r, overdays2, warning = FALSE, echo = F}
 datatable(
   overdays(get(names(tibblelist[2])), get(names(tibblelist[1]))) 
 )
