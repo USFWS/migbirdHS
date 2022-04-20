@@ -237,7 +237,8 @@ proofHS <-
     # {Part 3}
     # Error flagging
     
-    if(str_detect(deparse(substitute(data)), "season") == TRUE){
+    if(str_detect(deparse(substitute(data)), "season") == TRUE | 
+       str_detect(deparse(substitute(data)), "tibblelist\\[3\\]") == TRUE){
       
       # Season data error flagging: overbags and overdays
       season_errors <- 
