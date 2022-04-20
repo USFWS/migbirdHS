@@ -4,7 +4,8 @@
 #'
 #' @importFrom rmarkdown render
 #'
-#' @param inpath File path to the folder containing HIP .txt files
+#' @param inpath File path to the folder containing the daily, season, and reference Harvest Survey .csv files
+#' @param partypath File path to the folder containing results from partyproof function
 #' @param type Type of report. One of the following options may be supplied:
 #' \itemize{
 #' \item survey_analytics - for a summary report of survey analytics
@@ -32,6 +33,7 @@ reportHS <-
         params =
           list(
             inpath = inpath,
+            partypath = partypath,
             year = year),
         output_file = file,
         output_dir = outpath,
@@ -50,6 +52,7 @@ reportHS <-
         params =
           list(
             inpath = inpath,
+            partypath = partypath,
             year = year),
         output_file = file,
         output_dir = outpath,

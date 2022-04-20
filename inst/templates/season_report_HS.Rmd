@@ -8,6 +8,8 @@ output:
 params:
   inpath:
     value: x
+  partypath:
+    value: x
   year:
     value: x
 ---
