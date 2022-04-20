@@ -14,7 +14,7 @@ params:
     value: x
 ---
 
-```{r, libs, message = FALSE, warning = FALSE, echo = FALSE}
+```{r, libs, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 
 library(tidyverse)
 library(lubridate)
@@ -39,30 +39,43 @@ tibblelist <-
     all_seasons,
     paste0("daily_records_", as.character(params$year)),
     paste0("season_totals_", as.character(params$year)))
+
+# Read in the manually partyproofed daily data
+party_proofed <-
+  read_csv(paste0(params$partypath, "party_proofed_", params$year, ".csv"))
+
+# Proof and correct the daily data
+daily_proofed <- proofHS(party_proofed, get(names(tibblelist[1])))
+rm(party_proofed)
+daily_corrected <- correctHS(daily_proofed)
+
+# Proof and correct the season data
+season_proofed <- proofHS(get(names(tibblelist[3])), get(names(tibblelist[1])))
+season_corrected <- correctHS(season_proofed)
 ```
 
 ## Introduction
 
-This is the `r params$year` survey analytics report for Harvest Survey online data.
+This is the `r params$year` survey analytics report for Harvest Survey online data. All of the visualizations below use corrected daily and/or season data.
 
 ## Response lag
 
 What is the distribution of response lag?
 
 ```{r, responselag1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-responselag(get(names(tibblelist[2])), type = "count")
+responselag(daily_corrected, type = "count")
 ```
 
-What is the relationship between time lag and number of birds retrieved?
+What is the relationship between response lag and number of birds retrieved?
 
 ```{r, responselag2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-responselag(get(names(tibblelist[2])), type = "lag")
+responselag(daily_corrected, type = "lag")
 ```
 
 What is the relationship between response date and harvest date? Larger and darker circles indicate more birds retrieved. The dotted lines are guides to show (from top to bottom), a time lag of 0, 30, 60, 90, and 120 days.
 
 ```{r, responselag3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-responselag(get(names(tibblelist[2])), type = "date")
+responselag(daily_corrected, type = "date")
 ```
 
 
@@ -71,11 +84,11 @@ responselag(get(names(tibblelist[2])), type = "date")
 In the daily data, what is the relationship between number of birds retrieved and number of days spent hunting?
 
 ```{r, bagdays2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-bagdays(get(names(tibblelist[2])), output = "plot")
+bagdays(daily_corrected, output = "plot")
 ```
 
 ```{r, bagdays1, message = FALSE, warning = FALSE, echo = F}
-DT::datatable(bagdays(get(names(tibblelist[2])), output = "table"))
+DT::datatable(bagdays(daily_corrected, output = "table"))
 ```
 
 
@@ -85,7 +98,7 @@ DT::datatable(bagdays(get(names(tibblelist[2])), output = "table"))
 
 ```{r, bagovertime_d, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-get(names(tibblelist[2])) %>% 
+daily_corrected %>% 
   mutate(
     sp_group_estimated =
       ifelse(
@@ -107,12 +120,12 @@ get(names(tibblelist[2])) %>%
     values = 
       met.brewer(
         "Hokusai3",
-        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+        length(unique(daily_corrected$sp_group_estimated)))) +
   scale_color_manual(
     values = 
       met.brewer(
         "Hokusai3",
-        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+        length(unique(daily_corrected$sp_group_estimated)))) +
   facet_wrap(~sp_group_estimated, ncol = 1) 
   
 ```
@@ -121,7 +134,7 @@ get(names(tibblelist[2])) %>%
 
 ```{r, bagovertime_w, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-get(names(tibblelist[2])) %>% 
+daily_corrected %>% 
   mutate(
     sp_group_estimated =
       ifelse(
@@ -144,12 +157,12 @@ get(names(tibblelist[2])) %>%
     values = 
       met.brewer(
         "Hokusai3",
-        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+        length(unique(daily_corrected$sp_group_estimated)))) +
   scale_color_manual(
     values = 
       met.brewer(
         "Hokusai3",
-        length(unique(get(names(tibblelist[2]))$sp_group_estimated)))) +
+        length(unique(daily_corrected$sp_group_estimated)))) +
   facet_wrap(~sp_group_estimated, ncol = 1) 
   
 ```
