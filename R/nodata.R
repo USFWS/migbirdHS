@@ -53,7 +53,7 @@ nodata <-
           )
         message("Notice: season data filtered to exclude daily records.")
         # Additional statement for report template compatibility
-      }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
+      }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]") == TRUE){
         datayr <- 
           data %>% 
           select(season) %>% 
@@ -74,7 +74,7 @@ nodata <-
         message("Notice: season data filtered to exclude daily records.")
       }
       }
-    if(is.na(species)){
+    if(is.na(species) == TRUE){
       tibble(sampled_state = datasets::state.name) %>% 
         filter(sampled_state != "Hawaii") %>% 
         left_join(
