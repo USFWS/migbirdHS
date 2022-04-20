@@ -68,6 +68,7 @@ utils::globalVariables(
     "surveyID",
     "party_size",
     "original_retrieved",
-    "new_retrieved"
+    "new_retrieved",
+    "flag"
     )
 )
