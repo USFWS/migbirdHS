@@ -29,8 +29,8 @@ correctHS <-
               errors == "late_hunt" ~ "late",
               errors == "early_hunt" ~ "early",
               TRUE ~ NA_character_)) %>% 
-        filter(flag != "discard") %>% 
-        select(-c("errors", "overbag", "overday", "late", "early"))
+        filter(is.na(flag)) %>% 
+        select(-c("errors", "overbag", "overday", "late", "early", "flag"))
     }
     else if(str_detect(deparse(substitute(data)), "season") == TRUE){
       data %>% 
@@ -44,8 +44,8 @@ correctHS <-
               # Get rid of records with excessive overdays
               errors == "overdays" & overday > 3 ~ "discard",
               TRUE ~ NA_character_)) %>% 
-        filter(flag != "discard") %>% 
-        select(-c("errors", "overbag", "overday"))
+        filter(is.na(flag)) %>% 
+        select(-c("errors", "overbag", "overday", "flag"))
     }
     else{
       message(
