@@ -4,10 +4,12 @@
 \alias{reportHS}
 \title{Write an R markdown report from template}
 \usage{
-reportHS(inpath, type, year, outpath, file)
+reportHS(inpath, partypath, type, year, outpath, file)
 }
 \arguments{
 \item{inpath}{File path to the folder containing the daily, season, and reference Harvest Survey .csv files}
+
+\item{partypath}{File path to the folder containing results from partyproof function}
 
 \item{type}{Type of report. One of the following options may be supplied:
 \itemize{
@@ -19,8 +21,6 @@ reportHS(inpath, type, year, outpath, file)
 \item{outpath}{Folder in which to save the completed report}
 
 \item{file}{What the report file should be named}
-
-\item{partypath}{File path to the folder containing results from partyproof function}
 }
 \description{
 Create documentation with figures and tables that summarizes Harvest Survey daily and season data.

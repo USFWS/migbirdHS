@@ -18,7 +18,7 @@
 #' @references \url{https://github.com/USFWS/migbirdHarvestData}
 
 reportHS <-
-  function(inpath, type, year, outpath, file){
+  function(inpath, partypath, type, year, outpath, file){
     
     # Create Rmd for download
     if(type == "survey_analytics"){
