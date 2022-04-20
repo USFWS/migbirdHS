@@ -437,13 +437,13 @@ party_proofed <-
   read_csv(paste0(params$partypath, "party_proofed_", params$year, ".csv"))
 
 # Proof and correct the daily data
-daily_proofed <- proofHS(party_proofed)
+daily_proofed <- proofHS(party_proofed, get(names(tibblelist[1])))
 rm(party_proofed)
 daily_corrected <- correctHS(daily_proofed)
 rm(daily_proofed)
 
 # Proof and correct the season data
-season_proofed <- proofHS(get(names(tibblelist[3])))
+season_proofed <- proofHS(get(names(tibblelist[3])), get(names(tibblelist[1])))
 season_corrected <- correctHS(season_proofed)
 rm(season_proofed)
 ```
