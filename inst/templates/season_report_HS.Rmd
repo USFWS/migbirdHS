@@ -420,7 +420,7 @@ datatable(openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summar
 
 ## Error summary
 
-```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = F}
+```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 
 # Read in the manually partyproofed daily data
 party_proofed <-
