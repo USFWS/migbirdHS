@@ -165,7 +165,7 @@ hunted(get(names(tibblelist[2])), type = "species", output = "plot") +
 
 ## Identify party hunts
 
-Are there any group hunts in the daily data that we can identify via comments?
+Are there any party hunts in the daily data that we can identify via comments?
 
 ```{r, party, message = FALSE, warning = FALSE, echo = F}
 datatable(
@@ -174,6 +174,14 @@ datatable(
   options = list(pageLength = 3))
 ```
 
+Here are the manual corrections done to party hunt retrieved values with the `partyproof` function:
+
+```{r, partyresults, message = FALSE, warning = FALSE, echo = F}
+proofed_parties <-
+  read_csv(paste0(params$partypath, "proofed_parties_", params$year, ".csv"))
+
+datatable(proofed_parties)
+```
 
 ## Check for overdays
 
@@ -362,6 +370,17 @@ datatable(
 \  
 \  
 \  
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+
 
 ## Identify out-of-season take
 
@@ -409,82 +428,135 @@ openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) %>%
 datatable(openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T))
 ```
 
+## Error summary
+
+```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = F}
+
+# Read in the manually partyproofed daily data
+party_proofed <-
+  read_csv(paste0(params$partypath, "party_proofed_", params$year, ".csv"))
+
+# Proof and correct the daily data
+daily_proofed <- proofHS(party_proofed)
+rm(party_proofed)
+daily_corrected <- correctHS(daily_proofed)
+rm(daily_proofed)
+
+# Proof and correct the season data
+season_proofed <- proofHS(get(names(tibblelist[3])))
+season_corrected <- correctHS(season_proofed)
+rm(season_proofed)
+```
+
+### Season
+
+```{r, errors_season, message = FALSE, warning = FALSE, echo = F}
+
+errorsHS <-
+  function(data){
+    data %>% 
+      select(errors) %>% 
+      filter(errors != "none") %>% 
+      group_by(errors) %>% 
+      summarize(n = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n/nrow(data %>% filter(errors != "none"))) %>% 
+      ggplot() +
+      geom_bar(aes(x = errors, y = prop), stat = "identity") + 
+      geom_text(aes(x = errors, y = prop, label = n), nudge_y = .1) +
+      theme_classic()
+  }
+
+errorsHS(season_proofed)
+
+```
+
+### Daily
+
+```{r, errors_daily, message = FALSE, warning = FALSE, echo = F}
+
+errorsHS(daily_proofed)
+
+```
+
+
 ## Retrieved map
+
+The plots below show average retrieved values per state and species using the corrected Harvest Survey daily data.
 
 ```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, fig.asp = 1.1, fig.width = 8, fig.align = "center", echo  = F}
 
-retrievedmap(get(names(tibblelist[2])))
+retrievedmap(daily_corrected)
 
 ```
 
 ## Birds retrieved
 
-For the daily data, how many birds were retrieved on average per hunter?
+For the daily data, how many birds were retrieved on average per hunter? The figure and table below use the corrected data.
 
 ```{r, retrieved2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-retrieved(get(names(tibblelist[2])), output = "plot", average = T) +
+retrieved(daily_corrected, output = "plot", average = T) +
   theme(legend.position = "bottom") +
   scale_fill_manual(
     values = 
       met.brewer("Hokusai3", 
-                 length(unique(get(names(tibblelist[2]))$sp_group_estimated))))
+                 length(unique(daily_corrected$sp_group_estimated))))
 
-datatable(retrieved(get(names(tibblelist[2])), average = T))
+datatable(retrieved(daily_corrected, average = T))
 ```
-
 
 ## Popular species
 
-What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization.
+What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The corrected daily data are used.
 
 ```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-bagspp(get(names(tibblelist[2])), output = "popular")
+bagspp(daily_corrected, output = "popular")
 ```
 
 
 ## Days hunted
 
-In the daily data, how many days were spent hunting per species on average for each hunter?
+In the daily data, how many days were spent hunting per species on average for each hunter? The corrected data are used.
 
 ```{r, huntdays3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-huntdays(get(names(tibblelist[2])), type = "species", output = "plot", average = T)
+huntdays(daily_corrected, type = "species", output = "plot", average = T)
 ```
 
 How about by state?
 
 ```{r, huntdays2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-huntdays(get(names(tibblelist[2])), output = "plot", average = T) +
+huntdays(daily_corrected, output = "plot", average = T) +
   theme(legend.position = "bottom") + 
   scale_fill_manual(
     values = met.brewer("Hokusai3",
-                        length(unique(get(names(tibblelist[2]))$sp_group_estimated))))
+                        length(unique(daily_corrected$sp_group_estimated))))
 ```
 
 ```{r, huntdays1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-datatable(huntdays(get(names(tibblelist[2])), average = T))
+datatable(huntdays(daily_corrected, average = T))
 ```
 
 ## Comparing submitted vs. non-submit
 
-What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups?
+What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups? The corrected daily and season data are used in the figures below.
 
 ```{r, compare1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(get(names(tibblelist[2])), get(names(tibblelist[3])), type = "line")
+compare(daily_corrected, season_corrected, type = "line")
 ```
 
 What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. 
 
 ```{r, compare2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(get(names(tibblelist[2])), get(names(tibblelist[3])), type = "days")
+compare(daily_corrected, season_corrected, type = "days")
 ```
 
 What is the distribution of number of birds retrieved per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values.
 
 ```{r, compare3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(get(names(tibblelist[2])), get(names(tibblelist[3])), type = "retrieved")
+compare(daily_corrected, season_corrected, type = "retrieved")
 ```
