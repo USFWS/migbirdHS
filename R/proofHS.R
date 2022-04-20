@@ -301,7 +301,7 @@ proofHS <-
       
       return(season_errors)
       
-    }else if(str_detect(deparse(substitute(data)), "daily") == TRUE){
+    }else if(str_detect(deparse(substitute(data)), "daily|party") == TRUE){
       
       # Daily data error flagging: overbags, overdays, early hunts, late hunts
       
