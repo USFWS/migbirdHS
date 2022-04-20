@@ -169,7 +169,7 @@ Here are the manual corrections done to party hunt retrieved values with the `pa
 
 ```{r, partyresults, message = FALSE, warning = FALSE, echo = F}
 proofed_parties <-
-  read_csv(paste0(params$partypath, "proofed_parties_", params$year, ".csv"))
+  read.csv(paste0(params$partypath, "proofed_parties_", params$year, ".csv"))
 
 datatable(
   proofed_parties %>% 
