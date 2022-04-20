@@ -165,22 +165,16 @@ hunted(get(names(tibblelist[2])), type = "species", output = "plot") +
 
 ## Identify party hunts
 
-Are there any party hunts in the daily data that we can identify via comments?
-
-```{r, party, message = FALSE, warning = FALSE, echo = F}
-datatable(
-  partyhunt(get(names(tibblelist[2]))) %>% 
-    select(-unretrieved), 
-  options = list(pageLength = 3))
-```
-
 Here are the manual corrections done to party hunt retrieved values with the `partyproof` function:
 
 ```{r, partyresults, message = FALSE, warning = FALSE, echo = F}
 proofed_parties <-
   read_csv(paste0(params$partypath, "proofed_parties_", params$year, ".csv"))
 
-datatable(proofed_parties)
+datatable(
+  proofed_parties %>% 
+    mutate(), 
+  options = list(pageLength = 5))
 ```
 
 ## Check for overdays
@@ -450,6 +444,7 @@ errorsHS <-
     data %>% 
       select(errors) %>% 
       filter(errors != "none") %>% 
+      mutate(errors = ifelse(str_detect(errors, "-"), "2+ errors", errors)) %>% 
       group_by(errors) %>% 
       summarize(n = n()) %>% 
       ungroup() %>% 
@@ -457,7 +452,7 @@ errorsHS <-
       ggplot() +
       geom_bar(aes(x = errors, y = prop), stat = "identity") + 
       geom_text(aes(x = errors, y = prop, label = n), nudge_y = .05) +
-      labs(y = "Proportion") +
+      labs(y = "Proportion", x = "Errors") +
       theme_classic()
   }
 
