@@ -375,8 +375,6 @@ datatable(
 \
 \
 \
-\
-\
 
 
 ## Identify out-of-season take
@@ -508,7 +506,7 @@ What is the proportion of birds that were successfully hunted? Each hunter's pur
 
 ```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-bagspp(daily_corrected, output = "popular")
+bagspp(daily_corrected, output = "success")
 ```
 
 
