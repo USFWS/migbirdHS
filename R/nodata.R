@@ -20,9 +20,9 @@
 #' @param ref_data The reference data table that corresponds to the year of the data
 #' @param species Whether species should be included in the output, and if so, which species in particular:
 #'  \itemize{
-#'  \item NA -
-#'  \item "all" - 
-#'  \item A specific species group, which may be one of:
+#'  \item NA - does not include species
+#'  \item "all" - includes all species for all states
+#'  \item A specific species group, to show all of the species group specified for all states, which may be one of:
 #'  \itemize{
 #'  \item "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", "Woodcock"}
 #'  }
