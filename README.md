@@ -36,8 +36,7 @@ Tasks that can be accomplished with this package include:
 ## Installation
 
 ``` r
-library(devtools)
-install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
+devtools::install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
 ```
 
 ## Vignette
