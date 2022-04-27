@@ -210,7 +210,6 @@ datatable(
 )
 ```
 
-
 ### Daily
 
 What values in the retrieved field of daily data were over the limit per species and state?
