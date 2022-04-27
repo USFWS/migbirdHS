@@ -33,27 +33,26 @@ vignette: >
     - [retrievedmap](#retrievedmap)
     - [bagdays](#bagdays)
     - [responselag](#responselag)
-- [Part C: Data Proofing, Correction, and Writing)(#part-c-data-proofing-correction-and-writing)
+- [Part C: Data Proofing, Correction, and Report Writing](#part-c-data-proofing-correction-and-report-writing)
     - Proofing and correction
         - [partyproof](#partyproof)
         - [proofHS](#proofhs)
         - [correctHS](#correctHS)
-    - Writing
+    - Report writing
         - [reportHS](#reporths)
 - [Troubleshooting](#troubleshooting)
     - [Issue reporting](#issue-reporting)
 
 ## Introduction
 
-The *migbirdMBHS* package was created for the U.S. Fish and Wildlife Service (USFWS) to process online (Harvest Survey)[https://www.fws.gov/harvestsurvey/] data.
+The *migbirdMBHS* package was created for the U.S. Fish and Wildlife Service (USFWS) to process online <a href = "https://www.fws.gov/harvestsurvey/">Harvest Survey</a> data.
 
 ### Installation
 
 The package can be installed from the USFWS GitHub repository using:
 
 ```r
-library(devtools)
-install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
+devtools::install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
 ```
 
 ### Functions overview
@@ -74,7 +73,7 @@ The `read_dhs` function will read in 3 files for a specific year (e.g. `year = "
 ```r
 library(migbirdMBHS)
 
-read_dhs("C:/HarvestSurvey/", year = "2020")
+read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 ```
 
 ```
@@ -83,91 +82,834 @@ read_dhs("C:/HarvestSurvey/", year = "2020")
 
 ### add_seaducks
 
-Text...
+The `add_seaducks` function adds seaduck take and season values to the reference table. This is done in each state with seaduck harvest using the same values as ducks.
+
+
+```r
+all_seasons_2020 <- add_seaducks(all_seasons_2020)
+```
 
 ### refcheck
 
-Text...
+Check to see if the reference table contains every reference value needed with the `refcheck` function. If anything is reported by this function, edit the reference table manually.
+
+
+```r
+refcheck(all_seasons_2020)
+```
+
+```
+## # A tibble: 0 x 5
+## # ... with 5 variables: seasonyear <dbl>, state <chr>, speciesgroup <chr>,
+## #   spp <chr>, bag <dbl>
+```
 
 ## Part B: Data Checking and Visualization
 
 ### nodata
 
-Text...
+The `nodata` function checks to see if any states or species are missing from the daily or season Harvest Survey data. If species are desired in the output, that can be specified with `species = "all"` or by using a species string. The species group can be one of: "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", or "Woodcock".
+
+To demonstrate, first we will check the daily data:
+
+
+```r
+nodata(daily_records_2020, ref_data = all_seasons_2020)
+```
+
+```
+## # A tibble: 31 x 2
+##    sampled_state has_data
+##    <chr>         <chr>   
+##  1 Alaska        No      
+##  2 Arizona       No      
+##  3 Colorado      No      
+##  4 Connecticut   No      
+##  5 Delaware      No      
+##  6 Florida       No      
+##  7 Idaho         No      
+##  8 Illinois      No      
+##  9 Indiana       No      
+## 10 Iowa          No      
+## # ... with 21 more rows
+```
+
+Then, we will check the season data:
+
+
+```r
+nodata(season_totals_2020, ref_data = all_seasons_2020)
+```
+
+```
+## # A tibble: 31 x 2
+##    sampled_state has_data
+##    <chr>         <chr>   
+##  1 Alaska        No      
+##  2 Arizona       No      
+##  3 Colorado      No      
+##  4 Connecticut   No      
+##  5 Delaware      No      
+##  6 Florida       No      
+##  7 Idaho         No      
+##  8 Illinois      No      
+##  9 Indiana       No      
+## 10 Iowa          No      
+## # ... with 21 more rows
+```
+
+We can include species for the season data:
+
+
+```r
+nodata(season_totals_2020, ref_data = all_seasons_2020, species = "all")
+```
+
+```
+## # A tibble: 301 x 3
+##    sampled_state sp_group_estimated has_data
+##    <chr>         <chr>              <chr>   
+##  1 AL            Rails              No      
+##  2 AL            Woodcock           No      
+##  3 AL            Snipe              No      
+##  4 AL            Gallinules         No      
+##  5 AL            Ducks              No      
+##  6 AL            Sandhill Crane     No      
+##  7 AL            Coots              No      
+##  8 AL            Geese              No      
+##  9 AK            Ducks              No      
+## 10 AK            Geese              No      
+## # ... with 291 more rows
+```
+
+And we can specify which species we want to check, across all states:
+
+
+```r
+nodata(season_totals_2020, ref_data = all_seasons_2020, species = "Coots")
+```
+
+```
+## # A tibble: 48 x 3
+##    sampled_state sp_group_estimated has_data
+##    <chr>         <chr>              <chr>   
+##  1 AL            Coots              No      
+##  2 AR            Coots              No      
+##  3 CO            Coots              No      
+##  4 MT            Coots              No      
+##  5 NM            Coots              No      
+##  6 WY            Coots              No      
+##  7 CT            Coots              No      
+##  8 DE            Coots              No      
+##  9 MA            Coots              No      
+## 10 MD            Coots              No      
+## # ... with 38 more rows
+```
+
 
 ### submitted
 
-Text...
+The `submitted` function analyzes the number of Y and N responses for the has_submitted field. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
+
+To demonstrate, first we will plot the total daily data:
+
+
+```r
+submitted(daily_records_2020, type = "totals", output = "plot")
+```
+
+<img src="figure/submitted1-1.png" title="plot of chunk submitted1" alt="plot of chunk submitted1" style="display: block; margin: auto;" />
+
+Next, we can create a table of the total daily data:
+
+
+```r
+submitted(daily_records_2020, type = "totals", output = "table")
+```
+
+```
+## # A tibble: 2 x 2
+##   has_submitted     n
+##   <chr>         <int>
+## 1 N              1232
+## 2 Y              1541
+```
+
+Switching to season data, we can create a plot first for `type = "totals"`:
+
+
+```r
+submitted(season_totals_2020, type = "totals", output = "plot")
+```
+
+<img src="figure/submitted3-1.png" title="plot of chunk submitted3" alt="plot of chunk submitted3" style="display: block; margin: auto;" />
+
+Then create a plot for `type = "state"`:
+
+
+```r
+submitted(season_totals_2020, type = "state", output = "plot")
+```
+
+<img src="figure/submitted4-1.png" title="plot of chunk submitted4" alt="plot of chunk submitted4" width="500" style="display: block; margin: auto;" />
+
+And finally, create a plot for `type = "species"`:
+
+
+```r
+submitted(season_totals_2020, type = "species", output = "plot")
+```
+
+<img src="figure/submitted5-1.png" title="plot of chunk submitted5" alt="plot of chunk submitted5" width="500" style="display: block; margin: auto;" />
+
 
 ### hunted
 
-Text...
+The `hunted` function checks the "has_hunted" field in the daily or season totals data. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
+
+To demonstrate, first we will plot the total daily data:
+
+
+```r
+hunted(daily_records_2020, type = "totals", output = "plot")
+```
+
+<img src="figure/hunted1-1.png" title="plot of chunk hunted1" alt="plot of chunk hunted1" style="display: block; margin: auto;" />
+
+Next, we can create a table of the total daily data:
+
+
+```r
+hunted(daily_records_2020, type = "totals", output = "table")
+```
+
+```
+## # A tibble: 1 x 2
+##   has_hunted     n
+##   <chr>      <int>
+## 1 Y           2773
+```
+
+Switching to season data, we can create a plot first for `type = "totals"`:
+
+
+```r
+hunted(season_totals_2020, type = "totals", output = "plot")
+```
+
+<img src="figure/hunted3-1.png" title="plot of chunk hunted3" alt="plot of chunk hunted3" style="display: block; margin: auto;" />
+
+Then create a plot for `type = "state"`:
+
+
+```r
+hunted(season_totals_2020, type = "state", output = "plot")
+```
+
+<img src="figure/hunted4-1.png" title="plot of chunk hunted4" alt="plot of chunk hunted4" width="500" style="display: block; margin: auto;" />
+
+And finally, create a plot for `type = "species"`:
+
+
+```r
+hunted(season_totals_2020, type = "species", output = "plot")
+```
+
+<img src="figure/hunted5-1.png" title="plot of chunk hunted5" alt="plot of chunk hunted5" width="500" style="display: block; margin: auto;" />
 
 ### overdays
 
-Text...
+The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
+
+
+```r
+overdays(daily_records_2020, ref_data = all_seasons_2020)
+```
+
+```
+## No records found with too many days hunted.
+```
+
+
+```r
+overdays(season_totals_2020, ref_data = all_seasons_2020)
+```
+
+```
+## Notice: season data filtered to exclude daily records.
+```
+
+```
+## No records found with too many days hunted.
+```
+
 
 ### overbags
 
-Text...
+The `overbags` function checks for retrieved values over the bag limit per state and species in the daily data. All states are reported by default, but a specific state can be returned instead by using the `state` parameter (e.g. `state = "Alabama"`). The `summary` parameter can be set as TRUE to return a table summarized by state and species to report the max, min, and count of overbag values (defaults to FALSE). Lastly, the `over` parameter defaults to TRUE, but can be set as FALSE to return a table of all values (not just the overbags). 
+
+The default settings can be used for a basic output:
+
+
+```r
+overbags(daily_records_2020, ref_data = all_seasons_2020)
+```
+
+```
+## # A tibble: 195 x 8
+##    selected_hunterID sampled_state county     sp_group_estimated harvested_date
+##                <dbl> <chr>         <chr>      <chr>              <date>        
+##  1            121924 Pennsylvania  Erie       Ducks              2020-10-10    
+##  2            136394 Minnesota     Anoka      Ducks              2020-09-26    
+##  3            138144 Minnesota     Brown      Ducks              2020-09-26    
+##  4            146742 Minnesota     Otter Tail Ducks              2020-10-24    
+##  5            146742 Minnesota     Otter Tail Ducks              2020-10-18    
+##  6            146742 Minnesota     Otter Tail Ducks              2020-10-16    
+##  7            146742 Minnesota     Otter Tail Ducks              2020-10-17    
+##  8            146742 Minnesota     Otter Tail Ducks              2020-10-15    
+##  9            146742 Minnesota     Otter Tail Ducks              2020-10-25    
+## 10            146742 Minnesota     Otter Tail Ducks              2020-11-07    
+## # ... with 185 more rows, and 3 more variables: bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
+```
+
+Using `summary = TRUE` returns an easy-to-read format:
+
+
+```r
+overbags(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
+```
+
+```
+## # A tibble: 22 x 7
+##    sampled_state sp_group_estimated bag_limit   max  mean   min     n
+##    <chr>         <chr>                  <dbl> <dbl> <dbl> <dbl> <int>
+##  1 Arkansas      Ducks                      6    32  13.7     7    22
+##  2 Arkansas      Geese                     20    62  42      22     3
+##  3 California    Geese                     20    31  25.3    21     3
+##  4 Louisiana     Ducks                      6    55  15.7     7    27
+##  5 Maryland      Ducks                      6    13  13      13     1
+##  6 Michigan      Ducks                      6    31  13.8     8    13
+##  7 Michigan      Geese                     20    34  28      22     2
+##  8 Minnesota     Ducks                      6    22  11.6     7    22
+##  9 Minnesota     Geese                     20    25  22.3    21     3
+## 10 Missouri      Ducks                      6    45  17.8     7     4
+## # ... with 12 more rows
+```
+
+And we can specify a state:
+
+
+```r
+overbags(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas")
+```
+
+```
+## # A tibble: 25 x 8
+##    selected_hunterID sampled_state county   sp_group_estimated harvested_date
+##                <dbl> <chr>         <chr>    <chr>              <date>        
+##  1           1040149 Arkansas      Woodruff Ducks              2020-12-27    
+##  2           1040149 Arkansas      Cross    Ducks              2020-11-22    
+##  3           1741611 Arkansas      Monroe   Geese              2021-02-10    
+##  4           2052902 Arkansas      Arkansas Ducks              2020-11-24    
+##  5           2059087 Arkansas      Monroe   Ducks              2020-11-21    
+##  6           2059087 Arkansas      Monroe   Ducks              2020-11-22    
+##  7           2566099 Arkansas      Unknown  Geese              2021-01-26    
+##  8           2570123 Arkansas      Boone    Ducks              2020-11-29    
+##  9           2583720 Arkansas      Arkansas Ducks              2020-12-20    
+## 10           2595074 Arkansas      Jackson  Ducks              2020-11-21    
+## # ... with 15 more rows, and 3 more variables: bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
+```
 
 ### retrieved
 
-Text...
+The `retrieved` function summarizes the total number of birds retrieved in the daily or season data. The `output` can be set to "table" (default) or "plot". It can include "state", "species", or "both" (default) by using the `type` parameter. Also, the data can be returned as an `average` using TRUE (default), or return all birds retrieved (`average = FALSE`).
+
+Let's use the most basic version of the function on the daily data:
+
+
+```r
+retrieved(daily_records_2020)
+```
+
+```
+## # A tibble: 40 x 3
+##    sampled_state sp_group_estimated            mean_retrieved
+##    <chr>         <chr>                                  <dbl>
+##  1 Alabama       Mourning Dove                           12.1
+##  2 Alabama       White-Winged Dove                        4  
+##  3 Arkansas      Ducks                                   12.4
+##  4 Arkansas      Geese                                    3.9
+##  5 California    Brant                                    0.2
+##  6 California    Ducks                                   21.1
+##  7 California    Geese                                    7.4
+##  8 California    Specially Regulated Sea Ducks            6  
+##  9 Georgia       Mourning Dove                           13  
+## 10 Georgia       White-Winged Dove                        3.8
+## # ... with 30 more rows
+```
+
+Then plot it:
+
+
+```r
+retrieved(daily_records_2020, output = "plot")
+```
+
+<img src="figure/retrieved2-1.png" title="plot of chunk retrieved2" alt="plot of chunk retrieved2" width="500" style="display: block; margin: auto;" />
+
+View state only:
+
+
+```r
+retrieved(daily_records_2020, output = "plot", type = "state")
+```
+
+<img src="figure/retrieved3-1.png" title="plot of chunk retrieved3" alt="plot of chunk retrieved3" width="500" style="display: block; margin: auto;" />
+
+View species only:
+
+
+```r
+retrieved(daily_records_2020, output = "plot", type = "species")
+```
+
+<img src="figure/retrieved4-1.png" title="plot of chunk retrieved4" alt="plot of chunk retrieved4" width="500" style="display: block; margin: auto;" />
+
+View it without averaging:
+
+
+```r
+retrieved(daily_records_2020, output = "plot", average = FALSE)
+```
+
+<img src="figure/retrieved5-1.png" title="plot of chunk retrieved5" alt="plot of chunk retrieved5" width="500" style="display: block; margin: auto;" />
+
+Then plot season data:
+
+
+```r
+retrieved(season_totals_2020, output = "plot")
+```
+
+<img src="figure/retrieved6-1.png" title="plot of chunk retrieved6" alt="plot of chunk retrieved6" width="500" style="display: block; margin: auto;" />
 
 ### bagspp
 
-Text...
+The `bagspp` function summarizes daily data to determine the total number of retrieved birds per hunter. The hunter's data are further broken down to determine which species groups the hunter responded to harvesting.
+
+The default is `output = "table"`:
+
+
+```r
+bagspp(daily_records_2020)
+```
+
+```
+## # A tibble: 2,773 x 4
+##    selected_hunterID n_spp spp_combo   n_retrieved_total
+##                <dbl> <int> <chr>                   <dbl>
+##  1              2314     1 Ducks                       9
+##  2              3219     1 Ducks                       5
+##  3              4878     1 Ducks                       3
+##  4              4939     2 Ducks-Geese                28
+##  5              5123     2 Ducks-Geese                20
+##  6              5483     1 Ducks                       7
+##  7              6685     1 Ducks                       3
+##  8              7789     1 Ducks                      20
+##  9              7797     2 Ducks-Geese                30
+## 10             10318     2 Ducks-Geese                 0
+## # ... with 2,763 more rows
+```
+
+To create a treemap of the number of species groups per hunter, use `output = "n"`:
+
+
+```r
+bagspp(daily_records_2020, output = "n")
+```
+
+<img src="figure/bagspp2-1.png" title="plot of chunk bagspp2" alt="plot of chunk bagspp2" width="500" style="display: block; margin: auto;" />
+
+To create a treemap of the species group combinations represented in the data (each hunter's pursued species are grouped), use `output = "species"`:
+
+
+```r
+bagspp(daily_records_2020, output = "species")
+```
+
+<img src="figure/bagspp3-1.png" title="plot of chunk bagspp3" alt="plot of chunk bagspp3" width="500" style="display: block; margin: auto;" />
+
+To create a treemap of successful hunts only (the daily data are filtered to exclude retrieved = 0) and view groups of species combinations that were successfully hunted, use `output = "success"`:
+
+
+```r
+bagspp(daily_records_2020, output = "success")
+```
+
+<img src="figure/bagspp4-1.png" title="plot of chunk bagspp4" alt="plot of chunk bagspp4" width="500" style="display: block; margin: auto;" />
 
 ### openclose
 
-Text...
+The `openclose` function checks if harvest dates fall outside of a state's and species's season in the daily data.
+
+The basic version of the function returns an unsummarized table:
+
+
+```r
+openclose(daily_records_2020, ref_data = all_seasons_2020)
+```
+
+```
+## # A tibble: 40 x 6
+##    selected_hunterID sampled_state sp_group_estima~ open       close      error 
+##                <dbl> <chr>         <chr>            <date>     <date>     <chr> 
+##  1            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
+##  2            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
+##  3            454023 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
+##  4            307419 Missouri      Geese            2020-10-03 2021-02-06 Late ~
+##  5            163972 South Dakota  Geese            2020-09-05 2021-02-14 Early~
+##  6            310953 Washington    Ducks            2020-09-26 2021-02-06 Late ~
+##  7            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
+##  8            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
+##  9            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
+## 10            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
+## # ... with 30 more rows
+```
+
+But `summary = TRUE` can be used to get a summary:
+
+
+```r
+openclose(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
+```
+
+```
+## # A tibble: 17 x 4
+##    sampled_state  sp_group_estimated error          n
+##    <chr>          <chr>              <chr>      <int>
+##  1 Arkansas       Ducks              Late hunt      3
+##  2 Arkansas       Geese              Late hunt      6
+##  3 California     Ducks              Late hunt      2
+##  4 Louisiana      Ducks              Early hunt     5
+##  5 Louisiana      Ducks              Late hunt      1
+##  6 Louisiana      Geese              Late hunt      2
+##  7 Minnesota      Ducks              Early hunt     1
+##  8 Minnesota      Ducks              Late hunt      1
+##  9 Missouri       Geese              Late hunt      7
+## 10 Nevada         Mourning Dove      Late hunt      2
+## 11 Pennsylvania   Ducks              Late hunt      1
+## 12 South Carolina Mourning Dove      Early hunt     1
+## 13 South Dakota   Geese              Early hunt     1
+## 14 Tennessee      Geese              Late hunt      1
+## 15 Texas          Sandhill Crane     Early hunt     1
+## 16 Texas          Sandhill Crane     Late hunt      2
+## 17 Washington     Ducks              Late hunt      3
+```
+
+And the `state` parameter can be used to narrow down to a particular state:
+
+
+```r
+openclose(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas", summary = TRUE)
+```
+
+```
+## # A tibble: 2 x 4
+##   sampled_state sp_group_estimated error         n
+##   <chr>         <chr>              <chr>     <int>
+## 1 Arkansas      Ducks              Late hunt     3
+## 2 Arkansas      Geese              Late hunt     6
+```
 
 ### partyhunt
 
-Text...
+The `partyhunt` function checks to see if any comments in the daily data indicate that bag values reported were for two or more people. It returns a simple table. This function is a watered down version of [partyproof](#partyproof).
+
+
+```r
+partyhunt(daily_records_2020)
+```
+
+```
+## # A tibble: 45 x 6
+##    sampled_state sp_group_estimated retrieved unretrieved comment     party_size
+##    <chr>         <chr>                  <dbl> <chr>       <chr>       <chr>     
+##  1 Minnesota     Ducks                     18 NULL        3 people    3         
+##  2 Minnesota     Ducks                     14 NULL        3 hunters   3         
+##  3 Minnesota     Ducks                     21 NULL        4 hunters   4         
+##  4 Minnesota     Ducks                     22 NULL        4 hunters   4         
+##  5 Minnesota     Ducks                     12 NULL        2 hunters   2         
+##  6 Minnesota     Ducks                      8 NULL        2 hunters   2         
+##  7 Missouri      Ducks                      3 0           2 hunters.~ 2         
+##  8 Missouri      Ducks                      2 NULL        2 hunters,~ 2         
+##  9 Tennessee     Ducks                      2 0           Saw a bunc~ 20        
+## 10 California    Ducks                      7 1           5mal, 2gad~ 4         
+## # ... with 35 more rows
+```
 
 ### huntdays
 
-Text...
+The `huntdays` function summarizes the total number of days hunted in the daily data. The `output` can be set to "table" (default) or "plot". It can include "state", "species", or "both" (default) by using the `type` parameter. Also, the data can be returned as an `average` using TRUE (default), or return all days hunted (`average = FALSE`).
+
+Let's use the most basic version of the function on the daily data:
+
+
+```r
+huntdays(daily_records_2020)
+```
+
+```
+## # A tibble: 40 x 3
+##    sampled_state sp_group_estimated            mean_days
+##    <chr>         <chr>                             <dbl>
+##  1 Alabama       Mourning Dove                       1.4
+##  2 Alabama       White-Winged Dove                   2  
+##  3 Arkansas      Ducks                               4.7
+##  4 Arkansas      Geese                               2.3
+##  5 California    Brant                               1.5
+##  6 California    Ducks                               6.7
+##  7 California    Geese                               4.4
+##  8 California    Specially Regulated Sea Ducks       2  
+##  9 Georgia       Mourning Dove                       1.7
+## 10 Georgia       White-Winged Dove                   1  
+## # ... with 30 more rows
+```
+
+Then plot it:
+
+
+```r
+huntdays(daily_records_2020, output = "plot")
+```
+
+<img src="figure/huntdays2-1.png" title="plot of chunk huntdays2" alt="plot of chunk huntdays2" width="500" style="display: block; margin: auto;" />
+
+View it without averaging:
+
+
+```r
+huntdays(daily_records_2020, output = "plot", average = FALSE)
+```
+
+<img src="figure/huntdays5-1.png" title="plot of chunk huntdays5" alt="plot of chunk huntdays5" width="500" style="display: block; margin: auto;" />
+
+View state only:
+
+
+```r
+huntdays(daily_records_2020, output = "plot", type = "state")
+```
+
+<img src="figure/huntdays3-1.png" title="plot of chunk huntdays3" alt="plot of chunk huntdays3" width="500" style="display: block; margin: auto;" />
+
+View species only:
+
+
+```r
+huntdays(daily_records_2020, output = "plot", type = "species")
+```
+
+<img src="figure/huntdays4-1.png" title="plot of chunk huntdays4" alt="plot of chunk huntdays4" width="500" style="display: block; margin: auto;" />
 
 ### compare
 
-Text...
+The `compare` function takes 2 data tables (daily and season) to plot 3 data fields (bag size, number of birds retrieved, number of days hunted) and breaks those data into 4 groups: season submitted, daily submitted, season non-submit, and daily non-submit.
+
+There are 3 types of plots that can be generated from this function.
+
+The first is `type = "line"`:
+
+
+```r
+compare(daily_records_2020, season_totals_2020, type = "line")
+```
+
+<img src="figure/compare1-1.png" title="plot of chunk compare1" alt="plot of chunk compare1" width="500" style="display: block; margin: auto;" />
+
+The next is `type = "days"`:
+
+
+```r
+compare(daily_records_2020, season_totals_2020, type = "days")
+```
+
+<img src="figure/compare2-1.png" title="plot of chunk compare2" alt="plot of chunk compare2" width="500" style="display: block; margin: auto;" />
+
+And the last is `type = "retrieved"`:
+
+
+```r
+compare(daily_records_2020, season_totals_2020, type = "retrieved")
+```
+
+<img src="figure/compare3-1.png" title="plot of chunk compare3" alt="plot of chunk compare3" width="500" style="display: block; margin: auto;" />
+
 
 ### retrievedmap
 
-Text...
+The `retrievedmap` function creates a hex bin map of the United States from daily Harvest Survey data. Maps are plotted in a grid to display all species. States that are red have the highest mean harvest, states that are yellow have the lowest mean harvest, and blank (or white) states have no data. The default `output = "grid"` returns one image, but `output = "series"` can be used alternatively in the R console to view and export each species individually.
+
+
+```r
+retrievedmap(daily_records_2020, output = "grid")
+```
+
+<img src="figure/retrievedmap-1.png" title="plot of chunk retrievedmap" alt="plot of chunk retrievedmap" width="600" style="display: block; margin: auto;" />
 
 ### bagdays
 
-Text...
+The `bagdays` function determines the total number of days hunted per hunter and species group in the daily data. The default `output = "table"` returns a table. Use `output = "plot"` to return a ggplot object.
+
+
+```r
+bagdays(daily_records_2020, output = "plot")
+```
+
+<img src="figure/bagdays1-1.png" title="plot of chunk bagdays1" alt="plot of chunk bagdays1" width="500" style="display: block; margin: auto;" />
+
+```r
+bagdays(daily_records_2020, output = "table")
+```
+
+```
+## # A tibble: 3,778 x 4
+##    selected_hunterID sp_group_estimated n_days n_retrieved
+##                <dbl> <chr>               <int>       <dbl>
+##  1              2314 Ducks                   8           9
+##  2              3219 Ducks                   3           5
+##  3              4878 Ducks                   1           3
+##  4              4939 Ducks                   5          26
+##  5              4939 Geese                   1           2
+##  6              5123 Ducks                   5          19
+##  7              5123 Geese                   1           1
+##  8              5483 Ducks                   3           7
+##  9              6685 Ducks                   1           3
+## 10              7789 Ducks                  11          20
+## # ... with 3,768 more rows
+```
 
 ### responselag
 
-Text...
+The `responselag` function creates plots to visualize the amount of time between hunt date and response date in daily data. Three types of plots can be returned from this function. 
+
+Use `type = "count"` to view the distribution of response lag:
 
 
+```r
+responselag(daily_records_2020, type = "count")
+```
 
-## Part C: Data Proofing, Correction, and Writing
+<img src="figure/responselag1-1.png" title="plot of chunk responselag1" alt="plot of chunk responselag1" width="500" style="display: block; margin: auto;" />
+
+Use `type = "lag"` to view the relationship between response lag and the number of birds retrieved:
+
+
+```r
+responselag(daily_records_2020, type = "lag")
+```
+
+<img src="figure/responselag2-1.png" title="plot of chunk responselag2" alt="plot of chunk responselag2" width="500" style="display: block; margin: auto;" />
+
+And use `type = "date"` to view the relationship between date of response and date of harvest:
+
+
+```r
+responselag(daily_records_2020, type = "date")
+```
+
+<img src="figure/responselag3-1.png" title="plot of chunk responselag3" alt="plot of chunk responselag3" width="500" style="display: block; margin: auto;" />
+
+## Part C: Data Proofing, Correction, and Report Writing
 
 ### partyproof
 
-Text...
+The `partyproof` function checks for, and allows the user to edit, any group hunts in the daily data. Comments are parsed to determine party size. Adjustments to number of birds retrieved must be entered manually, and if deemed necessary, the retrieved value will be divided by the party size. A report file is written out as a .csv to record all changes made.
+
+
+```r
+proofed_parties_2020 <- 
+  partyproof(
+    data = daily_records_2020, 
+    ref_data = all_seasons_2020, 
+    outpath = "C:/HarvestSurvey/vignette/clean_data/")
+```
 
 ### proofHS
 
-Text...
+The `proofHS` function checks for overbag and overdays values in the Harvest Survey season data. In addition to overbag and overdays, daily data are checked for early and late hunts.
+
+For daily data, specify the output from `partyproof` for `data`.
+
+
+```r
+daily_proofed <- 
+  proofHS(
+    data = proofed_parties_2020, 
+    ref_data = all_seasons_2020)
+```
+
+For season data, use the season data table for `data`.
+
+
+```r
+season_proofed <-
+  proofHS(
+    data = season_totals_2020, 
+    ref_data = all_seasons_2020)
+```
 
 ### correctHS
 
-Text...
+The correctHS function processes the errors flagged in proofHS and returns a final data table.
+
+For both daily and season data, specify the output from `proofHS`.
+
+
+```r
+daily_corrected <- correctHS(daily_proofed)
+
+season_corrected <- correctHS(season_proofed)
+```
 
 ### reportHS
 
-Text...
+The `reportHS` function creates documentation with figures and tables that summarize daily and season data. Parameters include:
+
+- `inpath` - file path to the folder containing the daily, season, and reference .csv files
+- `partypath` - file path to the folder containing results from the `partyproof` function
+- `year` - hunting season for which data were collected
+- `outpath` - folder in which to save the completed report
+- `file` - what the report file should be named
+
+There are two templates that can generate reports: an annual summary report (`type = "season_report"`)...
 
 
+```r
+reportHS(
+  inpath = "C:/HarvestSurvey/vignette/",
+  partypath = "C:/HarvestSurvey/vignette/clean_data/",
+  type = "season_report",
+  year = "2020",
+  outpath = "C:/HarvestSurvey/vignette/reports/",
+  file = "HS_annual_summary_report_2020.csv"
+)
+```
+
+.. and a survey analytics report (`type = "survey_analytics"`). 
+
+
+```r
+reportHS(
+  inpath = "C:/HarvestSurvey/vignette/",
+  partypath = "C:/HarvestSurvey/vignette/clean_data/",
+  type = "survey_analytics",
+  year = "2020",
+  outpath = "C:/HarvestSurvey/vignette/reports/",
+  file = "HS_annual_summary_report_2020.csv"
+)
+```
 
 ## Troubleshooting
 
