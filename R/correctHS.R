@@ -1,6 +1,6 @@
 #' Correct errors in the Harvest Survey data
 #'
-#' The \code{correct} function processes the errors flagged in \code{proofHS} and returns a final data table.
+#' The \code{correctHS} function processes the errors flagged in \code{proofHS} and returns a final data table.
 #' 
 #' @importFrom stringr str_detect
 #' @importFrom dplyr %>%

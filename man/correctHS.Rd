@@ -10,7 +10,7 @@ correctHS(data)
 \item{data}{Daily or season data table processed by \code{proofHS}}
 }
 \description{
-The \code{correct} function processes the errors flagged in \code{proofHS} and returns a final data table.
+The \code{correctHS} function processes the errors flagged in \code{proofHS} and returns a final data table.
 }
 \references{
 \url{https://github.com/USFWS/migbirdMBHS}
