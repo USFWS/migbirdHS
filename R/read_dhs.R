@@ -7,6 +7,7 @@
 #' @importFrom readr read_csv
 #' @importFrom dplyr group_by
 #' @importFrom purrr set_names
+#' @importFrom stringr str_detect
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_subset
 #'
@@ -18,6 +19,12 @@
 
 read_dhs <-
   function(path, year){
+    # Add a final "/" to path, if not included already
+    if(!str_detect(path, "\\/$")){
+      path <- paste0(path, "/")
+    }else{
+      path <- path
+    }
     if(year == "all"){
       list.files(path) %>% 
         map(~read_csv(paste0(path, .))) %>% 
