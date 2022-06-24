@@ -96,15 +96,16 @@ hunted <-
         data %>%
           select(selected_hunterID, days_hunted) %>% 
           distinct() %>% 
-          group_by(days_hunted) %>%
+          mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+          group_by(has_hunted) %>%
           summarize(
             n = n(),
             prop = n()/nrow(data)) %>% 
           ungroup() %>% 
-          ggplot(aes(x = days_hunted, y = prop)) +
+          ggplot(aes(x = has_hunted, y = prop)) +
           geom_bar(stat = "identity") +
           geom_text(
-            aes(x = days_hunted, y = prop, label = n),
+            aes(x = has_hunted, y = prop, label = n),
             vjust = 3, hjust = 0.5, color = "white") +
           labs(x = "Has hunted?", y = "Proportion") +
           theme_classic()
@@ -125,17 +126,18 @@ hunted <-
           data %>%
             select(selected_hunterID, days_hunted, sampled_state) %>% 
             distinct() %>% 
-            group_by(days_hunted, sampled_state) %>%
+            mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+            group_by(has_hunted, sampled_state) %>%
             summarize(n = n()) %>% 
             ungroup() %>% 
-            mutate(n_n = ifelse(days_hunted == 0, n, NA)) %>% 
+            mutate(n_n = ifelse(has_hunted = "N", n, NA)) %>% 
             group_by(sampled_state) %>% 
             mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
             mutate(ranks = rank(tot_n)) %>% 
             ggplot(aes(x = reorder(sampled_state, -ranks), y = n)) +
             geom_bar(
-              aes(fill = days_hunted), 
+              aes(fill = has_hunted), 
               stat = "identity") +
             geom_text(
               aes(x = reorder(sampled_state, -ranks),
@@ -166,23 +168,24 @@ hunted <-
           data %>%
             select(selected_hunterID, days_hunted, sp_group_estimated) %>% 
             distinct() %>% 
+            mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea Ducks",
                   sp_group_estimated)) %>% 
-            group_by(days_hunted, sp_group_estimated) %>%
+            group_by(has_hunted, sp_group_estimated) %>%
             summarize(n = n()) %>% 
             ungroup() %>% 
-            mutate(n_n = ifelse(days_hunted == 0, n, NA)) %>% 
+            mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
             group_by(sp_group_estimated) %>% 
             mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
             mutate(ranks = rank(tot_n)) %>% 
             ggplot(aes(x = reorder(sp_group_estimated, -ranks), y = n)) +
             geom_bar(
-              aes(fill = days_hunted), 
+              aes(fill = has_hunted), 
               stat = "identity") +
             geom_text(
               aes(x = reorder(sp_group_estimated, -ranks),
