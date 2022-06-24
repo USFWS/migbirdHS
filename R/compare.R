@@ -57,7 +57,8 @@ compare <-
       rename(retrieved = sum_retrieved) %>% 
       mutate(
         type = ifelse(has_submitted == "Y", "daily_submit", "daily_nonsub"),
-        retrieved = as.numeric(retrieved)) %>%  
+        retrieved = as.numeric(retrieved),
+        days_hunted = as.numeric(days_hunted)) %>%  
       bind_rows(
         season_data %>% 
           filter(
@@ -69,7 +70,8 @@ compare <-
           mutate(
             type = 
               ifelse(has_submitted == "Y", "season_submit", "season_nonsub"),
-            retrieved = as.numeric(retrieved))) 
+            retrieved = as.numeric(retrieved),
+            days_hunted = as.numeric(days_hunted))) 
     if(type == "line"){
       versus_data %>% 
         ggplot(aes(x = days_hunted, y = retrieved, color = type, fill = type)) +
