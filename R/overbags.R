@@ -150,8 +150,9 @@ overbags <-
       bind_rows(special_table) %>%
       distinct()
     
-    if(str_detect(deparse(substitute(data)), "daily") == TRUE | 
-       str_detect(deparse(substitute(data)), "tibblelist\\[2\\]")){
+    if(
+      TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
+                  str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       bag_errors <-
         data %>% 
         left_join(
@@ -227,8 +228,9 @@ overbags <-
             arrange(selected_hunterID)
         )
       }
-    }else if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-             str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
+    }else if(
+      TRUE %in% c(str_detect(deparse(substitute(data)), "season"), 
+                  str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
       # If a season totals table was used in this function, exclude daily
       # records from the season totals table. This allows the season totals data
       # to be evaluated separately from daily data
