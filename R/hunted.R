@@ -130,7 +130,7 @@ hunted <-
             group_by(has_hunted, sampled_state) %>%
             summarize(n = n()) %>% 
             ungroup() %>% 
-            mutate(n_n = ifelse(has_hunted = "N", n, NA)) %>% 
+            mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
             group_by(sampled_state) %>% 
             mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
