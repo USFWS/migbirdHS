@@ -279,7 +279,7 @@ proofHS <-
           overday = 
             ifelse(
               days_hunted > season_length,
-              days_hunted - season_length,
+              as.numeric(days_hunted) - as.numeric(season_length),
               NA)) %>% 
         # Remove the x from errors
         mutate(
