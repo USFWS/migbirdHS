@@ -127,7 +127,14 @@ How many hunters hunted in the season data?
 
 knitr::kable(
   hunted(get(names(tibblelist[3]))) %>% 
-    rename(`Has hunted?` = has_hunted) %>% 
+    mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+    group_by(has_hunted) %>% 
+    summarize(sum_n = sum(n)) %>% 
+    ungroup() %>% 
+    select(-c("days_hunted", "n")) %>% 
+    rename(
+      `Has hunted?` = has_hunted,
+      n = sum_n) %>% 
     mutate(prop = round(n/sum(n), 2)))
 ```
 
