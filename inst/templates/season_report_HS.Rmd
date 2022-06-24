@@ -76,7 +76,7 @@ How many records were finalized in the season data? (Records must also have answ
 
 #### Total
 
-```{r, submitted1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, submitted1, message = FALSE, warning = FALSE, echo = F}
 knitr::kable(
   submitted(get(names(tibblelist[3]))) %>% 
     rename(`Has submitted?` = has_submitted) %>% 
@@ -85,7 +85,7 @@ knitr::kable(
 
 #### By state
 
-```{r, submitted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, submitted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
 submitted(get(names(tibblelist[3])), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
@@ -107,7 +107,7 @@ knitr::kable(
 
 #### By state
 
-```{r, submitted5, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, submitted5, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
 submitted(get(names(tibblelist[2])), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
@@ -139,7 +139,7 @@ knitr::kable(
 
 #### By state
 
-```{r, hunted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
+```{r, hunted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
 hunted(get(names(tibblelist[3])), type = "state", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
@@ -505,7 +505,7 @@ datatable(retrieved(daily_corrected, average = T))
 
 What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The corrected daily data are used.
 
-```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 8, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
 bagspp(daily_corrected, output = "success")
 ```
