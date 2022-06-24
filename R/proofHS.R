@@ -254,7 +254,7 @@ proofHS <-
           bag_per_day = 
             ifelse(
               days_hunted != 0,
-              round(retrieved/days_hunted, 1),
+              round(as.numeric(retrieved)/as.numeric(days_hunted), 1),
               0),
           errors = "x") %>% 
         # Flag overbags
