@@ -131,7 +131,6 @@ knitr::kable(
     group_by(has_hunted) %>% 
     summarize(sum_n = sum(n)) %>% 
     ungroup() %>% 
-    select(-c("days_hunted", "n")) %>% 
     rename(
       `Has hunted?` = has_hunted,
       n = sum_n) %>% 
