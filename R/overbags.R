@@ -84,13 +84,13 @@ overbags <-
               # For NM "AMCO-COMO", set as "Coots" (they have a separate
               # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
               speciesgroup =="AMCO-COMO" & st == "NM" ~ "Coots", 
-              # **The "MODO-WWDO" category below should be used for MODO and WWDO
+              # The "MODO-WWDO" category below should be used for MODO and WWDO
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
               speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
-              # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+              # The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
               # "Brant"
               speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
-              # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+              # For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
               speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
                 "CootsGallinules", 
@@ -276,7 +276,8 @@ overbags <-
           selected_hunterID, sampled_state, sp_group_estimated, retrieved, 
           days_hunted) %>% 
         filter(days_hunted != 0) %>% 
-        mutate(bag_per_day = round(retrieved/days_hunted, 1)) %>% 
+        mutate(bag_per_day = 
+                 round(as.numeric(retrieved)/as.numeric(days_hunted), 1)) %>% 
         left_join(
           ref_table %>% 
             select(-max_poss),
