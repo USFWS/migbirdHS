@@ -16,6 +16,7 @@ Imports:
     ggplot2,
     rgeos,
     geojsonio,
+    mapproj,
     patchwork,
     treemapify,
     viridis,
