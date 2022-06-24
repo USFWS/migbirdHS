@@ -425,6 +425,8 @@ datatable(openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summar
 
 ## Error summary
 
+Season data can include errors such as overbags (bag value over what is the legal limit), overdays (days hunted more than what is possible during the regular season), or both. Errors detected in daily data may include overbags, overdays, early hunts (hunting entry recorded before the season opens), and/or late hunts (hunting entry recorded after the season ended).
+
 ```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 
 # Read in the manually partyproofed daily data
