@@ -160,7 +160,7 @@ submitted(season_totals_2020, type = "species", output = "plot")
 
 ### hunted
 
-The `hunted` function checks the "has_hunted" field in the daily or season totals data. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
+The `hunted` function checks the "days_hunted" field in the season totals data or the "has_hunted" field in the daily data. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
 
 To demonstrate, first we will plot the total daily data:
 

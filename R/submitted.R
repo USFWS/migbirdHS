@@ -37,8 +37,8 @@ submitted <-
     # First, if a season totals table was used in this function, exclude daily
     # records from the season totals table. This allows the season totals data
     # to be evaluated separately from daily data
-    if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-       str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
+    if(TRUE %in% c(str_detect(deparse(substitute(data)), "season"), 
+                   str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
       if(str_detect(deparse(substitute(data)), "season") == TRUE){
         dataname <- deparse(substitute(data))
         
@@ -76,10 +76,18 @@ submitted <-
         message("Notice: season data filtered to exclude daily records.")
       }
     }
+    # Second, if daily data are being used then add a col "days_hunted" based on
+    # "has_hunted" column
+    if(TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
+                   str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
+      data <-
+        data %>% 
+        mutate(days_hunted = ifelse(has_hunted == "Y", 1, 0))
+    }
     if(type == "totals"){
       if(output == "table"){
         data %>%
-          filter(has_hunted == "Y") %>% 
+          filter(days_hunted > 0) %>% 
           select(selected_hunterID, has_submitted) %>% 
           distinct() %>% 
           group_by(has_submitted) %>%
@@ -87,7 +95,7 @@ submitted <-
           ungroup()
       }else if(output == "plot"){
         data %>%
-          filter(has_hunted == "Y") %>%
+          filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted) %>% 
           distinct() %>% 
           group_by(has_submitted) %>%
@@ -107,7 +115,7 @@ submitted <-
     }else if(type == "state"){
       if(output == "table"){
         data %>%
-          filter(has_hunted == "Y") %>%
+          filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted, sampled_state) %>% 
           distinct() %>% 
           group_by(has_submitted, sampled_state) %>%
@@ -118,7 +126,7 @@ submitted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
-            filter(has_hunted == "Y") %>%
+            filter(days_hunted > 0) %>%
             select(selected_hunterID, has_submitted, sampled_state) %>% 
             distinct() %>% 
             group_by(has_submitted, sampled_state) %>%
@@ -152,7 +160,7 @@ submitted <-
     }else if(type == "species"){
       if(output == "table"){
         data %>%
-          filter(has_hunted == "Y") %>%
+          filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
           distinct() %>% 
           group_by(has_submitted, sp_group_estimated) %>%
@@ -163,7 +171,7 @@ submitted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
-            filter(has_hunted == "Y") %>%
+            filter(days_hunted > 0) %>%
             select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
             distinct() %>% 
             mutate(

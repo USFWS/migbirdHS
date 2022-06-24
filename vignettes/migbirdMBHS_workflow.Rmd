@@ -99,8 +99,8 @@ refcheck(all_seasons_2020)
 ```
 
 ```
-## # A tibble: 0 x 5
-## # ... with 5 variables: seasonyear <dbl>, state <chr>, speciesgroup <chr>,
+## # A tibble: 0 × 5
+## # … with 5 variables: seasonyear <dbl>, state <chr>, speciesgroup <chr>,
 ## #   spp <chr>, bag <dbl>
 ```
 
@@ -118,7 +118,7 @@ nodata(daily_records_2020, ref_data = all_seasons_2020)
 ```
 
 ```
-## # A tibble: 31 x 2
+## # A tibble: 31 × 2
 ##    sampled_state has_data
 ##    <chr>         <chr>   
 ##  1 Alaska        No      
@@ -131,7 +131,7 @@ nodata(daily_records_2020, ref_data = all_seasons_2020)
 ##  8 Illinois      No      
 ##  9 Indiana       No      
 ## 10 Iowa          No      
-## # ... with 21 more rows
+## # … with 21 more rows
 ```
 
 Then, we will check the season data:
@@ -142,7 +142,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020)
 ```
 
 ```
-## # A tibble: 31 x 2
+## # A tibble: 31 × 2
 ##    sampled_state has_data
 ##    <chr>         <chr>   
 ##  1 Alaska        No      
@@ -155,7 +155,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020)
 ##  8 Illinois      No      
 ##  9 Indiana       No      
 ## 10 Iowa          No      
-## # ... with 21 more rows
+## # … with 21 more rows
 ```
 
 We can include species for the season data:
@@ -166,7 +166,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020, species = "all")
 ```
 
 ```
-## # A tibble: 301 x 3
+## # A tibble: 301 × 3
 ##    sampled_state sp_group_estimated has_data
 ##    <chr>         <chr>              <chr>   
 ##  1 AL            Rails              No      
@@ -179,7 +179,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020, species = "all")
 ##  8 AL            Geese              No      
 ##  9 AK            Ducks              No      
 ## 10 AK            Geese              No      
-## # ... with 291 more rows
+## # … with 291 more rows
 ```
 
 And we can specify which species we want to check, across all states:
@@ -190,7 +190,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020, species = "Coots")
 ```
 
 ```
-## # A tibble: 48 x 3
+## # A tibble: 48 × 3
 ##    sampled_state sp_group_estimated has_data
 ##    <chr>         <chr>              <chr>   
 ##  1 AL            Coots              No      
@@ -203,7 +203,7 @@ nodata(season_totals_2020, ref_data = all_seasons_2020, species = "Coots")
 ##  8 DE            Coots              No      
 ##  9 MA            Coots              No      
 ## 10 MD            Coots              No      
-## # ... with 38 more rows
+## # … with 38 more rows
 ```
 
 
@@ -228,7 +228,7 @@ submitted(daily_records_2020, type = "totals", output = "table")
 ```
 
 ```
-## # A tibble: 2 x 2
+## # A tibble: 2 × 2
 ##   has_submitted     n
 ##   <chr>         <int>
 ## 1 N              1232
@@ -265,7 +265,7 @@ submitted(season_totals_2020, type = "species", output = "plot")
 
 ### hunted
 
-The `hunted` function checks the "has_hunted" field in the daily or season totals data. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
+The `hunted` function checks the "days_hunted" field in the season totals data or the "has_hunted" field in the daily data. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
 
 To demonstrate, first we will plot the total daily data:
 
@@ -284,10 +284,10 @@ hunted(daily_records_2020, type = "totals", output = "table")
 ```
 
 ```
-## # A tibble: 1 x 2
-##   has_hunted     n
-##   <chr>      <int>
-## 1 Y           2773
+## # A tibble: 1 × 2
+##   days_hunted     n
+##         <dbl> <int>
+## 1           1  2773
 ```
 
 Switching to season data, we can create a plot first for `type = "totals"`:
@@ -356,7 +356,7 @@ overbags(daily_records_2020, ref_data = all_seasons_2020)
 ```
 
 ```
-## # A tibble: 195 x 8
+## # A tibble: 195 × 8
 ##    selected_hunterID sampled_state county     sp_group_estimated harvested_date
 ##                <dbl> <chr>         <chr>      <chr>              <date>        
 ##  1            121924 Pennsylvania  Erie       Ducks              2020-10-10    
@@ -369,8 +369,8 @@ overbags(daily_records_2020, ref_data = all_seasons_2020)
 ##  8            146742 Minnesota     Otter Tail Ducks              2020-10-15    
 ##  9            146742 Minnesota     Otter Tail Ducks              2020-10-25    
 ## 10            146742 Minnesota     Otter Tail Ducks              2020-11-07    
-## # ... with 185 more rows, and 3 more variables: bag_limit <dbl>,
-## #   retrieved <dbl>, unretrieved <chr>
+## # … with 185 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
+## #   unretrieved <chr>
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
@@ -381,7 +381,7 @@ overbags(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
 ```
 
 ```
-## # A tibble: 22 x 7
+## # A tibble: 22 × 7
 ##    sampled_state sp_group_estimated bag_limit   max  mean   min     n
 ##    <chr>         <chr>                  <dbl> <dbl> <dbl> <dbl> <int>
 ##  1 Arkansas      Ducks                      6    32  13.7     7    22
@@ -394,7 +394,7 @@ overbags(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
 ##  8 Minnesota     Ducks                      6    22  11.6     7    22
 ##  9 Minnesota     Geese                     20    25  22.3    21     3
 ## 10 Missouri      Ducks                      6    45  17.8     7     4
-## # ... with 12 more rows
+## # … with 12 more rows
 ```
 
 And we can specify a state:
@@ -405,7 +405,7 @@ overbags(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas")
 ```
 
 ```
-## # A tibble: 25 x 8
+## # A tibble: 25 × 8
 ##    selected_hunterID sampled_state county   sp_group_estimated harvested_date
 ##                <dbl> <chr>         <chr>    <chr>              <date>        
 ##  1           1040149 Arkansas      Woodruff Ducks              2020-12-27    
@@ -418,8 +418,8 @@ overbags(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas")
 ##  8           2570123 Arkansas      Boone    Ducks              2020-11-29    
 ##  9           2583720 Arkansas      Arkansas Ducks              2020-12-20    
 ## 10           2595074 Arkansas      Jackson  Ducks              2020-11-21    
-## # ... with 15 more rows, and 3 more variables: bag_limit <dbl>,
-## #   retrieved <dbl>, unretrieved <chr>
+## # … with 15 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
+## #   unretrieved <chr>
 ```
 
 ### retrieved
@@ -434,7 +434,7 @@ retrieved(daily_records_2020)
 ```
 
 ```
-## # A tibble: 40 x 3
+## # A tibble: 40 × 3
 ##    sampled_state sp_group_estimated            mean_retrieved
 ##    <chr>         <chr>                                  <dbl>
 ##  1 Alabama       Mourning Dove                           12.1
@@ -447,7 +447,7 @@ retrieved(daily_records_2020)
 ##  8 California    Specially Regulated Sea Ducks            6  
 ##  9 Georgia       Mourning Dove                           13  
 ## 10 Georgia       White-Winged Dove                        3.8
-## # ... with 30 more rows
+## # … with 30 more rows
 ```
 
 Then plot it:
@@ -507,7 +507,7 @@ bagspp(daily_records_2020)
 ```
 
 ```
-## # A tibble: 2,773 x 4
+## # A tibble: 2,773 × 4
 ##    selected_hunterID n_spp spp_combo   n_retrieved_total
 ##                <dbl> <int> <chr>                   <dbl>
 ##  1              2314     1 Ducks                       9
@@ -520,7 +520,7 @@ bagspp(daily_records_2020)
 ##  8              7789     1 Ducks                      20
 ##  9              7797     2 Ducks-Geese                30
 ## 10             10318     2 Ducks-Geese                 0
-## # ... with 2,763 more rows
+## # … with 2,763 more rows
 ```
 
 To create a treemap of the number of species groups per hunter, use `output = "n"`:
@@ -562,20 +562,20 @@ openclose(daily_records_2020, ref_data = all_seasons_2020)
 ```
 
 ```
-## # A tibble: 40 x 6
-##    selected_hunterID sampled_state sp_group_estima~ open       close      error 
-##                <dbl> <chr>         <chr>            <date>     <date>     <chr> 
-##  1            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
-##  2            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
-##  3            454023 Louisiana     Ducks            2020-09-12 2021-02-07 Early~
-##  4            307419 Missouri      Geese            2020-10-03 2021-02-06 Late ~
-##  5            163972 South Dakota  Geese            2020-09-05 2021-02-14 Early~
-##  6            310953 Washington    Ducks            2020-09-26 2021-02-06 Late ~
-##  7            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
-##  8            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
-##  9            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
-## 10            558031 Missouri      Geese            2020-10-03 2021-02-06 Late ~
-## # ... with 30 more rows
+## # A tibble: 40 × 6
+##    selected_hunterID sampled_state sp_group_estimat… open       close      error
+##                <dbl> <chr>         <chr>             <date>     <date>     <chr>
+##  1            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  2            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  3            454023 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  4            307419 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  5            163972 South Dakota  Geese             2020-09-05 2021-02-14 Earl…
+##  6            310953 Washington    Ducks             2020-09-26 2021-02-06 Late…
+##  7            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  8            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  9            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+## 10            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+## # … with 30 more rows
 ```
 
 But `summary = TRUE` can be used to get a summary:
@@ -586,7 +586,7 @@ openclose(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
 ```
 
 ```
-## # A tibble: 17 x 4
+## # A tibble: 17 × 4
 ##    sampled_state  sp_group_estimated error          n
 ##    <chr>          <chr>              <chr>      <int>
 ##  1 Arkansas       Ducks              Late hunt      3
@@ -616,7 +616,7 @@ openclose(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas", s
 ```
 
 ```
-## # A tibble: 2 x 4
+## # A tibble: 2 × 4
 ##   sampled_state sp_group_estimated error         n
 ##   <chr>         <chr>              <chr>     <int>
 ## 1 Arkansas      Ducks              Late hunt     3
@@ -633,7 +633,7 @@ partyhunt(daily_records_2020)
 ```
 
 ```
-## # A tibble: 45 x 6
+## # A tibble: 45 × 6
 ##    sampled_state sp_group_estimated retrieved unretrieved comment     party_size
 ##    <chr>         <chr>                  <dbl> <chr>       <chr>       <chr>     
 ##  1 Minnesota     Ducks                     18 NULL        3 people    3         
@@ -642,11 +642,11 @@ partyhunt(daily_records_2020)
 ##  4 Minnesota     Ducks                     22 NULL        4 hunters   4         
 ##  5 Minnesota     Ducks                     12 NULL        2 hunters   2         
 ##  6 Minnesota     Ducks                      8 NULL        2 hunters   2         
-##  7 Missouri      Ducks                      3 0           2 hunters.~ 2         
-##  8 Missouri      Ducks                      2 NULL        2 hunters,~ 2         
-##  9 Tennessee     Ducks                      2 0           Saw a bunc~ 20        
-## 10 California    Ducks                      7 1           5mal, 2gad~ 4         
-## # ... with 35 more rows
+##  7 Missouri      Ducks                      3 0           2 hunters.… 2         
+##  8 Missouri      Ducks                      2 NULL        2 hunters,… 2         
+##  9 Tennessee     Ducks                      2 0           Saw a bunc… 20        
+## 10 California    Ducks                      7 1           5mal, 2gad… 4         
+## # … with 35 more rows
 ```
 
 ### huntdays
@@ -661,7 +661,7 @@ huntdays(daily_records_2020)
 ```
 
 ```
-## # A tibble: 40 x 3
+## # A tibble: 40 × 3
 ##    sampled_state sp_group_estimated            mean_days
 ##    <chr>         <chr>                             <dbl>
 ##  1 Alabama       Mourning Dove                       1.4
@@ -674,7 +674,7 @@ huntdays(daily_records_2020)
 ##  8 California    Specially Regulated Sea Ducks       2  
 ##  9 Georgia       Mourning Dove                       1.7
 ## 10 Georgia       White-Winged Dove                   1  
-## # ... with 30 more rows
+## # … with 30 more rows
 ```
 
 Then plot it:
@@ -756,6 +756,11 @@ The `retrievedmap` function creates a hex bin map of the United States from dail
 retrievedmap(daily_records_2020, output = "grid")
 ```
 
+```
+## Error in `mproject()`:
+## ! The package `mapproj` is required for `coord_map()`
+```
+
 <img src="figure/retrievedmap-1.png" title="plot of chunk retrievedmap" alt="plot of chunk retrievedmap" width="600" style="display: block; margin: auto;" />
 
 ### bagdays
@@ -774,7 +779,7 @@ bagdays(daily_records_2020, output = "table")
 ```
 
 ```
-## # A tibble: 3,778 x 4
+## # A tibble: 3,778 × 4
 ##    selected_hunterID sp_group_estimated n_days n_retrieved
 ##                <dbl> <chr>               <int>       <dbl>
 ##  1              2314 Ducks                   8           9
@@ -787,7 +792,7 @@ bagdays(daily_records_2020, output = "table")
 ##  8              5483 Ducks                   3           7
 ##  9              6685 Ducks                   1           3
 ## 10              7789 Ducks                  11          20
-## # ... with 3,768 more rows
+## # … with 3,768 more rows
 ```
 
 ### responselag

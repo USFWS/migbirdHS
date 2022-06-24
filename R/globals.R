@@ -1,5 +1,6 @@
 utils::globalVariables(
   c("selected_hunterID",
+    "days_hunted",
     "has_hunted",
     "has_submitted",
     "prop",

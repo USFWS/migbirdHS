@@ -14,7 +14,7 @@ hunted(data, type = "totals", output = "table")
 \item{output}{"table" or "plot"}
 }
 \description{
-The \code{hunted} function checks the has_hunted field in either Harvest Survey daily or season totals data.
+The \code{hunted} function checks the days_hunted field in either Harvest Survey daily or season totals data.
 }
 \references{
 \url{https://github.com/USFWS/migbirdMBHS}
