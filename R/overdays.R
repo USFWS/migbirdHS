@@ -219,7 +219,7 @@ overdays <-
           dates,
           by = c("sp_group_estimated", "sampled_state")) %>% 
         filter(days_hunted >= season_length) %>%
-        filter(!is.null(days_hunted)) %>% 
+        filter(!str_detect(days_hunted, "^NULL$")) %>% 
         rename(
           state = sampled_state,
           sp = sp_group_estimated)
