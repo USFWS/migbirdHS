@@ -234,6 +234,22 @@ proofHS <-
       bind_rows(specialdates) %>%
       distinct()
     
+    if(
+      nrow(
+        dates %>% 
+        group_by(sp_group_estimated, sampled_state) %>% 
+        filter(n() > 1)) > 0){
+      message(
+        paste0(
+          "Warning: More than one season length detected for a given species a",
+          "nd state."))
+      print(
+        dates %>% 
+          group_by(sp_group_estimated, sampled_state) %>% 
+          filter(n() > 1) %>% 
+          ungroup())
+    }
+    
     # {Part 3}
     # Error flagging
     
