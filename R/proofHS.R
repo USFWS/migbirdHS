@@ -173,7 +173,7 @@ proofHS <-
               # *For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply 
               # to"Coots" AND "Gallinules"
               speciesgroup == "AMCO-COMO" & 
-                state %in% c("AZ", "CA", "MN", "NV") ~ 
+                state %in% c("AZ", "CA", "NV") ~ 
                 "CootsGallinules", 
               speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
               TRUE ~ NA_character_),
