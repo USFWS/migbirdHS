@@ -35,8 +35,8 @@ nodata <-
     # First, if a season totals table was used in this function, exclude daily
     # records from the season totals table. This allows the season totals data
     # to be evaluated separately from daily data
-    if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-       str_detect(deparse(substitute(data)), "tibblelist\\[3\\]") == TRUE){
+    if(TRUE %in% c(str_detect(deparse(substitute(data)), "season"), 
+                   str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
       if(str_detect(deparse(substitute(data)), "season") == TRUE){
         dataname <- deparse(substitute(data))
         
