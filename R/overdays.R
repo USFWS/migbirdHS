@@ -70,16 +70,16 @@ overdays <-
               # For NM "AMCO-COMO", set as "Coots" (they have a separate
               # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
               speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
-              # **The "MODO-WWDO" category below should be used for MODO and WWDO
+              # The "MODO-WWDO" category below should be used for MODO and WWDO
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
               speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
-              # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+              # The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
               # "Brant"
               speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
-              # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+              # For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
-              speciesgroup == "AMCO-COMO" & state %in% c("AZ", "CA", "MN", "NV") ~ 
-                "CootsGallinules", 
+              speciesgroup == "AMCO-COMO" & 
+                state %in% c("AZ", "CA", "MN", "NV") ~ "CootsGallinules", 
               speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
               TRUE ~ NA_character_),
           open_date = mdy(open),
@@ -140,8 +140,8 @@ overdays <-
       bind_rows(specialdates) %>%
       distinct()
     
-    if(str_detect(deparse(substitute(data)), "daily") == TRUE | 
-       str_detect(deparse(substitute(data)), "tibblelist\\[2\\]") == TRUE){
+    if(TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
+                   str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       # Daily records
       suppressMessages(
         overday_table <-
@@ -167,8 +167,9 @@ overdays <-
       }else{
         message("No records found with too many days hunted.")}
     }
-    else if(str_detect(deparse(substitute(data)), "season") == TRUE | 
-            str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
+    else if(
+      TRUE %in% c(str_detect(deparse(substitute(data)), "season"),
+                  str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
       # If a season totals table was used in this function, exclude daily
       # records from the season totals table. This allows the season totals data
       # to be evaluated separately from daily data
@@ -188,7 +189,7 @@ overdays <-
           )
         message("Notice: season data filtered to exclude daily records.")
       # Additional statement for report template compatibility
-      }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
+      }else{
         datayr <- 
           data %>% 
           select(season) %>% 
