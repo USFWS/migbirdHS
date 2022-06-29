@@ -211,6 +211,8 @@ nodata(season_totals_2020, ref_data = all_seasons_2020, species = "Coots")
 
 The `submitted` function analyzes the number of Y and N responses for the has_submitted field. The function takes parameters `type` and `output`. Use `type = "totals"` (default) to view a summary, `type = "state"` to view proportions by state, and `type = "species"` to view proportions by species group. Use `output = "table"` (default) to get a table from the function, or specify `type = "plot"` to get a simple ggplot2 object.
 
+This function does not filter out daily records from the season totals.
+
 To demonstrate, first we will plot the total daily data:
 
 
@@ -286,8 +288,8 @@ hunted(daily_records_2020, type = "totals", output = "table")
 ```
 ## # A tibble: 1 × 2
 ##   days_hunted     n
-##         <dbl> <int>
-## 1           1  2773
+##   <chr>       <int>
+## 1 1            2773
 ```
 
 Switching to season data, we can create a plot first for `type = "totals"`:
@@ -369,8 +371,8 @@ overbags(daily_records_2020, ref_data = all_seasons_2020)
 ##  8            146742 Minnesota     Otter Tail Ducks              2020-10-15    
 ##  9            146742 Minnesota     Otter Tail Ducks              2020-10-25    
 ## 10            146742 Minnesota     Otter Tail Ducks              2020-11-07    
-## # … with 185 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
-## #   unretrieved <chr>
+## # … with 185 more rows, and 3 more variables: bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
@@ -563,18 +565,18 @@ openclose(daily_records_2020, ref_data = all_seasons_2020)
 
 ```
 ## # A tibble: 40 × 6
-##    selected_hunterID sampled_state sp_group_estimat… open       close      error
-##                <dbl> <chr>         <chr>             <date>     <date>     <chr>
-##  1            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  2            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  3            454023 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  4            307419 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  5            163972 South Dakota  Geese             2020-09-05 2021-02-14 Earl…
-##  6            310953 Washington    Ducks             2020-09-26 2021-02-06 Late…
-##  7            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  8            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  9            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-## 10            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##    selected_hunterID sampled_state sp_group_estima… open       close      error
+##                <dbl> <chr>         <chr>            <date>     <date>     <chr>
+##  1            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  2            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  3            454023 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  4            307419 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  5            163972 South Dakota  Geese            2020-09-05 2021-02-14 Earl…
+##  6            310953 Washington    Ducks            2020-09-26 2021-02-06 Late…
+##  7            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  8            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  9            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+## 10            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
 ## # … with 30 more rows
 ```
 
@@ -634,18 +636,18 @@ partyhunt(daily_records_2020)
 
 ```
 ## # A tibble: 45 × 6
-##    sampled_state sp_group_estimated retrieved unretrieved comment     party_size
-##    <chr>         <chr>                  <dbl> <chr>       <chr>       <chr>     
-##  1 Minnesota     Ducks                     18 NULL        3 people    3         
-##  2 Minnesota     Ducks                     14 NULL        3 hunters   3         
-##  3 Minnesota     Ducks                     21 NULL        4 hunters   4         
-##  4 Minnesota     Ducks                     22 NULL        4 hunters   4         
-##  5 Minnesota     Ducks                     12 NULL        2 hunters   2         
-##  6 Minnesota     Ducks                      8 NULL        2 hunters   2         
-##  7 Missouri      Ducks                      3 0           2 hunters.… 2         
-##  8 Missouri      Ducks                      2 NULL        2 hunters,… 2         
-##  9 Tennessee     Ducks                      2 0           Saw a bunc… 20        
-## 10 California    Ducks                      7 1           5mal, 2gad… 4         
+##    sampled_state sp_group_estimated retrieved unretrieved comment    party_size
+##    <chr>         <chr>                  <dbl> <chr>       <chr>      <chr>     
+##  1 Minnesota     Ducks                     18 NULL        3 people   3         
+##  2 Minnesota     Ducks                     14 NULL        3 hunters  3         
+##  3 Minnesota     Ducks                     21 NULL        4 hunters  4         
+##  4 Minnesota     Ducks                     22 NULL        4 hunters  4         
+##  5 Minnesota     Ducks                     12 NULL        2 hunters  2         
+##  6 Minnesota     Ducks                      8 NULL        2 hunters  2         
+##  7 Missouri      Ducks                      3 0           2 hunters… 2         
+##  8 Missouri      Ducks                      2 NULL        2 hunters… 2         
+##  9 Tennessee     Ducks                      2 0           Saw a bun… 20        
+## 10 California    Ducks                      7 1           5mal, 2ga… 4         
 ## # … with 35 more rows
 ```
 
@@ -754,11 +756,6 @@ The `retrievedmap` function creates a hex bin map of the United States from dail
 
 ```r
 retrievedmap(daily_records_2020, output = "grid")
-```
-
-```
-## Error in `mproject()`:
-## ! The package `mapproj` is required for `coord_map()`
 ```
 
 <img src="figure/retrievedmap-1.png" title="plot of chunk retrievedmap" alt="plot of chunk retrievedmap" width="600" style="display: block; margin: auto;" />
