@@ -413,7 +413,7 @@ errorsHS <-
     data %>% 
       select(errors) %>% 
       filter(errors != "none") %>% 
-      mutate(errors = ifelse(str_detect(errors, "-"), "2+ errors", errors)) %>% 
+      mutate(errors = ifelse(str_detect(errors, "-"), "overbag and overday", errors)) %>% 
       group_by(errors) %>% 
       summarize(n = n()) %>% 
       ungroup() %>% 
