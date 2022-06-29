@@ -40,40 +40,40 @@ submitted <-
     if(TRUE %in% c(str_detect(deparse(substitute(data)), "season"), 
                    str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
       if(str_detect(deparse(substitute(data)), "season") == TRUE){
-        dataname <- deparse(substitute(data))
-        
-        data <- 
-          data %>% 
-          filter(
-            !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                str_extract(dataname, "[0-9]{4}")
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
-          )
-        message("Notice: season data filtered to exclude daily records.")
+        # dataname <- deparse(substitute(data))
+        # 
+        # data <- 
+        #   data %>% 
+        #   filter(
+        #     !selected_hunterID %in%
+        #       c(get(paste0(
+        #         "daily_records_",
+        #         str_extract(dataname, "[0-9]{4}")
+        #       )) %>%
+        #         select(selected_hunterID) %>%
+        #         pull())
+        #   )
+        message("Notice: season data NOT filtered to exclude daily records.")
         # Additional statement for report template compatibility
       }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
-        datayr <- 
-          data %>% 
-          select(season) %>% 
-          distinct() %>% 
-          pull()
-        
-        data <- 
-          data %>% 
-          filter(
-            !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                as.character(datayr)
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
-          )
-        message("Notice: season data filtered to exclude daily records.")
+        # datayr <- 
+        #   data %>% 
+        #   select(season) %>% 
+        #   distinct() %>% 
+        #   pull()
+        # 
+        # data <- 
+        #   data %>% 
+        #   filter(
+        #     !selected_hunterID %in%
+        #       c(get(paste0(
+        #         "daily_records_",
+        #         as.character(datayr)
+        #       )) %>%
+        #         select(selected_hunterID) %>%
+        #         pull())
+        #   )
+        message("Notice: season data NOT filtered to exclude daily records.")
       }
     }
     # Second, if daily data are being used then add a col "days_hunted" based on
@@ -82,11 +82,18 @@ submitted <-
                    str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       data <-
         data %>% 
-        mutate(days_hunted = ifelse(has_hunted == "Y", 1, 0))
+        mutate(days_hunted = ifelse(has_hunted == "Y", "1", "0"))
     }
     if(type == "totals"){
       if(output == "table"){
         data %>%
+          mutate(
+            days_hunted = 
+              ifelse(
+                str_detect(days_hunted, "NULL"), 
+                NA, 
+                days_hunted),
+            days_hunted = as.numeric(days_hunted)) %>% 
           filter(days_hunted > 0) %>% 
           select(selected_hunterID, has_submitted) %>% 
           distinct() %>% 
@@ -95,6 +102,13 @@ submitted <-
           ungroup()
       }else if(output == "plot"){
         data %>%
+          mutate(
+            days_hunted = 
+              ifelse(
+                str_detect(days_hunted, "NULL"), 
+                NA, 
+                days_hunted),
+            days_hunted = as.numeric(days_hunted)) %>% 
           filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted) %>% 
           distinct() %>% 
@@ -115,6 +129,13 @@ submitted <-
     }else if(type == "state"){
       if(output == "table"){
         data %>%
+          mutate(
+            days_hunted = 
+              ifelse(
+                str_detect(days_hunted, "NULL"), 
+                NA, 
+                days_hunted),
+            days_hunted = as.numeric(days_hunted)) %>% 
           filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted, sampled_state) %>% 
           distinct() %>% 
@@ -126,6 +147,13 @@ submitted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
+            mutate(
+              days_hunted = 
+                ifelse(
+                  str_detect(days_hunted, "NULL"), 
+                  NA, 
+                  days_hunted),
+              days_hunted = as.numeric(days_hunted)) %>% 
             filter(days_hunted > 0) %>%
             select(selected_hunterID, has_submitted, sampled_state) %>% 
             distinct() %>% 
@@ -160,6 +188,13 @@ submitted <-
     }else if(type == "species"){
       if(output == "table"){
         data %>%
+          mutate(
+            days_hunted = 
+              ifelse(
+                str_detect(days_hunted, "NULL"), 
+                NA, 
+                days_hunted),
+            days_hunted = as.numeric(days_hunted)) %>% 
           filter(days_hunted > 0) %>%
           select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
           distinct() %>% 
@@ -171,6 +206,13 @@ submitted <-
       }else if(output == "plot"){
         suppressWarnings(
           data %>%
+            mutate(
+              days_hunted = 
+                ifelse(
+                  str_detect(days_hunted, "NULL"), 
+                  NA, 
+                  days_hunted),
+              days_hunted = as.numeric(days_hunted)) %>% 
             filter(days_hunted > 0) %>%
             select(selected_hunterID, has_submitted, sp_group_estimated) %>% 
             distinct() %>% 
