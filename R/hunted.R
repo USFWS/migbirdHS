@@ -82,7 +82,7 @@ hunted <-
                    str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       data <-
         data %>% 
-        mutate(days_hunted = ifelse(has_hunted == "Y", 1, 0))
+        mutate(days_hunted = ifelse(has_hunted == "Y", "1", "0"))
     }
     if(type == "totals"){
       if(output == "table"){
