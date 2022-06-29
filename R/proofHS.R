@@ -267,9 +267,19 @@ proofHS <-
           dates,
           by = c("sp_group_estimated", "sampled_state")) %>% 
         mutate(
+          days_hunted = 
+            ifelse(
+              str_detect(days_hunted, "NULL"),
+              NA,
+              as.numeric(days_hunted)),
+          retrieved = 
+            ifelse(
+              str_detect(retrieved, "NULL"),
+              NA,
+              as.numeric(retrieved)),
           bag_per_day = 
             ifelse(
-              days_hunted != 0,
+              days_hunted > 0,
               round(as.numeric(retrieved)/as.numeric(days_hunted), 1),
               0),
           errors = "x") %>% 
