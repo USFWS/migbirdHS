@@ -68,11 +68,11 @@ datatable(
 ```
 
 
-## Finalized records
+## Submitted records
 
 ### Season 
 
-How many records were finalized in the season data? (Records must also have answered "yes" to has hunted, and data are only shown if days_hunted > 0.)
+How many records were submitted in the season data? Data are only shown if days_hunted > 0.
 
 #### Total
 
@@ -83,33 +83,11 @@ knitr::kable(
     mutate(prop = round(n/sum(n), 2)))
 ```
 
-#### By state
+#### By species
 
 ```{r, submitted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-submitted(get(names(tibblelist[3])), type = "state", output = "plot") +
-  scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
-  theme(legend.position = "bottom")
-```
-
-### Daily
-
-How many records were finalized in the daily data? (Records must also have answered "yes" to has hunted, and data are only shown if days_hunted > 0.)
-
-#### Total
-
-```{r, submitted4, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-knitr::kable(
-  submitted(get(names(tibblelist[2]))) %>% 
-    rename(`Has submitted?` = has_submitted) %>% 
-    mutate(prop = round(n/sum(n), 2)))
-```
-
-#### By state
-
-```{r, submitted5, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-
-submitted(get(names(tibblelist[2])), type = "state", output = "plot") +
+submitted(get(names(tibblelist[3])), type = "species", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
@@ -127,7 +105,13 @@ How many hunters hunted in the season data?
 
 knitr::kable(
   hunted(get(names(tibblelist[3]))) %>% 
-    mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+    mutate(
+    days_hunted = 
+      ifelse(
+        str_detect(days_hunted, "NULL"), 
+        NA, 
+        days_hunted),
+    has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
     group_by(has_hunted) %>% 
     summarize(sum_n = sum(n)) %>% 
     ungroup() %>% 
@@ -137,37 +121,14 @@ knitr::kable(
     mutate(prop = round(n/sum(n), 2)))
 ```
 
-#### By state
+#### By species
 
 ```{r, hunted2, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
 
-hunted(get(names(tibblelist[3])), type = "state", output = "plot") +
+hunted(get(names(tibblelist[3])), type = "species", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
-
-### Daily
-
-How many hunters hunted in the daily data?
-
-#### By state
-
-```{r, hunted5, message = FALSE, warning = FALSE, fig.width = 7, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
-
-hunted(get(names(tibblelist[2])), type = "state", output = "plot") +
-  scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
-  theme(legend.position = "bottom")
-```
-
-#### By species
-
-```{r, hunted6, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
-
-hunted(get(names(tibblelist[2])), type = "species", output = "plot") +
-  scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
-  theme(legend.position = "bottom")
-```
-
 
 ## Identify party hunts
 
@@ -546,13 +507,13 @@ What is the relationship between number of birds retrieved and number of days sp
 compare(daily_corrected, season_corrected, type = "line")
 ```
 
-What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. 
+What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. Each bubble is a hunter's record per state and species.
 
 ```{r, compare2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 compare(daily_corrected, season_corrected, type = "days")
 ```
 
-What is the distribution of number of birds retrieved per submission group? Bubbles represent number of days hunted and red lines indicate mean values. 
+What is the distribution of number of birds retrieved per submission group? Bubbles represent number of days hunted and red lines indicate mean values. Each bubble is a hunter's record per state and species.
 
 ```{r, compare3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 compare(daily_corrected, season_corrected, type = "retrieved")
