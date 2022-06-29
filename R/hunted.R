@@ -96,7 +96,13 @@ hunted <-
         data %>%
           select(selected_hunterID, days_hunted) %>% 
           distinct() %>% 
-          mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+          mutate(
+            days_hunted = 
+              ifelse(
+                str_detect(days_hunted, "NULL"), 
+                NA, 
+                days_hunted),
+            has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
           group_by(has_hunted) %>%
           summarize(
             n = n(),
@@ -126,7 +132,13 @@ hunted <-
           data %>%
             select(selected_hunterID, days_hunted, sampled_state) %>% 
             distinct() %>% 
-            mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+            mutate(
+              days_hunted = 
+                ifelse(
+                  str_detect(days_hunted, "NULL"), 
+                  NA, 
+                  days_hunted),
+              has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
             group_by(has_hunted, sampled_state) %>%
             summarize(n = n()) %>% 
             ungroup() %>% 
