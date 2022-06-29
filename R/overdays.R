@@ -218,8 +218,14 @@ overdays <-
         left_join(
           dates,
           by = c("sp_group_estimated", "sampled_state")) %>% 
+        mutate(
+          days_hunted = 
+            ifelse(
+              str_detect(days_hunted, "NULL"), 
+              NA, 
+              days_hunted),
+          days_hunted = as.numeric(days_hunted)) %>% 
         filter(days_hunted >= season_length) %>%
-        filter(!str_detect(days_hunted, "^NULL$")) %>% 
         rename(
           state = sampled_state,
           sp = sp_group_estimated)
