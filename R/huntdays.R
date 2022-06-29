@@ -216,7 +216,7 @@ huntdays <-
               vjust = 0.2, hjust = -0.2) +
             scale_y_continuous(expand = expansion(mult = c(-0, 0.4))) +
             labs(
-              x = "State", 
+              x = "Species", 
               y = "Average number of days\nhunted per hunter", 
               fill = "Species") +
             theme_classic() + 
