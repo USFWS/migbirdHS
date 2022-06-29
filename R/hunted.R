@@ -201,7 +201,10 @@ hunted <-
             group_by(sp_group_estimated) %>% 
             mutate(tot_n = sum(n)) %>% 
             ungroup() %>% 
-            mutate(ranks = rank(tot_n)) %>% 
+            group_by(sp_group_estimated) %>% 
+            mutate(ranker = tot_n - n) %>% 
+            ungroup() %>% 
+            mutate(ranks = rank(ranker)) %>% 
             ggplot(aes(x = reorder(sp_group_estimated, -ranks), y = n)) +
             geom_bar(
               aes(fill = has_hunted), 
