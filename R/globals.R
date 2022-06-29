@@ -70,6 +70,7 @@ utils::globalVariables(
     "party_size",
     "original_retrieved",
     "new_retrieved",
-    "flag"
+    "flag",
+    "ranker"
     )
 )
