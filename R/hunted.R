@@ -168,7 +168,13 @@ hunted <-
           data %>%
             select(selected_hunterID, days_hunted, sp_group_estimated) %>% 
             distinct() %>% 
-            mutate(has_hunted = ifelse(days_hunted == 0, "N", "Y")) %>% 
+            mutate(
+              days_hunted = 
+                ifelse(
+                  str_detect(days_hunted, "NULL"), 
+                  NA, 
+                  days_hunted),
+              has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
             mutate(
               sp_group_estimated = 
                 ifelse(
@@ -178,6 +184,7 @@ hunted <-
             group_by(has_hunted, sp_group_estimated) %>%
             summarize(n = n()) %>% 
             ungroup() %>% 
+            filter(!is.na(has_hunted)) %>% 
             mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
             group_by(sp_group_estimated) %>% 
             mutate(tot_n = sum(n)) %>% 
