@@ -80,6 +80,7 @@ submitted(get(names(tibblelist[3])), type = "species", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
+
 ### Daily
 
 How many records were finalized in the daily data? Records must have answered "yes" to has hunted.
