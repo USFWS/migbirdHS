@@ -40,7 +40,7 @@ tibblelist <-
     paste0("season_totals_", as.character(params$year)))
 ```
 
-## Introduction
+# Introduction
 
 This is the `r params$year` season report for Harvest Survey online data.
 
@@ -139,6 +139,8 @@ hunted(get(names(tibblelist[3])), type = "species", output = "plot") +
   scale_fill_manual(values = met.brewer("Hokusai3", 2)) + 
   theme(legend.position = "bottom")
 ```
+
+# Party hunts and erroneous take
 
 ## Identify party hunts
 
@@ -447,6 +449,7 @@ errorsHS(daily_proofed)
 
 ```
 
+# Retrieved 
 
 ## Retrieved map
 
