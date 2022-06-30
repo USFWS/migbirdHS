@@ -478,7 +478,7 @@ datatable(retrieved(daily_corrected, average = T))
 
 What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The corrected daily data are used.
 
-```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 8, dpi = 300, fig.align = "center", echo = F}
+```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 6, out.width = 700, dpi = 300, fig.align = "center", echo = F}
 
 bagspp(daily_corrected, output = "success")
 ```
