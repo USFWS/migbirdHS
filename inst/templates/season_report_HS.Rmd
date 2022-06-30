@@ -107,7 +107,7 @@ submitted(get(names(tibblelist[2])), type = "species", output = "plot") +
 
 ### Season
 
-How many hunters hunted in the season data? Daily records have been excluded..
+How many hunters hunted in the season data? Daily records have been excluded.
 
 #### Total
 

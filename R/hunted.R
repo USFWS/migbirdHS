@@ -157,7 +157,7 @@ hunted <-
                   label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "),
                   angle = 90),
               vjust = 0.2, hjust = -0.2) +
-            labs(x = "Has hunted?", y = "Count", 
+            labs(x = "Has hunted?", y = "Number of hunters", 
                  col = "Has hunted?", fill = "Has hunted?") +
             scale_y_continuous(expand = expansion(mult = c(-0, 0.5))) +
             theme_classic() + 
@@ -215,7 +215,7 @@ hunted <-
                   label = ifelse(!is.na(n_n), paste0("N = ", n_n), " "),
                   angle = 90),
               vjust = 0.2, hjust = -0.2) +
-            labs(x = "Has hunted?", y = "Count", 
+            labs(x = "Has hunted?", y = "Number of hunters", 
                  col = "Has hunted?", fill = "Has hunted?") +
             scale_y_continuous(expand = expansion(mult = c(-0, 0.5))) +
             theme_classic() + 
