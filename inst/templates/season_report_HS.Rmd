@@ -17,6 +17,7 @@ params:
 ```{r, libs, message = FALSE, warning = FALSE, echo = FALSE}
 
 library(tidyverse)
+library(ggnewscale)
 library(MetBrewer)
 library(DT)
 
@@ -477,7 +478,7 @@ datatable(retrieved(daily_corrected, average = T))
 
 What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The corrected daily data are used.
 
-```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 8, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 8, dpi = 300, fig.align = "center", echo = F}
 
 bagspp(daily_corrected, output = "success")
 ```
@@ -513,7 +514,16 @@ datatable(huntdays(daily_corrected, average = T))
 What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups? The corrected daily and season data are used in the figures below. Daily retrieved values and days spent hunting were summed for direct comparison to season data.
 
 ```{r, compare1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_corrected, season_corrected, type = "line")
+compare(daily_corrected, season_corrected, type = "line") +
+  # Added for line clarity
+  new_scale_color() +
+  stat_smooth(
+    aes(color = type), method = "lm", size = 1, alpha = 0.3) +
+  scale_color_manual(
+    name = "Type",
+    labels = c("Daily non-submit", "Daily submit", "Season non-submit", 
+               "Season submit"),
+    values = c("orange", "green", "blue", "purple"))
 ```
 
 What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. Each bubble is a hunter's record per state and species.
