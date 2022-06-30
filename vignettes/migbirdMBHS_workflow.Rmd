@@ -110,7 +110,9 @@ refcheck(all_seasons_2020)
 
 The `nodata` function checks to see if any states or species are missing from the daily or season Harvest Survey data. If species are desired in the output, that can be specified with `species = "all"` or by using a species string. The species group can be one of: "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", or "Woodcock".
 
-To demonstrate, first we will check the daily data:
+An additional parameter in this function is `report`, set to `FALSE` by default. When `report = FALSE` and running `nodata` on season totals, daily data are excluded from season totals. In the R markdown report template, this is set to `report = TRUE` and dailies are not excluded from season totals (to make the report more streamlined).
+
+To demonstrate the use of `nodata` outside of a report, first we will check the daily data:
 
 
 ```r
@@ -371,8 +373,8 @@ overbags(daily_records_2020, ref_data = all_seasons_2020)
 ##  8            146742 Minnesota     Otter Tail Ducks              2020-10-15    
 ##  9            146742 Minnesota     Otter Tail Ducks              2020-10-25    
 ## 10            146742 Minnesota     Otter Tail Ducks              2020-11-07    
-## # … with 185 more rows, and 3 more variables: bag_limit <dbl>,
-## #   retrieved <dbl>, unretrieved <chr>
+## # … with 185 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
+## #   unretrieved <chr>
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
@@ -565,18 +567,18 @@ openclose(daily_records_2020, ref_data = all_seasons_2020)
 
 ```
 ## # A tibble: 40 × 6
-##    selected_hunterID sampled_state sp_group_estima… open       close      error
-##                <dbl> <chr>         <chr>            <date>     <date>     <chr>
-##  1            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
-##  2            422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
-##  3            454023 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
-##  4            307419 Missouri      Geese            2020-10-03 2021-02-06 Late…
-##  5            163972 South Dakota  Geese            2020-09-05 2021-02-14 Earl…
-##  6            310953 Washington    Ducks            2020-09-26 2021-02-06 Late…
-##  7            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
-##  8            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
-##  9            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
-## 10            558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##    selected_hunterID sampled_state sp_group_estimat… open       close      error
+##                <dbl> <chr>         <chr>             <date>     <date>     <chr>
+##  1            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  2            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  3            454023 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
+##  4            307419 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  5            163972 South Dakota  Geese             2020-09-05 2021-02-14 Earl…
+##  6            310953 Washington    Ducks             2020-09-26 2021-02-06 Late…
+##  7            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  8            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##  9            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+## 10            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
 ## # … with 30 more rows
 ```
 
@@ -636,18 +638,18 @@ partyhunt(daily_records_2020)
 
 ```
 ## # A tibble: 45 × 6
-##    sampled_state sp_group_estimated retrieved unretrieved comment    party_size
-##    <chr>         <chr>                  <dbl> <chr>       <chr>      <chr>     
-##  1 Minnesota     Ducks                     18 NULL        3 people   3         
-##  2 Minnesota     Ducks                     14 NULL        3 hunters  3         
-##  3 Minnesota     Ducks                     21 NULL        4 hunters  4         
-##  4 Minnesota     Ducks                     22 NULL        4 hunters  4         
-##  5 Minnesota     Ducks                     12 NULL        2 hunters  2         
-##  6 Minnesota     Ducks                      8 NULL        2 hunters  2         
-##  7 Missouri      Ducks                      3 0           2 hunters… 2         
-##  8 Missouri      Ducks                      2 NULL        2 hunters… 2         
-##  9 Tennessee     Ducks                      2 0           Saw a bun… 20        
-## 10 California    Ducks                      7 1           5mal, 2ga… 4         
+##    sampled_state sp_group_estimated retrieved unretrieved comment     party_size
+##    <chr>         <chr>                  <dbl> <chr>       <chr>       <chr>     
+##  1 Minnesota     Ducks                     18 NULL        3 people    3         
+##  2 Minnesota     Ducks                     14 NULL        3 hunters   3         
+##  3 Minnesota     Ducks                     21 NULL        4 hunters   4         
+##  4 Minnesota     Ducks                     22 NULL        4 hunters   4         
+##  5 Minnesota     Ducks                     12 NULL        2 hunters   2         
+##  6 Minnesota     Ducks                      8 NULL        2 hunters   2         
+##  7 Missouri      Ducks                      3 0           2 hunters.… 2         
+##  8 Missouri      Ducks                      2 NULL        2 hunters,… 2         
+##  9 Tennessee     Ducks                      2 0           Saw a bunc… 20        
+## 10 California    Ducks                      7 1           5mal, 2gad… 4         
 ## # … with 35 more rows
 ```
 

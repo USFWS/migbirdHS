@@ -26,18 +26,19 @@
 #'  \itemize{
 #'  \item "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", "Woodcock"}
 #'  }
+#' @param report Is this function being used in the R markdown season report? Defaults to FALSE.
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
 #' @references \url{https://github.com/USFWS/migbirdMBHS}
 
 nodata <-
-  function(data, ref_data = NA, species = NA){
+  function(data, ref_data = NA, species = NA, report = FALSE){
     # First, if a season totals table was used in this function, exclude daily
     # records from the season totals table. This allows the season totals data
-    # to be evaluated separately from daily data
-    if(TRUE %in% c(str_detect(deparse(substitute(data)), "season"), 
-                   str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
-      if(str_detect(deparse(substitute(data)), "season") == TRUE){
+    # to be evaluated separately from daily data.
+    # ** Does this ONLY if report == FALSE!
+    if(report == FALSE){
+      if(str_detect(deparse(substitute(data)), "season")){
         dataname <- deparse(substitute(data))
         
         data <- 
@@ -52,28 +53,12 @@ nodata <-
                 pull())
           )
         message("Notice: season data filtered to exclude daily records.")
-        # Additional statement for report template compatibility
-      }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]") == TRUE){
-        datayr <- 
-          data %>% 
-          select(season) %>% 
-          distinct() %>% 
-          pull()
-        
-        data <- 
-          data %>% 
-          filter(
-            !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                as.character(datayr)
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
-          )
-        message("Notice: season data filtered to exclude daily records.")
       }
-      }
+    }
+    # Else if report == TRUE; do not filter daily records from season totals
+    else{
+      message("Notice: season data NOT filtered to exclude daily records.")
+    }
     if(is.na(species) == TRUE){
       tibble(sampled_state = datasets::state.name) %>% 
         filter(sampled_state != "Hawaii") %>% 
@@ -272,5 +257,5 @@ nodata <-
       message("Error: `species` must be one of: 'Band-tailed Pigeon', 'Coots', 
               'Ducks', 'Gallinules', 'Geese', 'Rails', 'Sandhill Crane', 
               'Snipe', 'Specially Regulated Sea Ducks', or 'Woodcock'.")
-    }
   }
+}

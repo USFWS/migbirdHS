@@ -98,7 +98,9 @@ refcheck(all_seasons_2020)
 
 The `nodata` function checks to see if any states or species are missing from the daily or season Harvest Survey data. If species are desired in the output, that can be specified with `species = "all"` or by using a species string. The species group can be one of: "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", or "Woodcock".
 
-To demonstrate, first we will check the daily data:
+An additional parameter in this function is `report`, set to `FALSE` by default. When `report = FALSE` and running `nodata` on season totals, daily data are excluded from season totals. In the R markdown report template, this is set to `report = TRUE` and dailies are not excluded from season totals (to make the report more streamlined).
+
+To demonstrate the use of `nodata` outside of a report, first we will check the daily data:
 
 ```{r, nodata1, message = FALSE, warning = FALSE}
 nodata(daily_records_2020, ref_data = all_seasons_2020)

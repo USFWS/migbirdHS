@@ -4,7 +4,7 @@
 \alias{nodata}
 \title{Check for missing data}
 \usage{
-nodata(data, ref_data = NA, species = NA)
+nodata(data, ref_data = NA, species = NA, report = FALSE)
 }
 \arguments{
 \item{data}{Daily or season data table}
@@ -19,6 +19,8 @@ nodata(data, ref_data = NA, species = NA)
 \itemize{
 \item "Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", "Rails", "Sandhill Crane", "Snipe", "Specially Regulated Sea Ducks", "Woodcock"}
 }}
+
+\item{report}{Is this function being used in the R markdown season report? Defaults to FALSE.}
 }
 \description{
 The \code{nodata} function checks to see if any states or species are missing from the daily or season Harvest Survey online data.
