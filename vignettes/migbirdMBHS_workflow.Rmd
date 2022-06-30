@@ -361,20 +361,20 @@ overbags(daily_records_2020, ref_data = all_seasons_2020)
 
 ```
 ## # A tibble: 195 × 8
-##    selected_hunterID sampled_state county     sp_group_estimated harvested_date
-##                <dbl> <chr>         <chr>      <chr>              <date>        
-##  1            121924 Pennsylvania  Erie       Ducks              2020-10-10    
-##  2            136394 Minnesota     Anoka      Ducks              2020-09-26    
-##  3            138144 Minnesota     Brown      Ducks              2020-09-26    
-##  4            146742 Minnesota     Otter Tail Ducks              2020-10-24    
-##  5            146742 Minnesota     Otter Tail Ducks              2020-10-18    
-##  6            146742 Minnesota     Otter Tail Ducks              2020-10-16    
-##  7            146742 Minnesota     Otter Tail Ducks              2020-10-17    
-##  8            146742 Minnesota     Otter Tail Ducks              2020-10-15    
-##  9            146742 Minnesota     Otter Tail Ducks              2020-10-25    
-## 10            146742 Minnesota     Otter Tail Ducks              2020-11-07    
-## # … with 185 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
-## #   unretrieved <chr>
+##    selected_hunterID sampled_state county     sp_group_estimat… harvested_date
+##                <dbl> <chr>         <chr>      <chr>             <date>        
+##  1            121924 Pennsylvania  Erie       Ducks             2020-10-10    
+##  2            136394 Minnesota     Anoka      Ducks             2020-09-26    
+##  3            138144 Minnesota     Brown      Ducks             2020-09-26    
+##  4            146742 Minnesota     Otter Tail Ducks             2020-10-24    
+##  5            146742 Minnesota     Otter Tail Ducks             2020-10-18    
+##  6            146742 Minnesota     Otter Tail Ducks             2020-10-16    
+##  7            146742 Minnesota     Otter Tail Ducks             2020-10-17    
+##  8            146742 Minnesota     Otter Tail Ducks             2020-10-15    
+##  9            146742 Minnesota     Otter Tail Ducks             2020-10-25    
+## 10            146742 Minnesota     Otter Tail Ducks             2020-11-07    
+## # … with 185 more rows, and 3 more variables: bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
@@ -422,8 +422,8 @@ overbags(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas")
 ##  8           2570123 Arkansas      Boone    Ducks              2020-11-29    
 ##  9           2583720 Arkansas      Arkansas Ducks              2020-12-20    
 ## 10           2595074 Arkansas      Jackson  Ducks              2020-11-21    
-## # … with 15 more rows, and 3 more variables: bag_limit <dbl>, retrieved <dbl>,
-## #   unretrieved <chr>
+## # … with 15 more rows, and 3 more variables: bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
 ```
 
 ### retrieved
@@ -567,18 +567,18 @@ openclose(daily_records_2020, ref_data = all_seasons_2020)
 
 ```
 ## # A tibble: 40 × 6
-##    selected_hunterID sampled_state sp_group_estimat… open       close      error
-##                <dbl> <chr>         <chr>             <date>     <date>     <chr>
-##  1            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  2            422536 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  3            454023 Louisiana     Ducks             2020-09-12 2021-02-07 Earl…
-##  4            307419 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  5            163972 South Dakota  Geese             2020-09-05 2021-02-14 Earl…
-##  6            310953 Washington    Ducks             2020-09-26 2021-02-06 Late…
-##  7            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  8            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-##  9            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
-## 10            558031 Missouri      Geese             2020-10-03 2021-02-06 Late…
+##    selected_hunter… sampled_state sp_group_estima… open       close      error
+##               <dbl> <chr>         <chr>            <date>     <date>     <chr>
+##  1           422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  2           422536 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  3           454023 Louisiana     Ducks            2020-09-12 2021-02-07 Earl…
+##  4           307419 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  5           163972 South Dakota  Geese            2020-09-05 2021-02-14 Earl…
+##  6           310953 Washington    Ducks            2020-09-26 2021-02-06 Late…
+##  7           558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  8           558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+##  9           558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
+## 10           558031 Missouri      Geese            2020-10-03 2021-02-06 Late…
 ## # … with 30 more rows
 ```
 
@@ -638,18 +638,18 @@ partyhunt(daily_records_2020)
 
 ```
 ## # A tibble: 45 × 6
-##    sampled_state sp_group_estimated retrieved unretrieved comment     party_size
-##    <chr>         <chr>                  <dbl> <chr>       <chr>       <chr>     
-##  1 Minnesota     Ducks                     18 NULL        3 people    3         
-##  2 Minnesota     Ducks                     14 NULL        3 hunters   3         
-##  3 Minnesota     Ducks                     21 NULL        4 hunters   4         
-##  4 Minnesota     Ducks                     22 NULL        4 hunters   4         
-##  5 Minnesota     Ducks                     12 NULL        2 hunters   2         
-##  6 Minnesota     Ducks                      8 NULL        2 hunters   2         
-##  7 Missouri      Ducks                      3 0           2 hunters.… 2         
-##  8 Missouri      Ducks                      2 NULL        2 hunters,… 2         
-##  9 Tennessee     Ducks                      2 0           Saw a bunc… 20        
-## 10 California    Ducks                      7 1           5mal, 2gad… 4         
+##    sampled_state sp_group_estimated retrieved unretrieved comment   party_size
+##    <chr>         <chr>                  <dbl> <chr>       <chr>     <chr>     
+##  1 Minnesota     Ducks                     18 NULL        3 people  3         
+##  2 Minnesota     Ducks                     14 NULL        3 hunters 3         
+##  3 Minnesota     Ducks                     21 NULL        4 hunters 4         
+##  4 Minnesota     Ducks                     22 NULL        4 hunters 4         
+##  5 Minnesota     Ducks                     12 NULL        2 hunters 2         
+##  6 Minnesota     Ducks                      8 NULL        2 hunters 2         
+##  7 Missouri      Ducks                      3 0           2 hunter… 2         
+##  8 Missouri      Ducks                      2 NULL        2 hunter… 2         
+##  9 Tennessee     Ducks                      2 0           Saw a bu… 20        
+## 10 California    Ducks                      7 1           5mal, 2g… 4         
 ## # … with 35 more rows
 ```
 
