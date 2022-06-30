@@ -4,25 +4,21 @@ Title: Process USFWS Migratory Bird Online Harvest Survey Data in R
 Version: 0.1.0
 Imports: 
     dplyr,
-    tidyr,
     stringr,
     purrr,
     readr,
     tibble,
     rlang,
-    magrittr,
     lubridate,
     broom,
     ggplot2,
     rgeos,
     geojsonio,
-    mapproj,
     patchwork,
     treemapify,
     viridis,
     MetBrewer,
-    rmarkdown,
-    lifecycle
+    rmarkdown
 Suggests:
     knitr,
     DT
