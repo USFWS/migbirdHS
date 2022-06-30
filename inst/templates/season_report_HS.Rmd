@@ -58,11 +58,11 @@ datatable(
   options = list(pageLength = 5))
 ```
 
-## Submitted records
+## Hunters who submitted
 
 ### Season 
 
-How many records were submitted in the season data (daily records excluded)? Data are only shown if days_hunted > 0.
+How many hunters submitted in the season data? Daily records excluded and data are only shown if days_hunted > 0.
 
 #### Total
 
@@ -84,7 +84,7 @@ submitted(get(names(tibblelist[3])), type = "species", output = "plot") +
 
 ### Daily
 
-How many records were finalized in the daily data? Records must have answered "yes" to has hunted.
+How many hunters submitted in the daily data? Records must have answered "yes" to has hunted.
 
 #### Total
 
