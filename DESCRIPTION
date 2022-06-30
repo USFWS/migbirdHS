@@ -18,7 +18,8 @@ Imports:
     treemapify,
     viridis,
     MetBrewer,
-    rmarkdown
+    rmarkdown,
+    lifecycle
 Suggests:
     knitr,
     DT
