@@ -45,28 +45,17 @@ This is the `r params$year` season report for Harvest Survey online data.
 
 ## Check for missing data
 
-For the season data, what species are missing per state?
+For the season data (including daily records), what species are missing per state?
 
 ```{r, nodata2, message = FALSE, warning = FALSE, echo = F}
 datatable(
   nodata(
     data = get(names(tibblelist[3])), 
     ref_data = get(names(tibblelist[1])), 
-    species = "all"), 
+    species = "all",
+    report = TRUE), 
   options = list(pageLength = 5))
 ```
-
-For the daily data, what species are missing per state?
-
-```{r, nodata4, message = FALSE, warning = FALSE, echo = F}
-datatable(
-  nodata(
-    data = get(names(tibblelist[2])), 
-    ref_data = get(names(tibblelist[1])), 
-    species = "all"), 
-  options = list(pageLength = 5))
-```
-
 
 ## Submitted records
 
