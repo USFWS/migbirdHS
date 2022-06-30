@@ -61,7 +61,7 @@ datatable(
 
 ### Season 
 
-How many records were submitted in the season data? Data are only shown if days_hunted > 0.
+How many records were submitted in the season data (daily records excluded)? Data are only shown if days_hunted > 0.
 
 #### Total
 
@@ -106,7 +106,7 @@ submitted(get(names(tibblelist[2])), type = "species", output = "plot") +
 
 ### Season
 
-How many hunters hunted in the season data?
+How many hunters hunted in the season data? Daily records have been excluded..
 
 #### Total
 
@@ -422,7 +422,7 @@ errorsHS <-
     data %>% 
       select(errors) %>% 
       filter(errors != "none") %>% 
-      mutate(errors = ifelse(str_detect(errors, "-"), "overbag and overday", errors)) %>% 
+      mutate(errors = ifelse(str_detect(errors, "-"), "2+ errors", errors)) %>% 
       group_by(errors) %>% 
       summarize(n = n()) %>% 
       ungroup() %>% 
