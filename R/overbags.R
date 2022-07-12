@@ -166,8 +166,9 @@ overbags <-
               TRUE ~ NA_character_)) %>% 
         filter(!is.na(error)) %>% 
         select(
-          selected_hunterID, sampled_state, county, sp_group_estimated, 
-          harvested_date, max_bag, retrieved, unretrieved) %>% 
+          selected_hunterID, surveyID, sampled_state, county, 
+          sp_group_estimated, harvested_date, max_bag, retrieved, 
+          unretrieved) %>% 
         arrange(desc(retrieved)) %>% 
         rename(bag_limit = max_bag) %>% 
         arrange(selected_hunterID)
@@ -221,8 +222,9 @@ overbags <-
                   TRUE ~ NA_character_)) %>% 
             filter(is.na(error)) %>% 
             select(
-              selected_hunterID, sampled_state, county, sp_group_estimated, 
-              harvested_date, max_bag, retrieved, unretrieved) %>% 
+              selected_hunterID, surveyID, sampled_state, county, 
+              sp_group_estimated, harvested_date, max_bag, retrieved, 
+              unretrieved) %>% 
             arrange(desc(retrieved)) %>% 
             rename(bag_limit = max_bag) %>% 
             arrange(selected_hunterID)

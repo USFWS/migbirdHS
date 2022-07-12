@@ -252,7 +252,7 @@ datatable(
         str_remove_all(., " ")) %>% 
     pivot_wider(
       id_cols = 
-        c("selected_hunterID", "state", "county", "harvested_date"),
+        c("selected_hunterID", "surveyID", "state", "county", "harvested_date"),
       values_from = retrieved,
       names_from = sp) %>% 
     mutate(over = "Y") %>% 
@@ -272,7 +272,7 @@ datatable(
             str_remove_all(., " ")) %>% 
         pivot_wider(
           id_cols = 
-            c("selected_hunterID", "state", "county", "harvested_date"),
+            c("selected_hunterID", "surveyID", "state", "county", "harvested_date"),
           values_from = retrieved,
           names_from = sp) %>% 
         mutate(over = "N")) %>% 
