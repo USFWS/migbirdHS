@@ -219,8 +219,8 @@ partyproof <-
               is.na(new_retrieved) ~ original_retrieved,
               TRUE ~ na_dbl)) %>% 
         select(
-          surveyID, comment, sp_group_estimated, party_size, original_retrieved,
-          new_retrieved, retrieved) %>% 
+          surveyID, comment, state, sp_group_estimated, party_size, 
+          original_retrieved, new_retrieved, retrieved) %>% 
         filter(!is.na(party_size))
       
       outpath <- c("data/clean_data/")
