@@ -219,7 +219,7 @@ partyproof <-
               is.na(new_retrieved) ~ original_retrieved,
               TRUE ~ na_dbl)) %>% 
         select(
-          surveyID, comment, state, sp_group_estimated, party_size, 
+          surveyID, comment, sampled_state, sp_group_estimated, party_size, 
           original_retrieved, new_retrieved, retrieved) %>% 
         filter(!is.na(party_size))
       
