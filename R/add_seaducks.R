@@ -11,7 +11,6 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr pull
-#' @importFrom lubridate mdy
 #' @importFrom stats setNames
 #'
 #' @param ref_data A reference data table
@@ -45,20 +44,16 @@ add_seaducks <-
             ST == "CA" & Species == "Sea ducks" ~ 
               ref_data %>% 
               filter(ST == "CA" & SpeciesGroup == "Ducks") %>% 
-              mutate(Open = mdy(Open)) %>% 
               select(Open) %>% 
               pull() %>% 
               min(., na.rm = T) %>% 
-              format("%m/%d/%Y") %>% 
               as.character(),
             ST == "WA" & Species == "Sea ducks" ~ 
               ref_data %>% 
               filter(ST == "WA" & SpeciesGroup == "Ducks") %>% 
-              mutate(Open = mdy(Open)) %>% 
               select(Open) %>% 
               pull() %>% 
               min(., na.rm = T) %>% 
-              format("%m/%d/%Y") %>% 
               as.character(),
             TRUE ~ Open),
         Close = 
@@ -66,20 +61,16 @@ add_seaducks <-
             ST == "CA" & Species == "Sea ducks" ~ 
               ref_data %>% 
               filter(ST == "CA" & SpeciesGroup == "Ducks") %>% 
-              mutate(Close = mdy(Close)) %>% 
               select(Close) %>% 
               pull() %>% 
               max(., na.rm = T) %>% 
-              format("%m/%d/%Y") %>% 
               as.character(),
             ST == "WA" & Species == "Sea ducks" ~ 
               ref_data %>% 
               filter(ST == "WA" & SpeciesGroup == "Ducks") %>% 
-              mutate(Close = mdy(Close)) %>% 
               select(Close) %>% 
               pull() %>% 
               max(., na.rm = T) %>% 
-              format("%m/%d/%Y") %>% 
               as.character(),
             TRUE ~ Close),
         Bag = 
