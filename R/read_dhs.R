@@ -2,7 +2,6 @@
 #'
 #' The \code{read_dhs} function reads in daily, season, and reference Harvest Survey .csv data files from a specified filepath. It will automatically read in all files by default unless a year is specified.
 #'
-#' @importFrom dplyr %>%
 #' @importFrom purrr map
 #' @importFrom readr read_csv
 #' @importFrom dplyr group_by
@@ -25,32 +24,23 @@ read_dhs <-
     }else{
       path <- path
     }
-    if(year == "all"){
-      list.files(path) %>% 
-        map(~read_csv(paste0(path, .))) %>% 
+    if(year %in% as.character(2019:2100)){
+      list.files(path) |> 
+        str_subset(year) |> 
+        map(~read_csv(paste0(path, .))) |> 
         set_names(
-          paste(
-            str_extract(
-              list.files(path), "daily_records|season_totals|all_seasons"),
-            str_extract(list.files(path), "[0-9]{4}"),
-            sep = "_")) %>% 
-        list2env(.GlobalEnv)}
-    else if(year %in% as.character(2019:2100)){
-      list.files(path) %>% 
-        str_subset(year) %>% 
-        map(~read_csv(paste0(path, .))) %>% 
-        set_names(
-          paste(
-            str_extract(
-              list.files(path) %>% 
-                str_subset(year), 
-              "daily_records|season_totals|all_seasons"),
-            year,
-            sep = "_")) %>% 
+          str_extract(
+            list.files(path), 
+            "daily_records|season_totals|all_seasons")
+        ) |> 
         list2env(.GlobalEnv)
     }
     else{
-      message("Error: Invalid year.")
+      message(
+        paste0(
+          "Error: Invalid year. Please specify a character year between 2019 a",
+          "nd 2100.")
+      )
     }
   }
   
