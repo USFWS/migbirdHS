@@ -17,7 +17,6 @@
 #' @importFrom dplyr rename
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr distinct
-#' @importFrom lubridate mdy
 #' @importFrom stringr str_remove
 #' 
 #' @param data Daily or season data table
@@ -176,14 +175,13 @@ proofHS <-
                 state %in% c("AZ", "CA", "NV") ~ 
                 "CootsGallinules", 
               speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
-              TRUE ~ NA_character_),
-          open_date = mdy(open),
-          close_date = mdy(close)) %>% 
+              TRUE ~ NA_character_)
+          ) %>% 
         filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
         group_by(seasonyear, state, spp) %>% 
         summarize(
-          open = min(open_date, na.rm = T),
-          close = max(close_date, na.rm = T)) %>%
+          open = min(open, na.rm = T),
+          close = max(close, na.rm = T)) %>%
         ungroup() %>% 
         left_join(
           tibble(
