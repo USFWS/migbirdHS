@@ -42,16 +42,13 @@ submitted <-
       if(str_detect(deparse(substitute(data)), "season") == TRUE){
         dataname <- deparse(substitute(data))
 
-        data <-
-          data %>%
+        data <- 
+          data %>% 
           filter(
             !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                str_extract(dataname, "[0-9]{4}")
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
+              c(get("daily_records") %>%
+                  select(selected_hunterID) %>%
+                  pull())
           )
         message("Notice: season data NOT filtered to exclude daily records.")
         # Additional statement for report template compatibility
