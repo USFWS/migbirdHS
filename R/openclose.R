@@ -7,7 +7,6 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr case_when
-#' @importFrom stringr str_detect
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -39,62 +38,13 @@ openclose <-
   function(data, ref_data, state = NA, summary = F){
     
     dates <- 
-      ref_data %>% 
-      rename_all(~tolower(.)) %>% 
-      filter(st != "PR" & st != "HI") %>% 
-      filter(seasontype != "ExFalc") %>% 
-      filter(!str_detect(speciesgroup, "Swan")) %>% 
-      mutate(
-        speciesgroup = 
-          ifelse(
-            is.na(speciesgroup),
-            species,
-            speciesgroup)) %>% 
-      mutate(
-        speciesgroup = 
-          case_when(
-            species == "Brant" ~ "Brant",
-            species == "MODO" ~ "MODO",
-            str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
-            TRUE ~ speciesgroup)) %>% 
-      select(seasonyear, state = st, speciesgroup, open, close) %>% 
-      mutate(
-        spp = 
-          case_when(
-            str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
-            str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
-            speciesgroup == "Brant" ~ "Brant",
-            speciesgroup == "CAGO" ~ "Geese",
-            speciesgroup == "Geese" ~ "Geese",
-            speciesgroup == "Ducks" ~ "Ducks",
-            speciesgroup == "AMWO" ~ "Woodcock",
-            speciesgroup == "COSN" ~ "Snipe",
-            speciesgroup == "MODO" ~ "Mourning Dove",
-            speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
-            speciesgroup == "Mergansers" ~ "Ducks",
-            speciesgroup == "Rails" ~ "Rails",
-            speciesgroup == "COMO-PUGA" ~ "Gallinules",
-            # For NM "AMCO-COMO", set as "Coots" (they have a separate
-            # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
-            speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
-            # **The "MODO-WWDO" category below should be used for MODO and WWDO
-            speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
-            speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
-            # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
-            # "Brant"
-            speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
-            # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
-            # "Coots" AND "Gallinules"
-            speciesgroup == "AMCO-COMO" & state %in% c("AZ", "CA", "MN", "NV") ~ 
-              "CootsGallinules", 
-            speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
-            TRUE ~ NA_character_)
-        ) %>% 
+      wrangle_ref(ref_data) %>%
+      select(seasonyear, state = st, speciesgroup, open, close, spp) %>% 
       filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
       group_by(seasonyear, state, spp) %>% 
       summarize(
-        open = min(open, na.rm = T),
-        close = max(close, na.rm = T)) %>%
+        open = min(ymd(open), na.rm = T),
+        close = max(ymd(close), na.rm = T)) %>%
       ungroup() %>% 
       left_join(
         tibble(
