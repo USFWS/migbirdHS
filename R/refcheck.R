@@ -25,7 +25,8 @@ refcheck <-
   function(ref_data, type = "species"){
     
     if(type == "species"){
-      ref_data %>% 
+      spp_return <-
+        ref_data %>% 
         rename_all(~tolower(.)) %>%
         filter(st != "PR" & st != "HI") %>% 
         filter(seasontype != "ExFalc") %>% 
@@ -34,7 +35,6 @@ refcheck <-
           speciesgroup = 
             case_when(
               species == "Brant" ~ "Brant",
-              species == "MODO" ~ "MODO",
               str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
               TRUE ~ speciesgroup)) %>% 
         mutate(
@@ -43,37 +43,41 @@ refcheck <-
               str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
               str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
               speciesgroup == "Brant" ~ "Brant",
-              speciesgroup == "CAGO" ~ "Geese",
               speciesgroup == "Geese" ~ "Geese",
               speciesgroup == "Ducks" ~ "Ducks",
               speciesgroup == "AMWO" ~ "Woodcock",
               speciesgroup == "COSN" ~ "Snipe",
-              speciesgroup == "MODO" ~ "Mourning Dove",
               speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
-              speciesgroup == "Mergansers" ~ "Ducks",
               speciesgroup == "Rails" ~ "Rails",
               speciesgroup == "COMO-PUGA" ~ "Gallinules",
+              # **The "MODO-WWDO" category below should be used for MODO and WWDO
+              speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
               # For NM "AMCO-COMO", set as "Coots" (they have a separate
               # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
               speciesgroup == "AMCO-COMO" & st == "NM" ~ "Coots", 
-              # **The "MODO-WWDO" category below should be used for MODO and WWDO
-              speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
-              speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
-              # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
-              # "Brant"
-              speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
               # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
               speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
                 "CootsGallinules", 
-              speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
+              # **For CO, ID, MT, OR, UT, WA, WY: the "AMCO-COMO" category should 
+              # apply to "Coots" only
+              speciesgroup == "AMCO-COMO" & 
+                st %in% c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
+              speciesgroup == "Coots" ~ "Coots",
               TRUE ~ NA_character_)) %>% 
         filter(is.na(spp)) %>%
-        select(seasonyear, state = st, speciesgroup, spp, bag)
+        select(seasonyear, state = st, speciesgroup, spp, bag) %>%
+        distinct()
       
+      if(nrow(spp_return == 0)) {
+        message("No species issues to report.")
+      } else {
+        return(spp_return)
       }
-    else if(type == "season"){
-      ref_data %>% 
+      
+    }else if(type == "season"){
+      season_return <-
+        ref_data %>% 
         rename_all(~tolower(.)) %>% 
         filter(st != "PR" & st != "HI") %>% 
         filter(seasontype != "ExFalc") %>% 
@@ -88,7 +92,6 @@ refcheck <-
           speciesgroup = 
             case_when(
               species == "Brant" ~ "Brant",
-              species == "MODO" ~ "MODO",
               str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
               TRUE ~ speciesgroup)) %>% 
         select(seasonyear, state = st, speciesgroup, open, close) %>% 
@@ -98,34 +101,36 @@ refcheck <-
               str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
               str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
               speciesgroup == "Brant" ~ "Brant",
-              speciesgroup == "CAGO" ~ "Geese",
               speciesgroup == "Geese" ~ "Geese",
               speciesgroup == "Ducks" ~ "Ducks",
               speciesgroup == "AMWO" ~ "Woodcock",
               speciesgroup == "COSN" ~ "Snipe",
-              speciesgroup == "MODO" ~ "Mourning Dove",
               speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
-              speciesgroup == "Mergansers" ~ "Ducks",
               speciesgroup == "Rails" ~ "Rails",
               speciesgroup == "COMO-PUGA" ~ "Gallinules",
-              # For NM "AMCO-COMO", set as "Coots" (they have a separate
-              # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
-              speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
               # **The "MODO-WWDO" category below should be used for MODO and WWDO
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
-              speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
-              # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
-              # "Brant"
-              speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
+              # For NM "AMCO-COMO", set as "Coots" (they have a separate
+              # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
+              speciesgroup == "AMCO-COMO" & st == "NM" ~ "Coots", 
               # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
-              speciesgroup == "AMCO-COMO" & state %in% c("AZ", "CA", "MN", "NV") ~ 
+              speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
                 "CootsGallinules", 
-              speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
-              TRUE ~ NA_character_),
-          open_date = mdy(open),
-          close_date = mdy(close)) %>% 
+              # **For CO, ID, MT, OR, UT, WA, WY: the "AMCO-COMO" category should 
+              # apply to "Coots" only
+              speciesgroup == "AMCO-COMO" & 
+                st %in% c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
+              speciesgroup == "Coots" ~ "Coots",
+              TRUE ~ NA_character_)
+          ) %>% 
         filter(is.na(spp) | is.na(open) | is.na(close))
+      
+      if(nrow(season_return == 0)) {
+        message("No season issues to report.")
+      } else {
+        return(season_return)
+      }
     }else{
       message(paste0("Error: unrecognized `type`. Use 'species' or 'season'."))
     }
