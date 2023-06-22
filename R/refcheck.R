@@ -69,7 +69,7 @@ refcheck <-
         select(seasonyear, state = st, speciesgroup, spp, bag) %>%
         distinct()
       
-      if(nrow(spp_return == 0)) {
+      if(nrow(spp_return) == 0) {
         message("No species issues to report.")
       } else {
         return(spp_return)
@@ -94,7 +94,7 @@ refcheck <-
               species == "Brant" ~ "Brant",
               str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
               TRUE ~ speciesgroup)) %>% 
-        select(seasonyear, state = st, speciesgroup, open, close) %>% 
+        select(seasonyear, st, speciesgroup, open, close) %>% 
         mutate(
           spp = 
             case_when(
@@ -126,7 +126,7 @@ refcheck <-
           ) %>% 
         filter(is.na(spp) | is.na(open) | is.na(close))
       
-      if(nrow(season_return == 0)) {
+      if(nrow(season_return) == 0) {
         message("No season issues to report.")
       } else {
         return(season_return)
