@@ -63,12 +63,9 @@ hunted <-
           data %>% 
           filter(
             !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                as.character(datayr)
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
+              c(get("daily_records") %>%
+                  select(selected_hunterID) %>%
+                  pull())
           )
         message("Notice: season data filtered to exclude daily records.")
       }

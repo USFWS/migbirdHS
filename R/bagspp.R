@@ -44,7 +44,7 @@ bagspp <-
         rename(sp = sp_group_estimated) %>% 
         mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) %>% 
         group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved)) %>% 
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
         ungroup() %>% 
         group_by(selected_hunterID) %>% 
         summarize(
@@ -65,7 +65,7 @@ bagspp <-
               str_detect(sp, "White") ~ "WWDO", 
               TRUE ~ sp)) %>% 
         group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved)) %>% 
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
         ungroup() %>% 
         group_by(selected_hunterID) %>% 
         summarize(
@@ -101,11 +101,11 @@ bagspp <-
         select(selected_hunterID, sp_group_estimated, retrieved) %>%
         rename(sp = sp_group_estimated) %>% 
         group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved)) %>% 
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
         ungroup() %>% 
         group_by(selected_hunterID) %>% 
         summarize(
-          n_retrieved_tot = sum(n_retrieved),
+          n_retrieved_tot = sum(n_retrieved, na.rm = T),
           #spp_combo = paste(sp, collapse = "-"),
           n_spp = as.character(n())) %>%
         ungroup() %>% 

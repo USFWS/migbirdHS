@@ -73,12 +73,9 @@ retrieved <-
           data %>% 
           filter(
             !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                as.character(datayr)
-              )) %>%
-                select(selected_hunterID) %>%
-                pull())
+              c(get("daily_records") %>%
+                  select(selected_hunterID) %>%
+                  pull())
           )
         message("Notice: season data filtered to exclude daily records.")
       }
@@ -89,7 +86,7 @@ retrieved <-
           data %>% 
             select(sampled_state, sp_group_estimated, retrieved) %>%
             group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup()}
         else{
           data %>% 
@@ -97,7 +94,7 @@ retrieved <-
               selected_hunterID, sampled_state, sp_group_estimated, 
               retrieved) %>%
             group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state, sp_group_estimated) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
@@ -113,14 +110,14 @@ retrieved <-
                   sp_group_estimated)) %>% 
             select(sampled_state, sp_group_estimated, retrieved) %>%
             group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state) %>% 
-            mutate(tot_r = sum(n_retrieved)) %>% 
+            mutate(tot_r = sum(n_retrieved, na.rm = T)) %>% 
             ungroup() %>% 
             mutate(
-              prop_sp = n_retrieved/sum(n_retrieved),
-              prop_tot = tot_r/sum(n_retrieved)) %>% 
+              prop_sp = n_retrieved/sum(n_retrieved, na.rm = T),
+              prop_tot = tot_r/sum(n_retrieved, na.rm = T)) %>% 
             ggplot(
               aes(x = reorder(sampled_state, -prop_tot), 
                   y = prop_sp, 
@@ -151,7 +148,7 @@ retrieved <-
               selected_hunterID, sampled_state, sp_group_estimated, 
               retrieved) %>%
             group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state, sp_group_estimated) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
@@ -187,13 +184,13 @@ retrieved <-
           data %>% 
             select(sp_group_estimated, retrieved) %>%
             group_by(sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup()}
         else{
           data %>% 
             select(selected_hunterID, sp_group_estimated, retrieved) %>%
             group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sp_group_estimated) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
@@ -209,7 +206,7 @@ retrieved <-
                   sp_group_estimated)) %>% 
             select(sp_group_estimated, retrieved) %>%
             group_by(sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sp_group_estimated) %>% 
             mutate(tot_r = sum(n_retrieved)) %>% 
@@ -238,7 +235,7 @@ retrieved <-
                   sp_group_estimated)) %>% 
             select(selected_hunterID, sp_group_estimated, retrieved) %>%
             group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sp_group_estimated) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
@@ -269,13 +266,13 @@ retrieved <-
           data %>% 
             select(sampled_state, retrieved) %>%
             group_by(sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup()
         }else{
           data %>% 
             select(selected_hunterID, sampled_state, retrieved) %>%
             group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
@@ -285,7 +282,7 @@ retrieved <-
           data %>% 
             select(sampled_state, retrieved) %>%
             group_by(sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state) %>% 
             mutate(tot_r = sum(n_retrieved)) %>% 
@@ -308,7 +305,7 @@ retrieved <-
           data %>% 
             select(selected_hunterID, sampled_state, retrieved) %>%
             group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved)) %>%
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
             ungroup() %>% 
             group_by(sampled_state) %>% 
             summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
