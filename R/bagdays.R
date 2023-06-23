@@ -22,6 +22,7 @@
 #' @importFrom ggplot2 theme 
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom MetBrewer met.brewer
+#' @importFrom dplyr n_distinct
 #' 
 #' @param data Daily data table
 #' @param output Default is "table"
@@ -58,13 +59,17 @@ bagdays <-
         ggplot(
           aes(x = n_days, y = n_retrieved, color = sp, fill = sp)) +
         geom_jitter(alpha = 0.2, size = 2) +
-        stat_smooth(method = "lm", size = 1, alpha = 0.3) +
+        stat_smooth(method = "lm", linewidth = 1, alpha = 0.3) +
         labs(x = "Days hunted", y = "Birds retrieved", color = "Species", 
              shape = "Species", linetype = "Species", fill = "Species", 
              alpha = "Species") +
         theme_classic() +
-        scale_color_manual(values = met.brewer("Hokusai3", 10)) + 
-        scale_fill_manual(values = met.brewer("Hokusai3", 10)) + 
+        scale_color_manual(
+          values = 
+            met.brewer("Hokusai3", n_distinct(daily_records$sp_group_estimated))) + 
+        scale_fill_manual(
+          values = 
+            met.brewer("Hokusai3", n_distinct(daily_records$sp_group_estimated))) +  
         theme(legend.position = "none") +
         facet_wrap(~sp)
     }else{
