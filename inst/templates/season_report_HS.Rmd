@@ -392,13 +392,24 @@ Season data can include errors such as overbags (bag value over what is the lega
 
 ```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 
-# Read in the manually partyproofed daily data
 party_proofed <-
-  read_csv(paste0(params$partypath, "party_proofed_", params$year, ".csv"))
+  get(names(tibblelist[1])) |> 
+  left_join(
+    proofed_parties |> 
+      select(record_id, new_retrieved)) |> 
+  mutate(
+    retrieved = 
+      ifelse(
+        !is.na(new_retrieved),
+        new_retrieved,
+        retrieved
+      )
+  ) |> 
+  select(-new_retrieved)
 
 # Proof and correct the daily data
 daily_proofed <- proofHS(party_proofed, get(names(tibblelist[1])))
-rm(party_proofed)
+rm(proofed_parties)
 daily_corrected <- correctHS(daily_proofed)
 
 # Proof and correct the season data

@@ -76,6 +76,11 @@ Note: It is recommended to use a database connection rather than .csv files when
 library(migbirdMBHS)
 
 read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
+
+daily_records <-
+  daily_records |> 
+  mutate(record_id = row_number()) |> 
+  relocate(record_id, .before = "surveyID")
 ```
 
 ### add_seaducks

@@ -36,8 +36,10 @@ partyproof <-
   function(data, ref_data, outpath){
     
     if(is.na(outpath)){
-      message("Warning: No outpath provided!")
-    } else{
+      message("Warning: No outpath provided! Fix before proceeding.")
+    } else if (!record_id %in% names(data)) {
+      message("Warning! Field `record_id` not in data! Fix before proceeding.")
+    } else {
       
       ref_table <-
         wrangle_ref(ref_data) %>%
@@ -169,8 +171,8 @@ partyproof <-
                 is.na(new_retrieved) ~ original_retrieved,
                 TRUE ~ na_dbl)) %>% 
           select(
-            surveyID, comment, sampled_state, sp_group_estimated, party_size, 
-            original_retrieved, new_retrieved, retrieved) %>% 
+            record_id, surveyID, comment, sampled_state, sp_group_estimated, 
+            party_size, original_retrieved, new_retrieved, retrieved) %>% 
           filter(!is.na(party_size))
         
         write.csv(
