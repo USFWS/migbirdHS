@@ -35,158 +35,133 @@
 partyproof <- 
   function(data, ref_data, outpath){
     
-    ref_table <-
-      wrangle_ref(ref_data) %>%
-      filter(!is.na(spp)) %>% 
-      select(seasonyear, state = st, speciesgroup, spp, bag) %>% 
-      group_by(seasonyear, state, spp) %>% 
-      summarize(max_bag = max(bag, na.rm = T)) %>% 
-      ungroup() %>% 
-      left_join(
-        tibble(
-          state = datasets::state.abb,
-          sampled_state = datasets::state.name),
-        by = "state") %>% 
-      select(-c("state", "seasonyear")) %>%
-      rename(sp_group_estimated = spp) 
-    
-    special_table <-
-      ref_table %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Gallinules")) 
-    
-    # Remove specialdates spp from the original dates df
-    ref_table <-
-      ref_table %>% 
-      filter(
-        !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
-      bind_rows(special_table) %>%
-      distinct()
-    
-    partytable <- 
-      data %>% 
-      mutate(
-        # Pull out obvious group sizes from strings
-        party_size = 
-          case_when(
-            str_detect(comment, "[0-9]{1,2} man") & retrieved != 0 ~ 
-              str_extract(comment, "[0-9]{1,2} man") %>% 
-              str_remove(., " man"),
-            str_detect(comment, "[0-9]{1,2} person") & retrieved != 0 ~ 
-              str_extract(comment, "[0-9]{1,2} person") %>% 
-              str_remove(., " person"),
-            str_detect(comment, "[0-9]{1,2} hunter") & retrieved != 0 ~ 
-              str_extract(comment, "[0-9]{1,2} hunter") %>% 
-              str_remove(., " hunter"),
-            str_detect(comment, "[0-9]{1,2} people") & retrieved != 0 ~ 
-              str_extract(comment, "[0-9]{1,2} people") %>% 
-              str_remove(., " people"),
-            str_detect(comment, "party of [0-9]{1,2}") & retrieved != 0 ~ 
-              str_extract(comment, "party of [0-9]{1,2}") %>% 
-              str_remove(., "party of "),
-            str_detect(
-              comment, "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") & 
-              retrieved != 0 ~ 
-              str_extract(
-                comment, 
-                "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") %>% 
-              str_remove(., "party of "),
-            str_detect(comment, "group of [0-9]{1,2}") & retrieved != 0 ~ 
-              str_extract(comment, "group of [0-9]{1,2}") %>% 
-              str_remove(., "group of "),
-            str_detect(
-              comment, "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") & 
-              retrieved != 0 ~ 
-              str_extract(
-                comment, 
-                "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") %>% 
-              str_remove(., "group of "),
-            TRUE ~ NA_character_)) %>% 
-      rename(original_retrieved = retrieved) %>% 
-      mutate(new_retrieved = NA) %>% 
-      left_join(ref_table, by = c("sp_group_estimated", "sampled_state")) %>% 
-      arrange(desc(party_size))
-    
-    i <- 1
-    total <- 
-      partytable %>% 
-      select(party_size) %>%
-      filter(!is.na(party_size)) %>% 
-      nrow()
-    
-    while(i != total + 1){
-      message(
-        paste0(
-          "\nWhat should the retrieved value be? Max bag is ", 
-          partytable$max_bag[i], "."))
-      message(paste0("Entry: ", i, "/", total))
-      cat(paste("Retrieved: ", partytable$original_retrieved[i]), "\n")
-      cat(paste("Party size: ", partytable$party_size[i]), "\n")
-      cat(paste("Comment: ", partytable$comment[i]))
-      ANSWER <- toupper(scan(what = character(), nmax = 1, quiet = T))
+    if(is.na(outpath)){
+      message("Warning: No outpath provided!")
+    } else{
       
-      if(str_detect(ANSWER, "[0-9]{1,2}") == TRUE){
-        message("Changed retrieved value to ", eval(parse_expr(ANSWER)), ".")
-        partytable$new_retrieved[i] <- as.numeric(eval(parse_expr(ANSWER)))
-        i <- i + 1
-      }else if(ANSWER == "Y"){
-        message("Next row.")
-        i <- i + 1
-      }else{
-        message("Whoops. Enter a number, fraction, or 'Y'.")
-        i <- i
-      }
-    }
-    
-    if(i == total + 1){
-      message("Finished!")
+      ref_table <-
+        wrangle_ref(ref_data) %>%
+        filter(!is.na(spp)) %>% 
+        select(seasonyear, state = st, speciesgroup, spp, bag) %>% 
+        distinct() %>%
+        mutate(bag = ifelse(is.na(bag), 0, bag)) %>%
+        group_by(seasonyear, state, spp) %>% 
+        summarize(max_bag = max(bag, na.rm = T)) %>% 
+        ungroup() %>% 
+        left_join(
+          tibble(
+            state = datasets::state.abb,
+            sampled_state = datasets::state.name),
+          by = "state") %>% 
+        select(-c("state", "seasonyear")) %>%
+        rename(sp_group_estimated = spp) 
       
-      proofed_parties <- 
-        partytable %>% 
+      special_table <-
+        ref_table %>% 
+        filter(sp_group_estimated == "MODO-WWDO") %>% 
+        mutate(sp_group_estimated = "Mourning Dove") %>% 
+        bind_rows(
+          ref_table %>% 
+            filter(sp_group_estimated == "MODO-WWDO") %>% 
+            mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        bind_rows(
+          ref_table %>% 
+            filter(sp_group_estimated == "CootsGallinules") %>% 
+            mutate(sp_group_estimated = "Coots")) %>% 
+        bind_rows(
+          ref_table %>% 
+            filter(sp_group_estimated == "CootsGallinules") %>% 
+            mutate(sp_group_estimated = "Gallinules")) 
+      
+      # Remove specialdates spp from the original dates df
+      ref_table <-
+        ref_table %>% 
+        filter(
+          !sp_group_estimated %in% 
+            c("MODO-WWDO", "CootsGallinules")) %>% 
+        bind_rows(special_table) %>%
+        distinct()
+      
+      partytable <- 
+        data %>% 
         mutate(
-          retrieved = 
+          # Pull out obvious group sizes from strings
+          party_size = 
             case_when(
-              !is.na(new_retrieved) ~ new_retrieved,
-              is.na(new_retrieved) ~ original_retrieved,
-              TRUE ~ na_dbl)) %>% 
-        select(
-          surveyID, comment, sampled_state, sp_group_estimated, party_size, 
-          original_retrieved, new_retrieved, retrieved) %>% 
-        filter(!is.na(party_size))
+              str_detect(comment, "[0-9]{1,2} man") & retrieved != 0 ~ 
+                str_extract(comment, "[0-9]{1,2} man") %>% 
+                str_remove(., " man"),
+              str_detect(comment, "[0-9]{1,2} person") & retrieved != 0 ~ 
+                str_extract(comment, "[0-9]{1,2} person") %>% 
+                str_remove(., " person"),
+              str_detect(comment, "[0-9]{1,2} hunter") & retrieved != 0 ~ 
+                str_extract(comment, "[0-9]{1,2} hunter") %>% 
+                str_remove(., " hunter"),
+              str_detect(comment, "[0-9]{1,2} people") & retrieved != 0 ~ 
+                str_extract(comment, "[0-9]{1,2} people") %>% 
+                str_remove(., " people"),
+              str_detect(comment, "party of [0-9]{1,2}") & retrieved != 0 ~ 
+                str_extract(comment, "party of [0-9]{1,2}") %>% 
+                str_remove(., "party of "),
+              str_detect(
+                comment, "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") & 
+                retrieved != 0 ~ 
+                str_extract(
+                  comment, 
+                  "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") %>% 
+                str_remove(., "party of "),
+              str_detect(comment, "group of [0-9]{1,2}") & retrieved != 0 ~ 
+                str_extract(comment, "group of [0-9]{1,2}") %>% 
+                str_remove(., "group of "),
+              str_detect(
+                comment, "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") & 
+                retrieved != 0 ~ 
+                str_extract(
+                  comment, 
+                  "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") %>% 
+                str_remove(., "group of "),
+              TRUE ~ NA_character_)) %>% 
+        rename(original_retrieved = retrieved) %>% 
+        mutate(new_retrieved = NA) %>% 
+        left_join(ref_table, by = c("sp_group_estimated", "sampled_state")) %>% 
+        arrange(desc(party_size))
       
-      outpath <- c("data/clean_data/")
-      write.csv(
-        proofed_parties, 
-        paste0(
-          outpath, 
-          "proofed_parties_", 
-          str_extract(deparse(substitute(data)), "[0-9]{4}"),
-          ".csv"), 
-        row.names = F)
-      
-      return(
+      i <- 1
+      total <- 
         partytable %>% 
+        select(party_size) %>%
+        filter(!is.na(party_size)) %>% 
+        nrow()
+      
+      while(i != total + 1){
+        message(
+          paste0(
+            "\nWhat should the retrieved value be? Max bag is ", 
+            partytable$max_bag[i], "."))
+        message(paste0("Entry: ", i, "/", total))
+        cat(paste("Retrieved: ", partytable$original_retrieved[i]), "\n")
+        cat(paste("Party size: ", partytable$party_size[i]), "\n")
+        cat(paste("Comment: ", partytable$comment[i]))
+        ANSWER <- toupper(scan(what = character(), nmax = 1, quiet = T))
+        
+        if(str_detect(ANSWER, "[0-9]{1,2}") == TRUE){
+          message("Changed retrieved value to ", eval(parse_expr(ANSWER)), ".")
+          partytable$new_retrieved[i] <- as.numeric(eval(parse_expr(ANSWER)))
+          i <- i + 1
+        }else if(ANSWER == "Y"){
+          message("Next row.")
+          i <- i + 1
+        }else{
+          message("Whoops. Enter a number, fraction, or 'Y'.")
+          i <- i
+        }
+      }
+      
+      if(i == total + 1){
+        message("Finished!")
+        
+        proofed_parties <- 
+          partytable %>% 
           mutate(
             retrieved = 
               case_when(
@@ -194,9 +169,29 @@ partyproof <-
                 is.na(new_retrieved) ~ original_retrieved,
                 TRUE ~ na_dbl)) %>% 
           select(
-            -c("original_retrieved", "new_retrieved", "party_size", 
-               "max_bag")) %>%
-          relocate(retrieved, .before = "unretrieved")
-      )
+            surveyID, comment, sampled_state, sp_group_estimated, party_size, 
+            original_retrieved, new_retrieved, retrieved) %>% 
+          filter(!is.na(party_size))
+        
+        write.csv(
+          proofed_parties, 
+          outpath, 
+          row.names = F)
+        
+        return(
+          partytable %>% 
+            mutate(
+              retrieved = 
+                case_when(
+                  !is.na(new_retrieved) ~ new_retrieved,
+                  is.na(new_retrieved) ~ original_retrieved,
+                  TRUE ~ na_dbl)) %>% 
+            select(
+              -c("original_retrieved", "new_retrieved", "party_size", 
+                 "max_bag")) %>%
+            relocate(retrieved, .before = "unretrieved")
+        )
+      
+      }
     }
   }
