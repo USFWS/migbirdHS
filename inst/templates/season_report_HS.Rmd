@@ -393,7 +393,7 @@ Season data can include errors such as overbags (bag value over what is the lega
 ```{r, proofandcorrect, message = FALSE, warning = FALSE, echo = FALSE, include = FALSE}
 
 party_proofed <-
-  get(names(tibblelist[1])) |> 
+  get(names(tibblelist[2])) |> 
   left_join(
     proofed_parties |> 
       select(record_id, new_retrieved)) |> 
