@@ -37,7 +37,7 @@ partyproof <-
     
     if(is.na(outpath)){
       message("Warning: No outpath provided! Fix before proceeding.")
-    } else if (!record_id %in% names(data)) {
+    } else if (!"record_id" %in% names(data)) {
       message("Warning! Field `record_id` not in data! Fix before proceeding.")
     } else {
       
