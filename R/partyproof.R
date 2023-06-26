@@ -40,7 +40,7 @@ partyproof <-
       filter(!is.na(spp)) %>% 
       select(seasonyear, state = st, speciesgroup, spp, bag) %>% 
       group_by(seasonyear, state, spp) %>% 
-      summarize(max_bag = max(bag)) %>% 
+      summarize(max_bag = max(bag, na.rm = T)) %>% 
       ungroup() %>% 
       left_join(
         tibble(
