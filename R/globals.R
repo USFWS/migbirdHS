@@ -71,6 +71,8 @@ utils::globalVariables(
     "original_retrieved",
     "new_retrieved",
     "flag",
-    "ranker"
+    "ranker",
+    "record_id",
+    "daily_records"
     )
 )
