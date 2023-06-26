@@ -90,15 +90,17 @@ nodata <-
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
               # For NM "AMCO-COMO", set as "Coots" (they have a separate
               # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
-              speciesgroup == "AMCO-COMO" & st == "NM" ~ "Coots", 
+              speciesgroup == "AMCO-COMO" & sampled_state == "NM" ~ "Coots", 
               # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
-              speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
+              speciesgroup == "AMCO-COMO" & 
+                sampled_state %in% c("AZ", "CA", "MN", "NV") ~ 
                 "CootsGallinules", 
               # **For CO, ID, MT, OR, UT, WA, WY: the "AMCO-COMO" category should 
               # apply to "Coots" only
               speciesgroup == "AMCO-COMO" & 
-                st %in% c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
+                sampled_state %in% 
+                c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
               speciesgroup == "Coots" ~ "Coots",
               TRUE ~ NA_character_)) %>%
         rename(sp_group_estimated = spp) %>% 
@@ -118,14 +120,6 @@ nodata <-
             mutate(sp_group_estimated = "White-winged Dove")) %>% 
         bind_rows(
           ref_table %>% 
-            filter(sp_group_estimated == "GeeseBrant") %>% 
-            mutate(sp_group_estimated = "Geese")) %>% 
-        bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "GeeseBrant") %>% 
-            mutate(sp_group_estimated = "Brant")) %>% 
-        bind_rows(
-          ref_table %>% 
             filter(sp_group_estimated == "CootsGallinules") %>% 
             mutate(sp_group_estimated = "Coots")) %>% 
         bind_rows(
@@ -136,7 +130,7 @@ nodata <-
       ref_table %>% 
         filter(
           !sp_group_estimated %in% 
-            c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+            c("MODO-WWDO", "CootsGallinules")) %>% 
         bind_rows(special_data) %>%
         distinct() %>% 
         left_join(
@@ -180,15 +174,18 @@ nodata <-
               speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
               # For NM "AMCO-COMO", set as "Coots" (they have a separate
               # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
-              speciesgroup == "AMCO-COMO" & st == "NM" ~ "Coots", 
+              speciesgroup == "AMCO-COMO" & 
+                sampled_state == "NM" ~ "Coots", 
               # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
               # "Coots" AND "Gallinules"
-              speciesgroup == "AMCO-COMO" & st %in% c("AZ", "CA", "MN", "NV") ~ 
+              speciesgroup == "AMCO-COMO" & 
+                sampled_state %in% c("AZ", "CA", "MN", "NV") ~ 
                 "CootsGallinules", 
               # **For CO, ID, MT, OR, UT, WA, WY: the "AMCO-COMO" category should 
               # apply to "Coots" only
               speciesgroup == "AMCO-COMO" & 
-                st %in% c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
+                sampled_state %in% 
+                c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
               speciesgroup == "Coots" ~ "Coots",
               TRUE ~ NA_character_)) %>% 
         rename(sp_group_estimated = spp) %>% 
@@ -208,14 +205,6 @@ nodata <-
             mutate(sp_group_estimated = "White-winged Dove")) %>% 
         bind_rows(
           ref_table %>% 
-            filter(sp_group_estimated == "GeeseBrant") %>% 
-            mutate(sp_group_estimated = "Geese")) %>% 
-        bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "GeeseBrant") %>% 
-            mutate(sp_group_estimated = "Brant")) %>% 
-        bind_rows(
-          ref_table %>% 
             filter(sp_group_estimated == "CootsGallinules") %>% 
             mutate(sp_group_estimated = "Coots")) %>% 
         bind_rows(
@@ -226,7 +215,7 @@ nodata <-
       ref_table %>% 
         filter(
           !sp_group_estimated %in% 
-            c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+            c("MODO-WWDO", "CootsGallinules")) %>% 
         bind_rows(special_data) %>%
         distinct() %>% 
         left_join(
