@@ -4,7 +4,9 @@
 #'
 #' @importFrom rmarkdown render
 #'
-#' @param inpath File path to the folder containing the daily, season, and reference Harvest Survey .csv files
+#' @param daily Daily data table
+#' @param season Season data table
+#' @param ref_data Reference data table for the same year as the daily data
 #' @param partypath File path to the folder containing results from partyproof function
 #' @param type Type of report. One of the following options may be supplied:
 #' \itemize{
@@ -18,7 +20,7 @@
 #' @references \url{https://github.com/USFWS/migbirdHarvestData}
 
 reportHS <-
-  function(inpath, partypath, type, year, outpath, file){
+  function(daily, season, ref_data, partypath, type, year, outpath, file){
     
     # Create Rmd for download
     if(type == "survey_analytics"){
@@ -32,7 +34,9 @@ reportHS <-
         # Include the specified parameters so the functions can run
         params =
           list(
-            inpath = inpath,
+            daily = daily,
+            season = season,
+            ref_data = ref_data,
             partypath = partypath,
             year = year),
         output_file = file,
@@ -51,7 +55,9 @@ reportHS <-
         # Include the specified parameters so the functions can run
         params =
           list(
-            inpath = inpath,
+            daily = daily,
+            season = season,
+            ref_data = ref_data,
             partypath = partypath,
             year = year),
         output_file = file,

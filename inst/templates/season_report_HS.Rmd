@@ -6,7 +6,11 @@ output:
     toc: true
     number_sections: true
 params:
-  inpath:
+  daily:
+    value: x
+  season:
+    value: x
+  ref_data:
     value: x
   partypath:
     value: x
@@ -21,23 +25,10 @@ library(ggnewscale)
 library(MetBrewer)
 library(DT)
 
-# Input path
-inpath <- params$inpath
-
-# Read data 
-invisible(read_dhs(inpath, year = as.character(params$year)))
-
-# Add seaducks to the season metadata
-all_seasons <- paste0("all_seasons_", as.character(params$year))
-invisible(assign(all_seasons, add_seaducks(get(all_seasons)), envir = .GlobalEnv))
-
 # Write tibble names to list for function compatibility
 tibblelist <-
-  vector("list", 3) %>% 
-  set_names(
-    all_seasons,
-    paste0("daily_records_", as.character(params$year)),
-    paste0("season_totals_", as.character(params$year)))
+  list(ref_data, daily, season) %>% 
+  set_names(c("all_seasons", "daily_records", "season_totals"))
 ```
 
 # Introduction
@@ -147,8 +138,7 @@ hunted(get(names(tibblelist[3])), type = "species", output = "plot") +
 Here are the manual corrections done to party hunt retrieved values with the `partyproof` function:
 
 ```{r, partyresults, message = FALSE, warning = FALSE, echo = F}
-proofed_parties <-
-  read.csv(paste0(params$partypath, "proofed_parties_", params$year, ".csv"))
+proofed_parties <- read_csv(params$partypath)
 
 datatable(
   proofed_parties %>% 

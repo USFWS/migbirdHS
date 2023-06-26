@@ -66,9 +66,11 @@ knitr::include_graphics("image/migbirdMBHS_flow_chart.svg")
 
 ### read_dhs
 
-The first step is to import the three .csv files containing Harvest Survey data: "daily_records", "season_totals", and "all_seasons". These files are read in to the R Global Environment with the `read_dhs` function, and are used together or separately in all subsequent functions.
+The first step is to import the three Harvest Survey data tables: "daily_records", "season_totals", and "all_seasons". These data are used together or separately in all subsequent functions.
 
-The `read_dhs` function will read in 3 files for a specific year (e.g. `year = "2019"`), or all files for all available years in a given directory (e.g. `year = "all"`). In the example below, we will read in data for 2020. The tibbles added to the global environment are given a 4-digit suffix that corresponds to their survey year (e.g. "season_totals_2020").
+The `read_dhs` function can be used to read in the three data tables from .csv files to the R Global Environment. The `read_dhs` function will read in all three files for a specific year (e.g. `year = "2019"`). In the example below, we will read in data for 2020. 
+
+Note: It is recommended to use a database connection rather than .csv files when accessing data for annual processing. The `read_dhs` function should be used in rare cases (e.g. running the package vignette, going through past data, etc). Please see alternate documentation to make a database connection.
 
 ```{r, read_dhs_chunk, message = FALSE, warning = FALSE}
 library(migbirdMBHS)
@@ -81,7 +83,7 @@ read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 The `add_seaducks` function adds seaduck take and season values to the reference table. This is done in each state with seaduck harvest using the same values as ducks.
 
 ```{r, addseaducks, message = FALSE, warning = FALSE}
-all_seasons_2020 <- add_seaducks(all_seasons_2020)
+all_seasons <- add_seaducks(all_seasons)
 ```
 
 ### refcheck
@@ -89,7 +91,7 @@ all_seasons_2020 <- add_seaducks(all_seasons_2020)
 Check to see if the reference table contains every reference value needed with the `refcheck` function. If anything is reported by this function, edit the reference table manually.
 
 ```{r, refcheck, message = FALSE, warning = FALSE}
-refcheck(all_seasons_2020)
+refcheck(all_seasons)
 ```
 
 ## Part B: Data Checking and Visualization
@@ -103,25 +105,25 @@ An additional parameter in this function is `report`, set to `FALSE` by default.
 To demonstrate the use of `nodata` outside of a report, first we will check the daily data:
 
 ```{r, nodata1, message = FALSE, warning = FALSE}
-nodata(daily_records_2020, ref_data = all_seasons_2020)
+nodata(daily_records, ref_data = all_seasons)
 ```
 
 Then, we will check the season data:
 
 ```{r, nodata2, message = FALSE, warning = FALSE}
-nodata(season_totals_2020, ref_data = all_seasons_2020)
+nodata(season_totals, ref_data = all_seasons)
 ```
 
 We can include species for the season data:
 
 ```{r, nodata3, message = FALSE, warning = FALSE}
-nodata(season_totals_2020, ref_data = all_seasons_2020, species = "all")
+nodata(season_totals, ref_data = all_seasons, species = "all")
 ```
 
 And we can specify which species we want to check, across all states:
 
 ```{r, nodata4, message = FALSE, warning = FALSE}
-nodata(season_totals_2020, ref_data = all_seasons_2020, species = "Coots")
+nodata(season_totals, ref_data = all_seasons, species = "Coots")
 ```
 
 
@@ -134,31 +136,31 @@ This function does not filter out daily records from the season totals.
 To demonstrate, first we will plot the total daily data:
 
 ```{r, submitted1, message = FALSE, warning = FALSE, fig.align = "center"}
-submitted(daily_records_2020, type = "totals", output = "plot")
+submitted(daily_records, type = "totals", output = "plot")
 ```
 
 Next, we can create a table of the total daily data:
 
 ```{r, submitted2, message = FALSE, warning = FALSE, fig.align = "center"}
-submitted(daily_records_2020, type = "totals", output = "table")
+submitted(daily_records, type = "totals", output = "table")
 ```
 
 Switching to season data, we can create a plot first for `type = "totals"`:
 
 ```{r, submitted3, message = FALSE, warning = FALSE, fig.align = "center"}
-submitted(season_totals_2020, type = "totals", output = "plot")
+submitted(season_totals, type = "totals", output = "plot")
 ```
 
 Then create a plot for `type = "state"`:
 
 ```{r, submitted4, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-submitted(season_totals_2020, type = "state", output = "plot")
+submitted(season_totals, type = "state", output = "plot")
 ```
 
 And finally, create a plot for `type = "species"`:
 
 ```{r, submitted5, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-submitted(season_totals_2020, type = "species", output = "plot")
+submitted(season_totals, type = "species", output = "plot")
 ```
 
 
@@ -169,31 +171,31 @@ The `hunted` function checks the "days_hunted" field in the season totals data o
 To demonstrate, first we will plot the total daily data:
 
 ```{r, hunted1, message = FALSE, warning = FALSE, fig.align = "center"}
-hunted(daily_records_2020, type = "totals", output = "plot")
+hunted(daily_records, type = "totals", output = "plot")
 ```
 
 Next, we can create a table of the total daily data:
 
 ```{r, hunted2, message = FALSE, warning = FALSE, fig.align = "center"}
-hunted(daily_records_2020, type = "totals", output = "table")
+hunted(daily_records, type = "totals", output = "table")
 ```
 
 Switching to season data, we can create a plot first for `type = "totals"`:
 
 ```{r, hunted3, message = FALSE, warning = FALSE, fig.align = "center"}
-hunted(season_totals_2020, type = "totals", output = "plot")
+hunted(season_totals, type = "totals", output = "plot")
 ```
 
 Then create a plot for `type = "state"`:
 
 ```{r, hunted4, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-hunted(season_totals_2020, type = "state", output = "plot")
+hunted(season_totals, type = "state", output = "plot")
 ```
 
 And finally, create a plot for `type = "species"`:
 
 ```{r, hunted5, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-hunted(season_totals_2020, type = "species", output = "plot")
+hunted(season_totals, type = "species", output = "plot")
 ```
 
 ### overdays
@@ -201,11 +203,11 @@ hunted(season_totals_2020, type = "species", output = "plot")
 The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
 
 ```{r, overdays1, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-overdays(daily_records_2020, ref_data = all_seasons_2020)
+overdays(daily_records, ref_data = all_seasons)
 ```
 
 ```{r, overdays2, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-overdays(season_totals_2020, ref_data = all_seasons_2020)
+overdays(season_totals, ref_data = all_seasons)
 ```
 
 
@@ -216,19 +218,19 @@ The `overbags` function checks for retrieved values over the bag limit per state
 The default settings can be used for a basic output:
 
 ```{r, overbags1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-overbags(daily_records_2020, ref_data = all_seasons_2020)
+overbags(daily_records, ref_data = all_seasons)
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
 
 ```{r, overbags2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-overbags(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
+overbags(daily_records, ref_data = all_seasons, summary = TRUE)
 ```
 
 And we can specify a state:
 
 ```{r, overbags3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-overbags(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas")
+overbags(daily_records, ref_data = all_seasons, state = "Arkansas")
 ```
 
 ### retrieved
@@ -238,37 +240,37 @@ The `retrieved` function summarizes the total number of birds retrieved in the d
 Let's use the most basic version of the function on the daily data:
 
 ```{r, retrieved1, message = FALSE, warning = FALSE}
-retrieved(daily_records_2020)
+retrieved(daily_records)
 ```
 
 Then plot it:
 
 ```{r, retrieved2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-retrieved(daily_records_2020, output = "plot")
+retrieved(daily_records, output = "plot")
 ```
 
 View state only:
 
 ```{r, retrieved3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-retrieved(daily_records_2020, output = "plot", type = "state")
+retrieved(daily_records, output = "plot", type = "state")
 ```
 
 View species only:
 
 ```{r, retrieved4, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-retrieved(daily_records_2020, output = "plot", type = "species")
+retrieved(daily_records, output = "plot", type = "species")
 ```
 
 View it without averaging:
 
 ```{r, retrieved5, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-retrieved(daily_records_2020, output = "plot", average = FALSE)
+retrieved(daily_records, output = "plot", average = FALSE)
 ```
 
 Then plot season data:
 
 ```{r, retrieved6, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-retrieved(season_totals_2020, output = "plot")
+retrieved(season_totals, output = "plot")
 ```
 
 ### bagspp
@@ -278,25 +280,25 @@ The `bagspp` function summarizes daily data to determine the total number of ret
 The default is `output = "table"`:
 
 ```{r, bagspp1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-bagspp(daily_records_2020)
+bagspp(daily_records)
 ```
 
 To create a treemap of the number of species groups per hunter, use `output = "n"`:
 
 ```{r, bagspp2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-bagspp(daily_records_2020, output = "n")
+bagspp(daily_records, output = "n")
 ```
 
 To create a treemap of the species group combinations represented in the data (each hunter's pursued species are grouped), use `output = "species"`:
 
 ```{r, bagspp3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-bagspp(daily_records_2020, output = "species")
+bagspp(daily_records, output = "species")
 ```
 
 To create a treemap of successful hunts only (the daily data are filtered to exclude retrieved = 0) and view groups of species combinations that were successfully hunted, use `output = "success"`:
 
 ```{r, bagspp4, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-bagspp(daily_records_2020, output = "success")
+bagspp(daily_records, output = "success")
 ```
 
 ### openclose
@@ -306,19 +308,19 @@ The `openclose` function checks if harvest dates fall outside of a state's and s
 The basic version of the function returns an unsummarized table:
 
 ```{r, openclose1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-openclose(daily_records_2020, ref_data = all_seasons_2020)
+openclose(daily_records, ref_data = all_seasons)
 ```
 
 But `summary = TRUE` can be used to get a summary:
 
 ```{r, openclose2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-openclose(daily_records_2020, ref_data = all_seasons_2020, summary = TRUE)
+openclose(daily_records, ref_data = all_seasons, summary = TRUE)
 ```
 
 And the `state` parameter can be used to narrow down to a particular state:
 
 ```{r, openclose3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-openclose(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas", summary = TRUE)
+openclose(daily_records, ref_data = all_seasons, state = "Arkansas", summary = TRUE)
 ```
 
 ### partyhunt
@@ -326,7 +328,7 @@ openclose(daily_records_2020, ref_data = all_seasons_2020, state = "Arkansas", s
 The `partyhunt` function checks to see if any comments in the daily data indicate that bag values reported were for two or more people. It returns a simple table. This function is a watered down version of [partyproof](#partyproof).
 
 ```{r, partyhunt, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-partyhunt(daily_records_2020)
+partyhunt(daily_records)
 ```
 
 ### huntdays
@@ -336,31 +338,31 @@ The `huntdays` function summarizes the total number of days hunted in the daily 
 Let's use the most basic version of the function on the daily data:
 
 ```{r, huntdays1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-huntdays(daily_records_2020)
+huntdays(daily_records)
 ```
 
 Then plot it:
 
 ```{r, huntdays2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-huntdays(daily_records_2020, output = "plot")
+huntdays(daily_records, output = "plot")
 ```
 
 View it without averaging:
 
 ```{r, huntdays5, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-huntdays(daily_records_2020, output = "plot", average = FALSE)
+huntdays(daily_records, output = "plot", average = FALSE)
 ```
 
 View state only:
 
 ```{r, huntdays3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-huntdays(daily_records_2020, output = "plot", type = "state")
+huntdays(daily_records, output = "plot", type = "state")
 ```
 
 View species only:
 
 ```{r, huntdays4, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-huntdays(daily_records_2020, output = "plot", type = "species")
+huntdays(daily_records, output = "plot", type = "species")
 ```
 
 ### compare
@@ -372,19 +374,19 @@ There are 3 types of plots that can be generated from this function.
 The first is `type = "line"`:
 
 ```{r, compare1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-compare(daily_records_2020, season_totals_2020, type = "line")
+compare(daily_records, season_totals, type = "line")
 ```
 
 The next is `type = "days"`:
 
 ```{r, compare2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-compare(daily_records_2020, season_totals_2020, type = "days")
+compare(daily_records, season_totals, type = "days")
 ```
 
 And the last is `type = "retrieved"`:
 
 ```{r, compare3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-compare(daily_records_2020, season_totals_2020, type = "retrieved")
+compare(daily_records, season_totals, type = "retrieved")
 ```
 
 
@@ -393,7 +395,7 @@ compare(daily_records_2020, season_totals_2020, type = "retrieved")
 The `retrievedmap` function creates a hex bin map of the United States from daily Harvest Survey data. Maps are plotted in a grid to display all species. States that are red have the highest mean harvest, states that are yellow have the lowest mean harvest, and blank (or white) states have no data. The default `output = "grid"` returns one image, but `output = "series"` can be used alternatively in the R console to view and export each species individually.
 
 ```{r, retrievedmap, message = FALSE, warning = FALSE, fig.align = "center", fig.asp = 1.1, fig.width = 11, dpi = 300, out.width = 600}
-retrievedmap(daily_records_2020, output = "grid")
+retrievedmap(daily_records, output = "grid")
 ```
 
 ### bagdays
@@ -401,9 +403,9 @@ retrievedmap(daily_records_2020, output = "grid")
 The `bagdays` function determines the total number of days hunted per hunter and species group in the daily data. The default `output = "table"` returns a table. Use `output = "plot"` to return a ggplot object.
 
 ```{r, bagdays1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-bagdays(daily_records_2020, output = "plot")
+bagdays(daily_records, output = "plot")
 
-bagdays(daily_records_2020, output = "table")
+bagdays(daily_records, output = "table")
 ```
 
 ### responselag
@@ -413,19 +415,19 @@ The `responselag` function creates plots to visualize the amount of time between
 Use `type = "count"` to view the distribution of response lag:
 
 ```{r, responselag1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-responselag(daily_records_2020, type = "count")
+responselag(daily_records, type = "count")
 ```
 
 Use `type = "lag"` to view the relationship between response lag and the number of birds retrieved:
 
 ```{r, responselag2, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-responselag(daily_records_2020, type = "lag")
+responselag(daily_records, type = "lag")
 ```
 
 And use `type = "date"` to view the relationship between date of response and date of harvest:
 
 ```{r, responselag3, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
-responselag(daily_records_2020, type = "date")
+responselag(daily_records, type = "date")
 ```
 
 ## Part C: Data Proofing, Correction, and Report Writing
@@ -435,11 +437,11 @@ responselag(daily_records_2020, type = "date")
 The `partyproof` function checks for, and allows the user to edit, any group hunts in the daily data. Comments are parsed to determine party size. Adjustments to number of birds retrieved must be entered manually, and if deemed necessary, the retrieved value will be divided by the party size. A report file is written out as a .csv to record all changes made.
 
 ```{r, partyproof, message = FALSE, warning = FALSE, eval = FALSE}
-proofed_parties_2020 <- 
+proofed_parties <- 
   partyproof(
-    data = daily_records_2020, 
-    ref_data = all_seasons_2020, 
-    outpath = "C:/HarvestSurvey/vignette/clean_data/")
+    data = daily_records, 
+    ref_data = all_seasons, 
+    outpath = "C:/HarvestSurvey/vignette/clean_data/party_proofed.csv")
 ```
 
 ### proofHS
@@ -451,8 +453,8 @@ For daily data, specify the output from `partyproof` for `data`.
 ```{r, proofHS_d, message = FALSE, warning = FALSE, eval = FALSE}
 daily_proofed <- 
   proofHS(
-    data = proofed_parties_2020, 
-    ref_data = all_seasons_2020)
+    data = proofed_parties, 
+    ref_data = all_seasons)
 ```
 
 For season data, use the season data table for `data`.
@@ -460,8 +462,8 @@ For season data, use the season data table for `data`.
 ```{r, proofHS_s, message = FALSE, warning = FALSE, eval = FALSE}
 season_proofed <-
   proofHS(
-    data = season_totals_2020, 
-    ref_data = all_seasons_2020)
+    data = season_totals, 
+    ref_data = all_seasons)
 ```
 
 ### correctHS
@@ -480,8 +482,10 @@ season_corrected <- correctHS(season_proofed)
 
 The `reportHS` function creates documentation with figures and tables that summarize daily and season data. Parameters include:
 
-- `inpath` - file path to the folder containing the daily, season, and reference .csv files
-- `partypath` - file path to the folder containing results from the `partyproof` function
+- `daily` - name of daily data table in environment
+- `season` - name of season data table in environment
+- `ref_data` - name of reference data table in environment
+- `partypath` - file path to the .csv containing results from the `partyproof` function
 - `year` - hunting season for which data were collected
 - `outpath` - folder in which to save the completed report
 - `file` - what the report file should be named
@@ -490,12 +494,14 @@ There are two templates that can generate reports: an annual summary report (`ty
 
 ```{r, reportHS1, message = FALSE, warning = FALSE, eval = FALSE}
 reportHS(
-  inpath = "C:/HarvestSurvey/vignette/",
-  partypath = "C:/HarvestSurvey/vignette/clean_data/",
+  daily = daily,
+  season = season,
+  ref_data = all_seasons,
+  partypath = "C:/HarvestSurvey/vignette/clean_data/party_proofed.csv",
   type = "season_report",
   year = "2020",
   outpath = "C:/HarvestSurvey/vignette/reports/",
-  file = "HS_annual_summary_report_2020.csv"
+  file = "HS_annual_summary_report_2020.html"
 )
 ```
 
@@ -503,12 +509,14 @@ reportHS(
 
 ```{r, reportHS2, message = FALSE, warning = FALSE, eval = FALSE}
 reportHS(
-  inpath = "C:/HarvestSurvey/vignette/",
-  partypath = "C:/HarvestSurvey/vignette/clean_data/",
+  daily = daily,
+  season = season,
+  ref_data = all_seasons,
+  partypath = "C:/HarvestSurvey/vignette/clean_data/party_proofed.csv",
   type = "survey_analytics",
   year = "2020",
   outpath = "C:/HarvestSurvey/vignette/reports/",
-  file = "HS_annual_summary_report_2020.csv"
+  file = "HS_annual_summary_report_2020.html"
 )
 ```
 
