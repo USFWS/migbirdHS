@@ -62,14 +62,6 @@ proofHS <-
           mutate(sp_group_estimated = "White-Winged Dove")) %>% 
       bind_rows(
         ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
-      bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
-      bind_rows(
-        ref_table %>% 
           filter(sp_group_estimated == "CootsGallinules") %>% 
           mutate(sp_group_estimated = "Coots")) %>% 
       bind_rows(
@@ -82,7 +74,7 @@ proofHS <-
       ref_table %>% 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+          c("MODO-WWDO", "CootsGallinules")) %>% 
       bind_rows(special_table) %>%
       distinct()
     
@@ -123,14 +115,6 @@ proofHS <-
           mutate(sp_group_estimated = "White-Winged Dove")) %>% 
       bind_rows(
         dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
-      bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
-      bind_rows(
-        dates %>% 
           filter(sp_group_estimated == "CootsGallinules") %>% 
           mutate(sp_group_estimated = "Coots")) %>% 
       bind_rows(
@@ -143,7 +127,7 @@ proofHS <-
       dates %>% 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+          c("MODO-WWDO", "CootsGallinules")) %>% 
       bind_rows(specialdates) %>%
       distinct()
     
@@ -224,7 +208,8 @@ proofHS <-
         mutate(
           errors =
             ifelse(
-              errors == "x" | (days_hunted == 0 & retrieved == 0),
+              errors == "x" | (days_hunted == 0 & retrieved == 0) | 
+                (is.na(days_hunted) & is.na (retrieved)),
               "none",
               str_remove(errors, "^x\\-"))) %>%
         select(-c("max_bag", "season_length", "bag_per_day")) 
