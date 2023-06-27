@@ -45,13 +45,14 @@ datatable(
     data = get(names(tibblelist[3])), 
     ref_data = get(names(tibblelist[1])), 
     species = "all",
-    report = TRUE), 
+    report = TRUE) %>%
+    filter(sampled_state != "PR"), 
   options = list(pageLength = 5))
 ```
 
 ## Hunters who submitted
 
-### Season 
+### Season submitted
 
 How many hunters submitted in the season data? Daily records excluded and data are only shown if days_hunted > 0.
 
@@ -73,7 +74,7 @@ submitted(get(names(tibblelist[3])), type = "species", output = "plot") +
   theme(legend.position = "bottom")
 ```
 
-### Daily
+### Daily submitted
 
 How many hunters submitted in the daily data? Records must have answered "yes" to has hunted.
 
@@ -151,7 +152,7 @@ datatable(
 
 Are there any hunts submitted with an impossible number of days hunted?
 
-### Season
+### Season overdays
 
 ```{r, overdays1, warning = FALSE, echo = F}
 datatable(
@@ -159,7 +160,7 @@ datatable(
 )
 ```
 
-### Daily 
+### Daily overdays 
 
 ```{r, overdays2, warning = FALSE, echo = F}
 datatable(
@@ -169,7 +170,7 @@ datatable(
 
 ## Check for overbags
 
-### Season
+### Season overbags
 
 What values are over the limit per species and state in the season totals data? Total retrieved values are divided by number of days hunted. Values over the daily limit per state and species are shown below.
 
@@ -179,12 +180,13 @@ datatable(
 )
 ```
 
-### Daily
+### Daily overbags
 
 What values in the retrieved field of daily data were over the limit per species and state?
 
-```{r, overbags2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
-overbags(get(names(tibblelist[2])), get(names(tibblelist[1]))) %>% 
+```{r, overbags2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 600, fig.align = "center", echo  = F}
+overbags_tbl <- 
+  migbirdMBHS::overbags(daily_records, all_seasons) %>% 
   rename(
     state = sampled_state,
     sp = sp_group_estimated) %>% 
@@ -195,7 +197,26 @@ overbags(get(names(tibblelist[2])), get(names(tibblelist[1]))) %>%
       state = state.name,
       state_abbr = state.abb),
     by = "state") %>% 
-  mutate(bag_lim_label = "Bag limit") %>% 
+  mutate(bag_lim_label = "Bag limit") 
+
+overbags_tbl |> 
+  filter(!str_detect(sp, "Dove|Pigeon")) %>% 
+  ggplot() + 
+  geom_point(aes(x = state_abbr, y = bag_limit, shape = bag_lim_label), 
+             color = "red", size = 6) + 
+  geom_boxplot(aes(x = state_abbr, y = retrieved), show.legend = F) +
+  theme_classic() + 
+  labs(y = "Number of birds retrieved", x = "State", shape = "") +
+  scale_shape_manual(values = "-", labels = "Bag limit") +
+  theme(legend.position = "bottom") +
+  facet_grid(
+    ~sp, 
+    scales = "free", 
+    space = "free", 
+    labeller = label_wrap_gen(width = 5))
+
+overbags_tbl |> 
+  filter(str_detect(sp, "Dove|Pigeon")) %>% 
   ggplot() + 
   geom_point(aes(x = state_abbr, y = bag_limit, shape = bag_lim_label), 
              color = "red", size = 6) + 
@@ -344,7 +365,7 @@ datatable(
 
 What harvest dates in the daily data fell outside of the legal hunting season per species and state?
 
-```{r, openclose2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
+```{r, openclose2, message = FALSE, warning = FALSE, fig.width = 11, fig.height = 4, dpi = 300, out.width = 900, fig.align = "center", echo  = F}
 
 openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) %>% 
   rename(
@@ -456,7 +477,7 @@ errorsHS(daily_proofed)
 
 The plots below show average retrieved values per state and species using the corrected Harvest Survey daily data.
 
-```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, fig.asp = 1.1, fig.width = 8, fig.align = "center", echo  = F}
+```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, fig.asp = 1.2, fig.width = 10, fig.align = "center", echo  = F}
 
 retrievedmap(daily_corrected)
 
@@ -466,7 +487,7 @@ retrievedmap(daily_corrected)
 
 For the daily data, how many birds were retrieved on average per hunter? The figure and table below use the corrected data.
 
-```{r, retrieved2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo  = F}
+```{r, retrieved2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 700, fig.align = "center", echo  = F}
 
 retrieved(daily_corrected, output = "plot", average = T) +
   theme(legend.position = "bottom") +
@@ -499,7 +520,7 @@ huntdays(daily_corrected, type = "species", output = "plot", average = T)
 
 How about by state?
 
-```{r, huntdays2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
+```{r, huntdays2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 700, fig.align = "center", echo = F}
 
 huntdays(daily_corrected, output = "plot", average = T) +
   theme(legend.position = "bottom") + 
