@@ -155,8 +155,7 @@ proofHS <-
       
       # Season data error flagging: overbags and overdays
       season_errors <- 
-        data %>%
-        #filter(days_hunted != 0 & retrieved != 0) %>% 
+        data %>% 
         left_join(
           ref_table,
           by = c("sp_group_estimated", "sampled_state")) %>% 
@@ -252,12 +251,13 @@ proofHS <-
         mutate(
           errors = 
             ifelse(
-              retrieved > max_bag,
+              # Overbag error if max_bag + 2 is exceeded 
+              retrieved > max_bag + 2,
               paste(errors, "overbag", sep = "-"),
               errors),
           overbag = 
             ifelse(
-              retrieved > max_bag,
+              retrieved > max_bag + 2,
               retrieved - max_bag,
               NA)) %>% 
         # Flag overdays
