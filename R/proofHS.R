@@ -185,10 +185,11 @@ proofHS <-
         # Flag overbags
         mutate(
           errors = 
-            ifelse(
-              avg_retrieved_over_season > max_bag,
-              paste(errors, "overbag", sep = "-"),
-              errors),
+            case_when(
+              avg_retrieved_over_season > max_bag ~ 
+                paste(errors, "overbag", sep = "-"),
+              is.na(max_bag) ~ errors,
+              TRUE ~ errors),
           overbag = 
             ifelse(
               avg_retrieved_over_season > max_bag,
@@ -197,10 +198,10 @@ proofHS <-
         # Flag overdays
         mutate(
           errors = 
-            ifelse(
-              days_hunted > season_length,
-              paste(errors, "overdays", sep = "-"),
-              errors),
+            case_when(
+              days_hunted > season_length ~ paste(errors, "overdays", sep = "-"),
+              is.na(season_length) ~ errors,
+              TRUE ~ errors),
           overday = 
             ifelse(
               days_hunted > season_length,
@@ -255,11 +256,11 @@ proofHS <-
         # Flag overbags
         mutate(
           errors = 
-            ifelse(
+            case_when(
               # Overbag error if max_bag + 2 is exceeded 
-              retrieved > max_bag + 2,
-              paste(errors, "overbag", sep = "-"),
-              errors),
+              retrieved > max_bag + 2 ~ paste(errors, "overbag", sep = "-"),
+              is.na(max_bag) ~ errors,
+              TRUE ~ errors),
           overbag = 
             ifelse(
               retrieved > max_bag + 2,
@@ -268,10 +269,10 @@ proofHS <-
         # Flag overdays
         mutate(
           errors = 
-            ifelse(
-              n_days > season_length,
-              paste(errors, "overdays", sep = "-"),
-              errors),
+            case_when(
+              n_days > season_length ~ paste(errors, "overdays", sep = "-"),
+              is.na(season_length) ~ errors,
+              TRUE ~ errors),
           overday = 
             ifelse(
               n_days > season_length,
@@ -280,10 +281,10 @@ proofHS <-
         # Flag early hunts
         mutate(
           errors = 
-            ifelse(
-              harvested_date < open,
-              paste(errors, "early_hunt", sep = "-"),
-              errors),
+            case_when(
+              harvested_date < open ~ paste(errors, "early_hunt", sep = "-"),
+              is.na(open) ~ errors,
+              TRUE ~ errors),
           early = 
             ifelse(
               harvested_date < open,
@@ -292,10 +293,10 @@ proofHS <-
         # Flag late hunts
         mutate(
           errors = 
-            ifelse(
-              harvested_date > close,
-              paste(errors, "late_hunt", sep = "-"),
-              errors),
+            case_when(
+              harvested_date > close ~ paste(errors, "late_hunt", sep = "-"),
+              is.na(close) ~ errors,
+              TRUE ~ errors),
           late = 
             ifelse(
               harvested_date > close,
@@ -311,17 +312,17 @@ proofHS <-
         # Flag non-seaduck counties
         mutate(
           errors = 
-            ifelse(
-              is_SeaDuck == "Y" & seaduck == "N",
-              paste(errors, "badseaduck", sep = "-"),
-              errors)) |> 
+            case_when(
+              is_SeaDuck == "Y" & seaduck == "N" ~ paste(errors, "badseaduck", sep = "-"),
+              is.na(seaduck) ~ errors,
+              TRUE ~ errors)) |> 
         # Flag non-brant counties
         mutate(
           errors = 
-            ifelse(
-              is_Brant == "Y" & brant == "N",
-              paste(errors, "badbrant", sep = "-"),
-              errors)) |>
+            case_when(
+              is_Brant == "Y" & brant == "N" ~ paste(errors, "badbrant", sep = "-"),
+              is.na(brant) ~ errors,
+              TRUE ~ errors)) |>
         # Remove the x from errors
         mutate(
           errors =
