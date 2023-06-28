@@ -49,7 +49,6 @@ proofHS <-
     )
     
     # Duplicate the "Doves" lines so they apply to MODO and WWDO
-    # Duplicate the "GeeseBrant" lines so they apply to Geese and Brant
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     special_table <-
@@ -102,7 +101,6 @@ proofHS <-
     )
     
     # Duplicate the "Doves" lines so they apply to MODO and WWDO
-    # Duplicate the "GeeseBrant" lines so they apply to Geese and Brant
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     specialdates <-
@@ -179,17 +177,22 @@ proofHS <-
               round(as.numeric(retrieved)/as.numeric(days_hunted), 1),
               0),
           errors = "x") %>% 
+        group_by(surveyID, selected_hunterID, sp_group_estimated) |> 
+        mutate(
+          sum_retrieved = sum(retrieved, na.rm = T), 
+          avg_retrieved_over_season = sum_retrieved/season_length) |> 
+        ungroup() |> 
         # Flag overbags
         mutate(
           errors = 
             ifelse(
-              bag_per_day > max_bag,
+              avg_retrieved_over_season > max_bag,
               paste(errors, "overbag", sep = "-"),
               errors),
           overbag = 
             ifelse(
-              bag_per_day > max_bag,
-              bag_per_day - max_bag,
+              avg_retrieved_over_season > max_bag,
+              round(avg_retrieved_over_season - max_bag, 2),
               NA)) %>% 
         # Flag overdays
         mutate(
@@ -211,7 +214,9 @@ proofHS <-
                 (is.na(days_hunted) & is.na (retrieved)),
               "none",
               str_remove(errors, "^x\\-"))) %>%
-        select(-c("max_bag", "season_length", "bag_per_day")) 
+        select(
+          -c("max_bag", "season_length", "bag_per_day", 
+             "avg_retrieved_over_season")) 
       
       if(nrow(filter(season_errors, is.na(errors))) > 0){
         message("Warning: Not all species matched.")
