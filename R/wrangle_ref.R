@@ -14,6 +14,13 @@
 wrangle_ref <-
   function(ref_data){
     
+    duckmerg_states <-
+      c("AL", "AR", "CO", "DE", "FL", "IA", "IL", "IN", "KS", "KY", "LA", "MA", 
+        "ME", "MI", "MN", "MS", "NC", "ND", "NE", "NH", "NJ", "OH", "OK", "PA", 
+        "RI", "SC", "SD", "TN", "TX", "VA", "VT", "WI", "WV", "WY")
+    
+    duckmerg_exception <- "GA"
+    
     ref_return <-
       ref_data |> 
       rename_all(~tolower(.)) |> 
@@ -26,7 +33,36 @@ wrangle_ref <-
           ifelse(
             is.na(speciesgroup),
             species,
-            speciesgroup)) |> 
+            speciesgroup),
+        # Combine duck and merganser bag limit for certain states
+        bag = 
+          case_when(
+            speciesgroup == "Ducks" & 
+              st %in% duckmerg_states & 
+              species %in% c("Ducks", "Mergansers", "Ducks and mergansers") & 
+              !is.na(bag) ~
+              11,
+            speciesgroup == "Ducks" & 
+              st %in% duckmerg_exception & 
+              species %in% c("Ducks", "Mergansers", "Ducks and mergansers") & 
+              !is.na(bag) ~
+              12,
+            TRUE ~ bag),
+        # Combine duck and merganser possession limit for certain states
+        possession = 
+          case_when(
+            speciesgroup == "Ducks" & 
+              st %in% duckmerg_states & 
+              species %in% c("Ducks", "Mergansers", "Ducks and mergansers") & 
+              !is.na(possession) ~
+              33,
+            speciesgroup == "Ducks" & 
+              st %in% duckmerg_exception & 
+              species %in% c("Ducks", "Mergansers", "Ducks and mergansers") & 
+              !is.na(possession) ~
+              36,
+            TRUE ~ possession)
+      ) |> 
       mutate(
         speciesgroup = 
           case_when(
