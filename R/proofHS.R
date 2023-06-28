@@ -301,6 +301,27 @@ proofHS <-
               harvested_date > close,
               harvested_date - close,
               NA)) %>% 
+        # Join in seaduck/brant reference table
+        left_join(
+          seaduck_counties |> 
+            select(sampled_state = STATE, county = COUNTY, brant, seaduck) |> 
+            filter(county != "Unknown"),
+          by = c("sampled_state", "county")
+        ) |> 
+        # Flag non-seaduck counties
+        mutate(
+          errors = 
+            ifelse(
+              is_SeaDuck == "Y" & seaduck == "N",
+              paste(errors, "badseaduck", sep = "-"),
+              errors)) |> 
+        # Flag non-brant counties
+        mutate(
+          errors = 
+            ifelse(
+              is_Brant == "Y" & brant == "N",
+              paste(errors, "badbrant", sep = "-"),
+              errors)) |>
         # Remove the x from errors
         mutate(
           errors =
@@ -309,7 +330,8 @@ proofHS <-
               "none",
               str_remove(errors, "^x\\-"))) %>%
         select(
-          -c("max_bag", "season_length", "n_days", "open", "close"))
+          -c("max_bag", "season_length", "n_days", "open", "close", "brant", 
+             "seaduck"))
       
       if(nrow(filter(daily_errors, is.na(errors))) > 0){
         message("Warning: Not all species matched.")
