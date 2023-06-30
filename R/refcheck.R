@@ -2,7 +2,6 @@
 #'
 #' The \code{refcheck} function checks for issues in the all_seasons Harvest Survey reference table.
 #' 
-#' @importFrom dplyr |>
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr distinct
