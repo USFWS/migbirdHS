@@ -3,7 +3,7 @@
     "name": "migbirdMBHS",
     "organization": "U.S. Fish and Wildlife",
     "description": "An R package designed to analyze Migratory Bird online Harvest Survey data",
-    "version": "v0.2.0",
+    "version": "v0.3.0",
     "status": "Operational",
 
     "permissions": {
@@ -22,7 +22,7 @@
     "repositoryURL": "https://github.com/USFWS/migbirdMBHS.git",
     "vcs": "git",
 
-    "laborHours": 100,
+    "laborHours": 125,
 
     "tags": [
       "usfws",

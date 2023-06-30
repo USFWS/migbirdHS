@@ -1,7 +1,7 @@
 Package: migbirdMBHS
 Type: Package
 Title: Process USFWS Migratory Bird Online Harvest Survey Data in R
-Version: 0.2.0
+Version: 0.3.0
 Imports: 
     dplyr,
     stringr,
@@ -18,8 +18,7 @@ Imports:
     treemapify,
     viridis,
     MetBrewer,
-    rmarkdown,
-    lifecycle
+    rmarkdown
 Suggests:
     knitr,
     DT
@@ -32,7 +31,6 @@ Authors@R:
            comment = c(ORCID = "0000-0003-4017-5596"))
 Maintainer: Abby Walter <abby_walter@fws.gov>
 Description: Easy-to-use functions specifically designed to analyze online Harvest Survey data.
-RdMacros: lifecycle
 License: CC0
 Encoding: UTF-8
 LazyData: true
