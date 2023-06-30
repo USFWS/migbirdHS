@@ -428,14 +428,12 @@ party_proofed <-
   ) |> 
   select(-new_retrieved)
 
-# Proof and correct the daily data
+# Proof the daily data
 daily_proofed <- proofHS(party_proofed, get(names(tibblelist[1])))
 rm(proofed_parties)
-daily_corrected <- correctHS(daily_proofed)
 
-# Proof and correct the season data
+# Proof the season data
 season_proofed <- proofHS(get(names(tibblelist[3])), get(names(tibblelist[1])))
-season_corrected <- correctHS(season_proofed)
 ```
 
 ### Season
@@ -475,71 +473,71 @@ errorsHS(daily_proofed)
 
 ## Retrieved map
 
-The plots below show average retrieved values per state and species using the corrected Harvest Survey daily data.
+The plots below show average retrieved values per state and species using the proofed Harvest Survey daily data.
 
 ```{r, retrievedmap, message = FALSE, warning = FALSE, echo = FALSE, dpi = 300, fig.asp = 1.2, fig.width = 10, fig.align = "center", echo  = F}
 
-retrievedmap(daily_corrected)
+retrievedmap(daily_proofed)
 
 ```
 
 ## Birds retrieved
 
-For the daily data, how many birds were retrieved on average per hunter? The figure and table below use the corrected data.
+For the daily data, how many birds were retrieved on average per hunter? The figure and table below use the proofed data.
 
 ```{r, retrieved2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 700, fig.align = "center", echo  = F}
 
-retrieved(daily_corrected, output = "plot", average = T) +
+retrieved(daily_proofed, output = "plot", average = T) +
   theme(legend.position = "bottom") +
   scale_fill_manual(
     values = 
       met.brewer("Hokusai3", 
-                 length(unique(daily_corrected$sp_group_estimated))))
+                 length(unique(daily_proofed$sp_group_estimated))))
 
-datatable(retrieved(daily_corrected, average = T))
+datatable(retrieved(daily_proofed, average = T))
 ```
 
 ## Popular species
 
-What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The corrected daily data are used.
+What is the proportion of birds that were successfully hunted? Each hunter's pursued species were grouped for this visualization. The proofed daily data are used.
 
 ```{r, bagspp1, message = FALSE, warning = FALSE, fig.width = 9, fig.height = 6, out.width = 700, dpi = 300, fig.align = "center", echo = F}
 
-bagspp(daily_corrected, output = "success")
+bagspp(daily_proofed, output = "success")
 ```
 
 
 ## Days hunted
 
-In the daily data, how many days were spent hunting per species on average for each hunter? The corrected data are used.
+In the daily data, how many days were spent hunting per species on average for each hunter? The proofed data are used.
 
 ```{r, huntdays3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-huntdays(daily_corrected, type = "species", output = "plot", average = T)
+huntdays(daily_proofed, type = "species", output = "plot", average = T)
 ```
 
 How about by state?
 
 ```{r, huntdays2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 700, fig.align = "center", echo = F}
 
-huntdays(daily_corrected, output = "plot", average = T) +
+huntdays(daily_proofed, output = "plot", average = T) +
   theme(legend.position = "bottom") + 
   scale_fill_manual(
     values = met.brewer("Hokusai3",
-                        length(unique(daily_corrected$sp_group_estimated))))
+                        length(unique(daily_proofed$sp_group_estimated))))
 ```
 
 ```{r, huntdays1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-datatable(huntdays(daily_corrected, average = T))
+datatable(huntdays(daily_proofed, average = T))
 ```
 
 ## Comparing submitted vs. non-submit
 
-What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups? The corrected daily and season data are used in the figures below. Daily retrieved values and days spent hunting were summed for direct comparison to season data.
+What is the relationship between number of birds retrieved and number of days spent hunting when data are divided into 4 submission groups? The proofed daily and season data are used in the figures below. Daily retrieved values and days spent hunting were summed for direct comparison to season data.
 
 ```{r, compare1, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_corrected, season_corrected, type = "line") +
+compare(daily_proofed, season_proofed, type = "line") +
   # Added for line clarity
   new_scale_color() +
   stat_smooth(
@@ -554,11 +552,11 @@ compare(daily_corrected, season_corrected, type = "line") +
 What is the distribution of number of days hunted per submission group? Bubbles represent number of birds retrieved and red lines indicate mean values. Each bubble is a hunter's record per state and species.
 
 ```{r, compare2, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_corrected, season_corrected, type = "days")
+compare(daily_proofed, season_proofed, type = "days")
 ```
 
 What is the distribution of number of birds retrieved per submission group? Bubbles represent number of days hunted and red lines indicate mean values. Each bubble is a hunter's record per state and species.
 
 ```{r, compare3, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
-compare(daily_corrected, season_corrected, type = "retrieved")
+compare(daily_proofed, season_proofed, type = "retrieved")
 ```

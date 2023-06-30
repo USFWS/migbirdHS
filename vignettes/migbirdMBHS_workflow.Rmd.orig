@@ -33,11 +33,10 @@ vignette: >
     - [retrievedmap](#retrievedmap)
     - [bagdays](#bagdays)
     - [responselag](#responselag)
-- [Part C: Data Proofing, Correction, and Report Writing](#part-c-data-proofing-correction-and-report-writing)
-    - Proofing and correction
+- [Part C: Data Proofing and Report Writing](#part-c-data-proofing-and-report-writing)
+    - Proofing 
         - [partyproof](#partyproof)
         - [proofHS](#proofhs)
-        - [correctHS](#correctHS)
     - Report writing
         - [reportHS](#reporths)
 - [Troubleshooting](#troubleshooting)
@@ -435,7 +434,7 @@ And use `type = "date"` to view the relationship between date of response and da
 responselag(daily_records, type = "date")
 ```
 
-## Part C: Data Proofing, Correction, and Report Writing
+## Part C: Data Proofing and Report Writing
 
 ### partyproof
 
@@ -469,18 +468,6 @@ season_proofed <-
   proofHS(
     data = season_totals, 
     ref_data = all_seasons)
-```
-
-### correctHS
-
-The correctHS function processes the errors flagged in proofHS and returns a final data table.
-
-For both daily and season data, specify the output from `proofHS`.
-
-```{r, correctHS, message = FALSE, warning = FALSE, eval = FALSE}
-daily_corrected <- correctHS(daily_proofed)
-
-season_corrected <- correctHS(season_proofed)
 ```
 
 ### reportHS

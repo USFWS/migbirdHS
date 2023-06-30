@@ -40,7 +40,6 @@ Tasks that can be accomplished with this package include:
 * `compare` visualizes differences between daily and season data
 * `partyproof` divides retrieved birds by party size, when needed
 * `proofHS` looks for and flags errors in daily and season data
-* `correctHS` processes errors and returns a final data table
 * Automated report writing with `reportHS` 
 
 ## Installation
