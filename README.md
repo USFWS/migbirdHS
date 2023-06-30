@@ -11,27 +11,26 @@ online [Harvest Survey](https://www.fws.gov/harvestsurvey) data.
 
 Tasks that can be accomplished with this package include:
 
-  - `read_dhs` imports data
-  - `add_seaducks` appends seaduck season info to the reference table
-  - `refcheck` double checks the reference table covers all cases
-  - `submitted` reports proportion of non-finalized hunts
-  - `hunted` reports proportion of hunters who did not hunt
-  - `nodata` checks for any missing data that was expected
-  - `partyhunt` checks for group hunts
-  - `overdays` checks if number of days hunted exceeds hunting season
-  - `overbags` checks for abnormally high bag sizes
-  - `openclose` checks to see if harvest date falls outside the season
-  - `huntdays` summarizes the total number of days hunted
-  - `retrieved` summarizes the total number of bids retrieved
-  - `retrievedmap` maps the mean retrieved per state and species
-  - `responselag` visualizes time between hunt date and response date
-  - `bagdays` summarizes days hunted per hunter and species group
-  - `bagspp` summarizes species hunted by popularity
-  - `compare` visualizes differences between daily and season data
-  - `partyproof` divides retrieved birds by party size, when needed
-  - `proofHS` looks for and flags errors in daily and season data
-  - `correctHS` processes errors and returns a final data table
-  - Automated report writing with `reportHS`
+- `read_dhs` imports data
+- `add_seaducks` appends seaduck season info to the reference table
+- `refcheck` double checks the reference table covers all cases
+- `submitted` reports proportion of non-finalized hunts
+- `hunted` reports proportion of hunters who did not hunt
+- `nodata` checks for any missing data that was expected
+- `partyhunt` checks for group hunts
+- `overdays` checks if number of days hunted exceeds hunting season
+- `overbags` checks for abnormally high bag sizes
+- `openclose` checks to see if harvest date falls outside the season
+- `huntdays` summarizes the total number of days hunted
+- `retrieved` summarizes the total number of bids retrieved
+- `retrievedmap` maps the mean retrieved per state and species
+- `responselag` visualizes time between hunt date and response date
+- `bagdays` summarizes days hunted per hunter and species group
+- `bagspp` summarizes species hunted by popularity
+- `compare` visualizes differences between daily and season data
+- `partyproof` divides retrieved birds by party size, when needed
+- `proofHS` looks for and flags errors in daily and season data
+- Automated report writing with `reportHS`
 
 ## Installation
 

@@ -73,6 +73,15 @@ utils::globalVariables(
     "flag",
     "ranker",
     "record_id",
-    "daily_records"
+    "daily_records",
+    "Open",
+    "Close",
+    "Bag",
+    "Possession",
+    "STATE",
+    "COUNTY",
+    "brant",
+    "seaduck",
+    "avg_retrieved_over_season"
     )
 )
