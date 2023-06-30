@@ -206,7 +206,7 @@ hunted(season_totals, type = "species", output = "plot")
 
 The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
 
-```{r overdays_old, echo = FALSE}
+```{r overdays_old, echo = FALSE, message = FALSE, warning = FALSE}
 
 # This overdays2 function is an older version that was compatable with the 
 # original type of file; the updated overdays function accounts for a different
@@ -368,10 +368,7 @@ overdays2 <-
           data %>% 
           filter(
             !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                str_extract(dataname, "[0-9]{4}")
-              )) %>%
+              c(get("daily_records") %>%
                 select(selected_hunterID) %>%
                 pull())
           )
@@ -388,10 +385,7 @@ overdays2 <-
           data %>% 
           filter(
             !selected_hunterID %in%
-              c(get(paste0(
-                "daily_records_",
-                as.character(datayr)
-              )) %>%
+              c(get("daily_records") %>%
                 select(selected_hunterID) %>%
                 pull())
           )
