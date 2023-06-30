@@ -84,12 +84,12 @@ read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 ```r
 daily_records <-
   daily_records |> 
-  mutate(record_id = row_number()) |> 
-  relocate(record_id, .before = "surveyID")
+  dplyr::mutate(record_id = row_number()) |> 
+  dplyr::relocate(record_id, .before = "surveyID")
 ```
 
 ```
-## Error in `mutate()`:
+## Error in `dplyr::mutate()`:
 ## ℹ In argument: `record_id = row_number()`.
 ## Caused by error in `row_number()`:
 ## ! could not find function "row_number"
@@ -343,6 +343,54 @@ hunted(season_totals, type = "species", output = "plot")
 The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
 
 
+```
+## Warning: package 'tidyverse' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'tibble' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'tidyr' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'readr' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'purrr' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'dplyr' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'stringr' was built under R version 4.2.3
+```
+
+```
+## Warning: package 'forcats' was built under R version 4.2.3
+```
+
+```
+## ── Attaching core tidyverse packages ────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.1     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.8.0     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ──────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+```
 
 
 ```r
@@ -351,10 +399,14 @@ overdays(daily_records, ref_data = all_seasons)
 
 
 ```
-## Error in `mutate()`:
-## ℹ In argument: `open_date = mdy(open)`.
-## Caused by error in `mdy()`:
-## ! could not find function "mdy"
+## # A tibble: 5 × 5
+##   selected_hunterID state      sp                     n_days season_length
+##               <dbl> <chr>      <chr>                   <int>         <dbl>
+## 1            409932 California Specially Regulated S…      4          -118
+## 2            460936 California Specially Regulated S…      1          -118
+## 3            472792 California Specially Regulated S…      1          -118
+## 4           1116848 California Specially Regulated S…      2          -118
+## 5           1316379 Washington Specially Regulated S…      1           -21
 ```
 
 
@@ -364,10 +416,10 @@ overdays(season_totals, ref_data = all_seasons)
 
 
 ```
-## Error in `mutate()`:
-## ℹ In argument: `open_date = mdy(open)`.
-## Caused by error in `mdy()`:
-## ! could not find function "mdy"
+## Error in `filter()`:
+## ℹ In argument: `!...`.
+## Caused by error in `get()`:
+## ! object 'daily_records_NA' not found
 ```
 
 ### overbags
@@ -383,18 +435,18 @@ overbags(daily_records, ref_data = all_seasons)
 
 ```
 ## # A tibble: 128 × 9
-##    selected_hunterID surveyID sampled_state county     sp_group_estimated
-##                <dbl>    <dbl> <chr>         <chr>      <chr>             
-##  1            138144    16720 Minnesota     Brown      Ducks             
-##  2            146742    16851 Minnesota     Otter Tail Ducks             
-##  3            146742    16851 Minnesota     Otter Tail Ducks             
-##  4            146742    16851 Minnesota     Otter Tail Ducks             
-##  5            146742    16851 Minnesota     Otter Tail Ducks             
-##  6            146742    16851 Minnesota     Otter Tail Ducks             
-##  7            146742    16851 Minnesota     Otter Tail Ducks             
-##  8            154433    39570 South Dakota  Hamlin     Ducks             
-##  9            185088    17349 Minnesota     St Louis   Ducks             
-## 10            308507    58944 Washington    Grays Har… Ducks             
+##    selected_hunterID surveyID sampled_state county      sp_group_estimated
+##                <dbl>    <dbl> <chr>         <chr>       <chr>             
+##  1            138144    16720 Minnesota     Brown       Ducks             
+##  2            146742    16851 Minnesota     Otter Tail  Ducks             
+##  3            146742    16851 Minnesota     Otter Tail  Ducks             
+##  4            146742    16851 Minnesota     Otter Tail  Ducks             
+##  5            146742    16851 Minnesota     Otter Tail  Ducks             
+##  6            146742    16851 Minnesota     Otter Tail  Ducks             
+##  7            146742    16851 Minnesota     Otter Tail  Ducks             
+##  8            154433    39570 South Dakota  Hamlin      Ducks             
+##  9            185088    17349 Minnesota     St Louis    Ducks             
+## 10            308507    58944 Washington    Grays Harb… Ducks             
 ## # ℹ 118 more rows
 ## # ℹ 4 more variables: harvested_date <date>, bag_limit <dbl>,
 ## #   retrieved <dbl>, unretrieved <chr>
@@ -595,26 +647,21 @@ openclose(daily_records, ref_data = all_seasons)
 
 
 ```
-## Error in `mutate()`:
-## ℹ In argument: `open_date = mdy(open)`.
-## Caused by error in `mdy()`:
-## ! could not find function "mdy"
-```
-
-```
-## Error in filter(., sp_group_estimated == "MODO-WWDO"): object 'dates' not found
-```
-
-```
-## Error in filter(., !sp_group_estimated %in% c("MODO-WWDO", "GeeseBrant", : object 'dates' not found
-```
-
-```
-## Error in is.data.frame(y): object 'dates' not found
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'date_errors' not found
+## # A tibble: 49 × 6
+##    selected_hunterID sampled_state sp_group_estimated           open      
+##                <dbl> <chr>         <chr>                        <date>    
+##  1            422536 Louisiana     Ducks                        2020-09-12
+##  2            422536 Louisiana     Ducks                        2020-09-12
+##  3            454023 Louisiana     Ducks                        2020-09-12
+##  4            307419 Missouri      Geese                        2020-10-03
+##  5            163972 South Dakota  Geese                        2020-09-05
+##  6            310953 Washington    Ducks                        2020-09-26
+##  7            409932 California    Specially Regulated Sea Duc… 2021-01-16
+##  8            409932 California    Specially Regulated Sea Duc… 2021-01-16
+##  9            409932 California    Specially Regulated Sea Duc… 2021-01-16
+## 10            409932 California    Specially Regulated Sea Duc… 2021-01-16
+## # ℹ 39 more rows
+## # ℹ 2 more variables: close <date>, error <chr>
 ```
 
 
@@ -668,18 +715,18 @@ partyhunt(daily_records)
 
 ```
 ## # A tibble: 45 × 6
-##    sampled_state sp_group_estimated retrieved unretrieved comment        
-##    <chr>         <chr>                  <dbl> <chr>       <chr>          
-##  1 Minnesota     Ducks                     18 NULL        3 people       
-##  2 Minnesota     Ducks                     14 NULL        3 hunters      
-##  3 Minnesota     Ducks                     21 NULL        4 hunters      
-##  4 Minnesota     Ducks                     22 NULL        4 hunters      
-##  5 Minnesota     Ducks                     12 NULL        2 hunters      
-##  6 Minnesota     Ducks                      8 NULL        2 hunters      
-##  7 Missouri      Ducks                      3 0           2 hunters.  Ja…
-##  8 Missouri      Ducks                      2 NULL        2 hunters, saw…
-##  9 Tennessee     Ducks                      2 0           Saw a bunch of…
-## 10 California    Ducks                      7 1           5mal, 2gad, 31…
+##    sampled_state sp_group_estimated retrieved unretrieved comment         
+##    <chr>         <chr>                  <dbl> <chr>       <chr>           
+##  1 Minnesota     Ducks                     18 NULL        3 people        
+##  2 Minnesota     Ducks                     14 NULL        3 hunters       
+##  3 Minnesota     Ducks                     21 NULL        4 hunters       
+##  4 Minnesota     Ducks                     22 NULL        4 hunters       
+##  5 Minnesota     Ducks                     12 NULL        2 hunters       
+##  6 Minnesota     Ducks                      8 NULL        2 hunters       
+##  7 Missouri      Ducks                      3 0           2 hunters.  Jak…
+##  8 Missouri      Ducks                      2 NULL        2 hunters, saw …
+##  9 Tennessee     Ducks                      2 0           Saw a bunch of …
+## 10 California    Ducks                      7 1           5mal, 2gad, 31 …
 ## # ℹ 35 more rows
 ## # ℹ 1 more variable: party_size <chr>
 ```
@@ -791,7 +838,9 @@ The `retrievedmap` function creates a hex bin map of the United States from dail
 retrievedmap(daily_records, output = "grid")
 ```
 
-<img src="figure/retrievedmap-1.png" alt="plot of chunk retrievedmap" width="600" style="display: block; margin: auto;" />
+```
+## Error in retrievedmap(daily_records, output = "grid"): cannot open file 'C:/Users/awalter/AppData/Local/R/win-library/4.2/migbirdMBHS/R/sysdata.rdb': No such file or directory
+```
 
 ### bagdays
 

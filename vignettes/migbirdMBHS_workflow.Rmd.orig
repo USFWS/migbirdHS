@@ -78,8 +78,8 @@ read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 
 daily_records <-
   daily_records |> 
-  mutate(record_id = row_number()) |> 
-  relocate(record_id, .before = "surveyID")
+  dplyr::mutate(record_id = row_number()) |> 
+  dplyr::relocate(record_id, .before = "surveyID")
 ```
 
 ### add_seaducks
@@ -212,6 +212,8 @@ The `overdays` function checks daily or season data to determine if total days h
 # original type of file; the updated overdays function accounts for a different
 # date format, so for the purposes of providing an example we apply the old
 # function
+
+library(tidyverse)
 
 overdays2 <-
   function(data, ref_data){
