@@ -43,22 +43,22 @@ retrievedmap <-
       spdf_retrievedmap
     
     spdf@data <- 
-      spdf@data %>%
+      spdf@data |>
       mutate(google_name = gsub(" \\(United States\\)", "", google_name))
     
     spp_data <- 
-      retrieved(data) %>%  
+      retrieved(data) |>  
       rename(id = sampled_state)
     
     centers <- 
       cbind.data.frame(
-        data.frame(gCentroid(spdf, byid = TRUE), id = spdf@data$iso3166_2)) %>% 
+        data.frame(gCentroid(spdf, byid = TRUE), id = spdf@data$iso3166_2)) |> 
       filter(!id %in% c("DC", "HI")) 
     
     spdf_fortified <- 
-      tidy(spdf, region = "google_name") %>% 
-      left_join(spp_data, by = "id") %>% 
-      filter(!is.na(sp_group_estimated)) %>% 
+      tidy(spdf, region = "google_name") |> 
+      left_join(spp_data, by = "id") |> 
+      filter(!is.na(sp_group_estimated)) |> 
       left_join(
         tibble(
           state_abbr = datasets::state.abb,
@@ -67,25 +67,25 @@ retrievedmap <-
     
     plot_list <- 
       map(
-        spp_data %>% 
-          select(sp_group_estimated) %>% 
-          distinct() %>% 
+        spp_data |> 
+          select(sp_group_estimated) |> 
+          distinct() |> 
           mutate(
             sp_group_estimated = 
               ifelse(
                 str_detect(sp_group_estimated, "Sea"), 
                 "Sea Ducks", 
-                sp_group_estimated)) %>% 
+                sp_group_estimated)) |> 
           pull(),
         function(.x){
-          spdf_fortified %>% 
+          spdf_fortified |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
-                  sp_group_estimated)) %>% 
-            filter(sp_group_estimated == .x) %>% 
+                  sp_group_estimated)) |> 
+            filter(sp_group_estimated == .x) |> 
             ggplot() +
             geom_polygon(
               aes(x = long, y = lat, group = group, fill = mean_retrieved),

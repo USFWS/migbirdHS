@@ -2,7 +2,6 @@
 #'
 #' The \code{overdays} function checks Harvest Survey daily or season data to determine if total days hunted exceed the length of the state and species' season.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr filter
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_extract
@@ -29,23 +28,23 @@ overdays <-
   function(data, ref_data){
     suppressMessages(
       dates <- 
-        wrangle_ref(ref_data) %>% 
-        select(seasonyear, state = st, speciesgroup, open, close, spp) %>%
-        filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
-        group_by(seasonyear, state, spp) %>% 
+        wrangle_ref(ref_data) |> 
+        select(seasonyear, state = st, speciesgroup, open, close, spp) |>
+        filter(!is.na(spp) & !is.na(open) & !is.na(close)) |> 
+        group_by(seasonyear, state, spp) |> 
         summarize(
           open = min(ymd(open), na.rm = T),
-          close = max(ymd(close), na.rm = T)) %>%
-        ungroup() %>% 
+          close = max(ymd(close), na.rm = T)) |>
+        ungroup() |> 
         left_join(
           tibble(
             state = datasets::state.abb,
             sampled_state = datasets::state.name),
-          by = "state") %>% 
-        select(-c("state", "seasonyear")) %>% 
-        rename(sp_group_estimated = spp) %>% 
+          by = "state") |> 
+        select(-c("state", "seasonyear")) |> 
+        rename(sp_group_estimated = spp) |> 
         # Calculate season length in days
-        mutate(season_length = as.numeric(close - open)) %>% 
+        mutate(season_length = as.numeric(close - open)) |> 
         select(-c("open", "close"))
     )
     
@@ -54,37 +53,37 @@ overdays <-
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     specialdates <-
-      dates %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      dates |> 
+      filter(sp_group_estimated == "MODO-WWDO") |> 
+      mutate(sp_group_estimated = "Mourning Dove") |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "MODO-WWDO") |> 
+          mutate(sp_group_estimated = "White-Winged Dove")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Geese")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Brant")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
+          mutate(sp_group_estimated = "Coots")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
           mutate(sp_group_estimated = "Gallinules")) 
     
     # Remove specialdates spp from the original dates df
     dates <-
-      dates %>% 
+      dates |> 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
-      bind_rows(specialdates) %>%
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) |> 
+      bind_rows(specialdates) |>
       distinct()
     
     if(TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
@@ -92,18 +91,18 @@ overdays <-
       # Daily records
       suppressMessages(
         overday_table <-
-          data %>% 
+          data |> 
           select(
             selected_hunterID, sampled_state, sp_group_estimated, 
-            harvested_date) %>% 
-          distinct() %>% 
-          group_by(selected_hunterID, sampled_state, sp_group_estimated) %>% 
-          summarize(n_days = n()) %>% 
-          ungroup() %>% 
+            harvested_date) |> 
+          distinct() |> 
+          group_by(selected_hunterID, sampled_state, sp_group_estimated) |> 
+          summarize(n_days = n()) |> 
+          ungroup() |> 
           left_join(
             dates,
-            by = c("sp_group_estimated", "sampled_state")) %>% 
-          filter(n_days >= season_length) %>% 
+            by = c("sp_group_estimated", "sampled_state")) |> 
+          filter(n_days >= season_length) |> 
           rename(
             state = sampled_state,
             sp = sp_group_estimated)
@@ -124,28 +123,28 @@ overdays <-
         dataname <- deparse(substitute(data))
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
       # Additional statement for report template compatibility
       }else{
         datayr <- 
-          data %>% 
-          select(season) %>% 
-          distinct() %>% 
+          data |> 
+          select(season) |> 
+          distinct() |> 
           pull()
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
@@ -153,20 +152,20 @@ overdays <-
       
       # Season totals
       overday_table <-
-        data %>% 
+        data |> 
         select(
-          selected_hunterID, sampled_state, sp_group_estimated, days_hunted) %>% 
+          selected_hunterID, sampled_state, sp_group_estimated, days_hunted) |> 
         left_join(
           dates,
-          by = c("sp_group_estimated", "sampled_state")) %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
         mutate(
           days_hunted = 
             ifelse(
               str_detect(days_hunted, "NULL"), 
               NA, 
               days_hunted),
-          days_hunted = as.numeric(days_hunted)) %>% 
-        filter(days_hunted >= season_length) %>%
+          days_hunted = as.numeric(days_hunted)) |> 
+        filter(days_hunted >= season_length) |>
         rename(
           state = sampled_state,
           sp = sp_group_estimated)

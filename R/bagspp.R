@@ -2,7 +2,6 @@
 #'
 #' The \code{bagspp} function summarizes daily Harvest Survey data to determine the total number of retrieved birds per hunter. The hunter’s data are further broken down to determine which species groups the hunter responded to harvesting.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr rename
 #' @importFrom dplyr mutate
@@ -39,51 +38,51 @@
 bagspp <-
   function(data, output = "table"){
     if(output == "table"){
-      data %>%
-        select(selected_hunterID, sp_group_estimated, retrieved) %>%
-        rename(sp = sp_group_estimated) %>% 
-        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) %>% 
-        group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
-        ungroup() %>% 
-        group_by(selected_hunterID) %>% 
+      data |>
+        select(selected_hunterID, sp_group_estimated, retrieved) |>
+        rename(sp = sp_group_estimated) |> 
+        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) |> 
+        group_by(selected_hunterID, sp) |>
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) |> 
+        ungroup() |> 
+        group_by(selected_hunterID) |> 
         summarize(
           n_spp = n(),
           spp_combo = paste(sp, collapse = "-"),
-          n_retrieved_total = sum(n_retrieved)) %>%
+          n_retrieved_total = sum(n_retrieved)) |>
         ungroup()
     }else if(output == "species"){
       treedata <-
-        data %>%
-        select(selected_hunterID, sp_group_estimated, retrieved) %>%
-        rename(sp = sp_group_estimated) %>% 
+        data |>
+        select(selected_hunterID, sp_group_estimated, retrieved) |>
+        rename(sp = sp_group_estimated) |> 
         mutate(
           sp = 
             case_when(
               str_detect(sp, "Sea") ~ "Sea Ducks", 
               str_detect(sp, "Mourning") ~ "MODO", 
               str_detect(sp, "White") ~ "WWDO", 
-              TRUE ~ sp)) %>% 
-        group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
-        ungroup() %>% 
-        group_by(selected_hunterID) %>% 
+              TRUE ~ sp)) |> 
+        group_by(selected_hunterID, sp) |>
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) |> 
+        ungroup() |> 
+        group_by(selected_hunterID) |> 
         summarize(
           n_retrieved_tot = sum(n_retrieved),
           spp_combo = paste(sp, collapse = "-"),
-          n_spp = n()) %>%
-        ungroup() %>% 
-        rename(n_retrieved = n_retrieved_tot) %>% 
-        filter(n_retrieved != 0) %>% 
+          n_spp = n()) |>
+        ungroup() |> 
+        rename(n_retrieved = n_retrieved_tot) |> 
+        filter(n_retrieved != 0) |> 
         # For treemap, summarize
-        group_by(spp_combo) %>% 
-        summarize(n_tot = sum(n_retrieved)) %>% 
-        ungroup() %>% 
+        group_by(spp_combo) |> 
+        summarize(n_tot = sum(n_retrieved)) |> 
+        ungroup() |> 
         mutate(
           prop = round(n_tot/sum(n_tot), 2)*100,
           spp_label = paste0(spp_combo, " (", prop, "%)"))
       
-      treedata %>% 
+      treedata |> 
         ggplot(aes(area = n_tot, fill = spp_combo, label = spp_label)) +
         geom_treemap(color = "black") +
         geom_treemap_text(
@@ -97,27 +96,27 @@ bagspp <-
         theme(legend.position = "bottom")
     }else if(output == "n"){
       treedata <- 
-        data %>%
-        select(selected_hunterID, sp_group_estimated, retrieved) %>%
-        rename(sp = sp_group_estimated) %>% 
-        group_by(selected_hunterID, sp) %>%
-        summarize(n_retrieved = sum(retrieved, ra.rm = T)) %>% 
-        ungroup() %>% 
-        group_by(selected_hunterID) %>% 
+        data |>
+        select(selected_hunterID, sp_group_estimated, retrieved) |>
+        rename(sp = sp_group_estimated) |> 
+        group_by(selected_hunterID, sp) |>
+        summarize(n_retrieved = sum(retrieved, ra.rm = T)) |> 
+        ungroup() |> 
+        group_by(selected_hunterID) |> 
         summarize(
           n_retrieved_tot = sum(n_retrieved, na.rm = T),
           #spp_combo = paste(sp, collapse = "-"),
-          n_spp = as.character(n())) %>%
-        ungroup() %>% 
+          n_spp = as.character(n())) |>
+        ungroup() |> 
         # For treemap, summarize
-        group_by(n_spp) %>% 
-        summarize(n_tot = sum(n_retrieved_tot)) %>% 
-        ungroup() %>% 
+        group_by(n_spp) |> 
+        summarize(n_tot = sum(n_retrieved_tot)) |> 
+        ungroup() |> 
         mutate(
           prop = round(n_tot/sum(n_tot), 2)*100,
           spp_label = paste0(n_spp, " (", prop, "%)"))
       
-      treedata %>% 
+      treedata |> 
         ggplot(aes(area = n_tot, fill = n_spp, label = spp_label)) +
         geom_treemap(color = "black") +
         geom_treemap_text(colour = c(rep("white", nrow(treedata))),
@@ -127,30 +126,30 @@ bagspp <-
         theme(legend.position = "bottom")}
     else if(output == "success"){
       treedata <-
-        data %>%
-        filter(retrieved > 0) %>% 
-        select(selected_hunterID, sp_group_estimated) %>%
-        distinct() %>% 
-        rename(sp = sp_group_estimated) %>% 
+        data |>
+        filter(retrieved > 0) |> 
+        select(selected_hunterID, sp_group_estimated) |>
+        distinct() |> 
+        rename(sp = sp_group_estimated) |> 
         mutate(
           sp = 
             case_when(
               str_detect(sp, "Sea") ~ "Sea Ducks", 
               str_detect(sp, "Mourning") ~ "MODO", 
               str_detect(sp, "White") ~ "WWDO", 
-              TRUE ~ sp)) %>% 
-        group_by(selected_hunterID) %>% 
-        summarize(spp_combo = paste(sp, collapse = "-")) %>%
-        ungroup() %>% 
+              TRUE ~ sp)) |> 
+        group_by(selected_hunterID) |> 
+        summarize(spp_combo = paste(sp, collapse = "-")) |>
+        ungroup() |> 
         # For treemap, summarize
-        group_by(spp_combo) %>% 
-        summarize(n = n()) %>% 
-        ungroup() %>% 
+        group_by(spp_combo) |> 
+        summarize(n = n()) |> 
+        ungroup() |> 
         mutate(
           prop = round(n/sum(n), 2)*100,
           spp_label = paste0(spp_combo, " (", prop, "%)"))
       
-      treedata %>% 
+      treedata |> 
         ggplot(aes(area = n, fill = spp_combo, label = spp_label)) +
         geom_treemap(color = "black") +
         geom_treemap_text(

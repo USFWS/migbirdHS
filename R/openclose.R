@@ -2,7 +2,6 @@
 #'
 #' The \code{openclose} function checks if harvest dates fall outside of a state's and species's season in the daily data.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr rename_all
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
@@ -38,20 +37,20 @@ openclose <-
   function(data, ref_data, state = NA, summary = F){
     
     dates <- 
-      wrangle_ref(ref_data) %>%
-      select(seasonyear, state = st, speciesgroup, open, close, spp) %>% 
-      filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
-      group_by(seasonyear, state, spp) %>% 
+      wrangle_ref(ref_data) |>
+      select(seasonyear, state = st, speciesgroup, open, close, spp) |> 
+      filter(!is.na(spp) & !is.na(open) & !is.na(close)) |> 
+      group_by(seasonyear, state, spp) |> 
       summarize(
         open = min(ymd(open), na.rm = T),
-        close = max(ymd(close), na.rm = T)) %>%
-      ungroup() %>% 
+        close = max(ymd(close), na.rm = T)) |>
+      ungroup() |> 
       left_join(
         tibble(
           state = datasets::state.abb,
           sampled_state = datasets::state.name),
-        by = "state") %>% 
-      select(-c("state", "seasonyear")) %>% 
+        by = "state") |> 
+      select(-c("state", "seasonyear")) |> 
       rename(sp_group_estimated = spp)
     
     # Duplicate the "Doves" lines so they apply to MODO and WWDO
@@ -59,45 +58,45 @@ openclose <-
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     specialdates <-
-      dates %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      dates |> 
+      filter(sp_group_estimated == "MODO-WWDO") |> 
+      mutate(sp_group_estimated = "Mourning Dove") |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "MODO-WWDO") |> 
+          mutate(sp_group_estimated = "White-Winged Dove")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Geese")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Brant")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
+          mutate(sp_group_estimated = "Coots")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
           mutate(sp_group_estimated = "Gallinules")) 
     
     # Remove specialdates spp from the original dates df
     dates <-
-      dates %>% 
+      dates |> 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
-      bind_rows(specialdates) %>%
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) |> 
+      bind_rows(specialdates) |>
       distinct()
     
     date_errors <-
-      data %>% 
+      data |> 
       left_join(
         dates,
-        by = c("sp_group_estimated", "sampled_state")) %>% 
-      mutate(no_season = ifelse(is.na(open), "No season", NA)) %>%
+        by = c("sp_group_estimated", "sampled_state")) |> 
+      mutate(no_season = ifelse(is.na(open), "No season", NA)) |>
       mutate(
         harvested_date = ymd(harvested_date),
         error = 
@@ -105,10 +104,10 @@ openclose <-
             harvested_date < open ~ "Early hunt",
             harvested_date > close ~ "Late hunt",
             no_season == "No season" ~ "No season",
-            TRUE ~ NA_character_)) %>% 
+            TRUE ~ NA_character_)) |> 
       select(
         selected_hunterID, sampled_state, sp_group_estimated, open, close, 
-        error) %>% 
+        error) |> 
       filter(!is.na(error)) 
     
     if(is.na(state)){
@@ -116,23 +115,23 @@ openclose <-
         return(date_errors)
       } else{
         return(
-          date_errors %>% 
-            group_by(sampled_state, sp_group_estimated, error) %>% 
-            summarize(n = n()) %>% 
+          date_errors |> 
+            group_by(sampled_state, sp_group_estimated, error) |> 
+            summarize(n = n()) |> 
             ungroup() 
         )
       }
     }else{
       if(summary == F){
         return(
-          date_errors %>% 
+          date_errors |> 
             filter(sampled_state == state)
         )
       }else{
-        date_errors %>% 
-          filter(sampled_state == state) %>% 
-          group_by(sampled_state, sp_group_estimated, error) %>% 
-          summarize(n = n()) %>% 
+        date_errors |> 
+          filter(sampled_state == state) |> 
+          group_by(sampled_state, sp_group_estimated, error) |> 
+          summarize(n = n()) |> 
           ungroup() 
       }
       

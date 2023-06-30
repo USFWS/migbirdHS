@@ -27,7 +27,7 @@ library(DT)
 
 # Write tibble names to list for function compatibility
 tibblelist <-
-  list(ref_data, daily, season) %>% 
+  list(ref_data, daily, season) |> 
   set_names(c("all_seasons", "daily_records", "season_totals"))
 ```
 
@@ -45,7 +45,7 @@ datatable(
     data = get(names(tibblelist[3])), 
     ref_data = get(names(tibblelist[1])), 
     species = "all",
-    report = TRUE) %>%
+    report = TRUE) |>
     filter(sampled_state != "PR"), 
   options = list(pageLength = 5))
 ```
@@ -60,8 +60,8 @@ How many hunters submitted in the season data? Daily records excluded and data a
 
 ```{r, submitted1, message = FALSE, warning = FALSE, echo = F}
 knitr::kable(
-  submitted(get(names(tibblelist[3]))) %>% 
-    rename(`Has submitted?` = has_submitted) %>% 
+  submitted(get(names(tibblelist[3]))) |> 
+    rename(`Has submitted?` = has_submitted) |> 
     mutate(prop = round(n/sum(n), 2)))
 ```
 
@@ -82,8 +82,8 @@ How many hunters submitted in the daily data? Records must have answered "yes" t
 
 ```{r, submitted4, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 4, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 knitr::kable(
-  submitted(get(names(tibblelist[2]))) %>% 
-    rename(`Has submitted?` = has_submitted) %>% 
+  submitted(get(names(tibblelist[2]))) |> 
+    rename(`Has submitted?` = has_submitted) |> 
     mutate(prop = round(n/sum(n), 2)))
 ```
 
@@ -106,20 +106,20 @@ How many hunters hunted in the season data? Daily records have been excluded.
 ```{r, hunted1, message = FALSE, warning = FALSE, echo = FALSE}
 
 knitr::kable(
-  hunted(get(names(tibblelist[3]))) %>% 
+  hunted(get(names(tibblelist[3]))) |> 
     mutate(
     days_hunted = 
       ifelse(
         str_detect(days_hunted, "NULL"), 
         NA, 
         days_hunted),
-    has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
-    group_by(has_hunted) %>% 
-    summarize(sum_n = sum(n)) %>% 
-    ungroup() %>% 
+    has_hunted = ifelse(days_hunted > 0, "Y", "N")) |> 
+    group_by(has_hunted) |> 
+    summarize(sum_n = sum(n)) |> 
+    ungroup() |> 
     rename(
       `Has hunted?` = has_hunted,
-      n = sum_n) %>% 
+      n = sum_n) |> 
     mutate(prop = round(n/sum(n), 2)))
 ```
 
@@ -142,8 +142,8 @@ Here are the manual corrections done to party hunt retrieved values with the `pa
 proofed_parties <- read_csv(params$partypath)
 
 datatable(
-  proofed_parties %>% 
-    select(-new_retrieved) %>% 
+  proofed_parties |> 
+    select(-new_retrieved) |> 
     rename(new_retrieved = retrieved), 
   options = list(pageLength = 5))
 ```
@@ -186,21 +186,21 @@ What values in the retrieved field of daily data were over the limit per species
 
 ```{r, overbags2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 600, fig.align = "center", echo  = F}
 overbags_tbl <- 
-  migbirdMBHS::overbags(daily_records, all_seasons) %>% 
+  migbirdMBHS::overbags(daily_records, all_seasons) |> 
   rename(
     state = sampled_state,
-    sp = sp_group_estimated) %>% 
+    sp = sp_group_estimated) |> 
   mutate(
-    sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) %>% 
+    sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) |> 
   left_join(
     tibble(
       state = state.name,
       state_abbr = state.abb),
-    by = "state") %>% 
+    by = "state") |> 
   mutate(bag_lim_label = "Bag limit") 
 
 overbags_tbl |> 
-  filter(!str_detect(sp, "Dove|Pigeon")) %>% 
+  filter(!str_detect(sp, "Dove|Pigeon")) |> 
   ggplot() + 
   geom_point(aes(x = state_abbr, y = bag_limit, shape = bag_lim_label), 
              color = "red", size = 6) + 
@@ -216,7 +216,7 @@ overbags_tbl |>
     labeller = label_wrap_gen(width = 5))
 
 overbags_tbl |> 
-  filter(str_detect(sp, "Dove|Pigeon")) %>% 
+  filter(str_detect(sp, "Dove|Pigeon")) |> 
   ggplot() + 
   geom_point(aes(x = state_abbr, y = bag_limit, shape = bag_lim_label), 
              color = "red", size = 6) + 
@@ -234,10 +234,10 @@ overbags_tbl |>
 
 ```{r, overbags3, message = FALSE, warning = FALSE, echo = F}
 datatable(
-  overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) %>% 
+  overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) |> 
     rename(
       state = sampled_state,
-      sp = sp_group_estimated) %>% 
+      sp = sp_group_estimated) |> 
     mutate(
       sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp))
 )
@@ -248,10 +248,10 @@ datatable(
 ```{r, overbags4, message = FALSE, warning = FALSE, echo = F}
 
 datatable(
-  overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = F) %>% 
+  overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = F) |> 
     rename(
       state = sampled_state,
-      sp = sp_group_estimated) %>% 
+      sp = sp_group_estimated) |> 
     mutate(
       sp = 
         case_when(
@@ -260,18 +260,18 @@ datatable(
           str_detect(sp, "White") ~ "WWDO",
           str_detect(sp, "Crane") ~ "Cranes",
           TRUE ~ sp) %>% 
-        str_remove_all(., " ")) %>% 
+        str_remove_all(., " ")) |> 
     pivot_wider(
       id_cols = 
         c("selected_hunterID", "surveyID", "state", "county", "harvested_date"),
       values_from = retrieved,
-      names_from = sp) %>% 
-    mutate(over = "Y") %>% 
+      names_from = sp) |> 
+    mutate(over = "Y") |> 
     bind_rows(
-      overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), over = F) %>% 
+      overbags(get(names(tibblelist[2])), get(names(tibblelist[1])), over = F) |> 
         rename(
           sp = sp_group_estimated,
-          state = sampled_state) %>% 
+          state = sampled_state) |> 
         mutate(
           sp = 
             case_when(
@@ -279,35 +279,35 @@ datatable(
               str_detect(sp, "Mourning") ~ "MODO",
               str_detect(sp, "White") ~ "WWDO",
               str_detect(sp, "Crane") ~ "Cranes",
-              TRUE ~ sp) %>% 
-            str_remove_all(., " ")) %>% 
+              TRUE ~ sp) %>%
+            str_remove_all(., " ")) |> 
         pivot_wider(
           id_cols = 
             c("selected_hunterID", "surveyID", "state", "county", "harvested_date"),
           values_from = retrieved,
-          names_from = sp) %>% 
-        mutate(over = "N")) %>% 
-    relocate(over, .after = "harvested_date") %>% 
-    group_by(selected_hunterID) %>% 
-    mutate(n = n()) %>% 
-    ungroup() %>% 
-    filter(n >= 2) %>% 
-    group_by(selected_hunterID) %>% 
-    filter("Y" %in% over) %>% 
-    ungroup() %>% 
-    arrange(selected_hunterID) %>% 
+          names_from = sp) |> 
+        mutate(over = "N")) |> 
+    relocate(over, .after = "harvested_date") |> 
+    group_by(selected_hunterID) |> 
+    mutate(n = n()) |> 
+    ungroup() |> 
+    filter(n >= 2) |> 
+    group_by(selected_hunterID) |> 
+    filter("Y" %in% over) |> 
+    ungroup() |> 
+    arrange(selected_hunterID) |> 
     rename(
       hunterID = selected_hunterID,
-      harvest_date = harvested_date) %>% 
+      harvest_date = harvested_date) |> 
     left_join(
       tibble(
         st = state.abb,
         state = state.name),
-      by = "state") %>% 
-    relocate(st, .before = "county") %>% 
-    select(-c("state", "n")) %>% 
-    arrange(hunterID, harvest_date) %>% 
-    group_by(hunterID) %>% 
+      by = "state") |> 
+    relocate(st, .before = "county") |> 
+    select(-c("state", "n")) |> 
+    arrange(hunterID, harvest_date) |> 
+    group_by(hunterID) |> 
     mutate(
       color = 
         ifelse(
@@ -315,8 +315,8 @@ datatable(
           "odd",
           "even"),
       ID = 
-        row_number()) %>% 
-    ungroup() %>% 
+        row_number()) |> 
+    ungroup() |> 
     relocate(ID, .before = "hunterID"), 
   extensions = "Buttons",
   options = 
@@ -329,11 +329,11 @@ datatable(
       scrollX = "1100px",
       scrollY = "500px"),
   width = "1100px",
-  height = "500px") %>% 
+  height = "500px") |> 
   formatStyle(
     "color",
     target = "row",
-    backgroundColor = styleEqual(c("odd", "even"), c("white", "lightgray"))) %>% 
+    backgroundColor = styleEqual(c("odd", "even"), c("white", "lightgray"))) |> 
   formatStyle(
     "over",
     backgroundColor = styleEqual("Y", "pink")) 
@@ -367,21 +367,21 @@ What harvest dates in the daily data fell outside of the legal hunting season pe
 
 ```{r, openclose2, message = FALSE, warning = FALSE, fig.width = 11, fig.height = 4, dpi = 300, out.width = 900, fig.align = "center", echo  = F}
 
-openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) %>% 
+openclose(get(names(tibblelist[2])), get(names(tibblelist[1])), summary = T) |> 
   rename(
     sp = sp_group_estimated,
-    state = sampled_state) %>% 
+    state = sampled_state) |> 
   left_join(
     tibble(
       state = state.name,
       state_abbr = state.abb),
-    by = "state") %>% 
-  mutate(prop = n/sum(n)) %>% 
-  group_by(state) %>% 
+    by = "state") |> 
+  mutate(prop = n/sum(n)) |> 
+  group_by(state) |> 
   mutate(
     sum_n = sum(n),
-    sum_prop = sum(prop)) %>% 
-  ungroup() %>% 
+    sum_prop = sum(prop)) |> 
+  ungroup() |> 
   ggplot() + 
   geom_bar(
     aes(x = reorder(state_abbr, -sum_prop), y = prop, fill = error), 
@@ -442,14 +442,14 @@ season_proofed <- proofHS(get(names(tibblelist[3])), get(names(tibblelist[1])))
 
 errorsHS <-
   function(data){
-    data %>% 
-      select(errors) %>% 
-      filter(errors != "none") %>% 
-      mutate(errors = ifelse(str_detect(errors, "-"), "2+ errors", errors)) %>% 
-      group_by(errors) %>% 
-      summarize(n = n()) %>% 
-      ungroup() %>% 
-      mutate(prop = n/nrow(data %>% filter(errors != "none"))) %>% 
+    data |> 
+      select(errors) |> 
+      filter(errors != "none") |> 
+      mutate(errors = ifelse(str_detect(errors, "-"), "2+ errors", errors)) |> 
+      group_by(errors) |> 
+      summarize(n = n()) |> 
+      ungroup() |> 
+      mutate(prop = n/nrow(data |> filter(errors != "none"))) |> 
       ggplot() +
       geom_bar(aes(x = errors, y = prop), stat = "identity") + 
       geom_text(aes(x = errors, y = prop, label = n), nudge_y = .05) +

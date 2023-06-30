@@ -2,7 +2,6 @@
 #'
 #' The \code{huntdays} function summarizes the total number of days hunted in the daily data.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -47,32 +46,32 @@ huntdays <-
     if(type == "both"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, sp_group_estimated, harvested_date) %>%
-            group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
+          data |> 
+            select(sampled_state, sp_group_estimated, harvested_date) |>
+            group_by(sampled_state, sp_group_estimated) |>
+            summarize(n_days = n()) |>
             ungroup()}
         else{
-          data %>% 
+          data |> 
             select(
               selected_hunterID, sampled_state, sp_group_estimated, 
-              harvested_date) %>%
-            group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state, sp_group_estimated) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
+              harvested_date) |>
+            group_by(selected_hunterID, sampled_state, sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state, sp_group_estimated) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, sp_group_estimated, harvested_date) %>%
-            group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_days = sum(n_days)) %>% 
-            ungroup() %>% 
+          data |> 
+            select(sampled_state, sp_group_estimated, harvested_date) |>
+            group_by(sampled_state, sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_days = sum(n_days)) |> 
+            ungroup() |> 
             mutate(
               prop_sp = n_days/sum(n_days),
               prop_tot = tot_days/sum(n_days),
@@ -80,7 +79,7 @@ huntdays <-
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea ducks",
-                  sp_group_estimated)) %>% 
+                  sp_group_estimated)) |> 
             ggplot(
               aes(x = reorder(sampled_state, -prop_tot), 
                   y = prop_sp, 
@@ -98,25 +97,25 @@ huntdays <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
+          data |> 
             select(
               selected_hunterID, sampled_state, sp_group_estimated, 
-              harvested_date) %>%
-            group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state, sp_group_estimated) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_days = sum(mean_days)) %>% 
-            ungroup() %>% 
+              harvested_date) |>
+            group_by(selected_hunterID, sampled_state, sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state, sp_group_estimated) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_days = sum(mean_days)) |> 
+            ungroup() |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea ducks",
-                  sp_group_estimated)) %>% 
+                  sp_group_estimated)) |> 
             ggplot(
               aes(x = reorder(sampled_state, -tot_days), 
                   y = mean_days, 
@@ -142,38 +141,38 @@ huntdays <-
     }else if(type == "species"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sp_group_estimated, harvested_date) %>%
-            group_by(sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
+          data |> 
+            select(sp_group_estimated, harvested_date) |>
+            group_by(sp_group_estimated) |>
+            summarize(n_days = n()) |>
             ungroup()}
         else{
-          data %>% 
+          data |> 
             select(
-              selected_hunterID, sp_group_estimated, harvested_date) %>%
-            group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
+              selected_hunterID, sp_group_estimated, harvested_date) |>
+            group_by(selected_hunterID, sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
-            select(sp_group_estimated, harvested_date) %>%
-            group_by(sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            mutate(tot_days = sum(n_days)) %>% 
-            ungroup() %>% 
+          data |> 
+            select(sp_group_estimated, harvested_date) |>
+            group_by(sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            mutate(tot_days = sum(n_days)) |> 
+            ungroup() |> 
             mutate(
               prop_tot = tot_days/sum(n_days),
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea ducks",
-                  sp_group_estimated)) %>% 
+                  sp_group_estimated)) |> 
             ggplot(
               aes(x = reorder(sp_group_estimated, -prop_tot), y = prop_tot)) +
             geom_bar(stat = "identity") +
@@ -188,23 +187,23 @@ huntdays <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
-            select(selected_hunterID, sp_group_estimated, harvested_date) %>%
-            group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            mutate(tot_days = sum(mean_days)) %>% 
-            ungroup() %>% 
+          data |> 
+            select(selected_hunterID, sp_group_estimated, harvested_date) |>
+            group_by(selected_hunterID, sp_group_estimated) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            mutate(tot_days = sum(mean_days)) |> 
+            ungroup() |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea ducks",
-                  sp_group_estimated)) %>% 
+                  sp_group_estimated)) |> 
             ggplot(
               aes(x = reorder(sp_group_estimated, -tot_days), y = mean_days)) +
             geom_bar(stat = "identity") +
@@ -228,32 +227,32 @@ huntdays <-
     }else if(type == "state"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, harvested_date) %>%
-            group_by(sampled_state) %>%
-            summarize(n_days = n()) %>%
+          data |> 
+            select(sampled_state, harvested_date) |>
+            group_by(sampled_state) |>
+            summarize(n_days = n()) |>
             ungroup()}
         else{
-          data %>% 
+          data |> 
             select(
-              selected_hunterID, sampled_state, harvested_date) %>%
-            group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
+              selected_hunterID, sampled_state, harvested_date) |>
+            group_by(selected_hunterID, sampled_state) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, harvested_date) %>%
-            group_by(sampled_state) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_days = sum(n_days)) %>% 
-            ungroup() %>% 
-            mutate(prop_tot = tot_days/sum(n_days)) %>% 
+          data |> 
+            select(sampled_state, harvested_date) |>
+            group_by(sampled_state) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_days = sum(n_days)) |> 
+            ungroup() |> 
+            mutate(prop_tot = tot_days/sum(n_days)) |> 
             ggplot(
               aes(x = reorder(sampled_state, -prop_tot), y = prop_tot)) +
             geom_bar(stat = "identity") +
@@ -268,17 +267,17 @@ huntdays <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
-            select(selected_hunterID, sampled_state, harvested_date) %>%
-            group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_days = n()) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            summarize(mean_days = round(mean(n_days), 1)) %>% 
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_days = sum(mean_days)) %>% 
-            ungroup() %>% 
+          data |> 
+            select(selected_hunterID, sampled_state, harvested_date) |>
+            group_by(selected_hunterID, sampled_state) |>
+            summarize(n_days = n()) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            summarize(mean_days = round(mean(n_days), 1)) |> 
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_days = sum(mean_days)) |> 
+            ungroup() |> 
             ggplot(aes(x = reorder(sampled_state, -tot_days), y = mean_days)) +
             geom_bar(stat = "identity") +
             geom_text(

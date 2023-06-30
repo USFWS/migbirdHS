@@ -2,7 +2,6 @@
 #'
 #' The \code{nodata} function checks to see if any states or species are missing from the daily or season Harvest Survey online data.
 #'
-#' @importFrom dplyr %>%
 #' @importFrom stringr str_detect
 #' @importFrom dplyr filter
 #' @importFrom stringr str_extract
@@ -42,11 +41,11 @@ nodata <-
         dataname <- deparse(substitute(data))
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                select(selected_hunterID) |>
                 pull())
           )
         message("Notice: season data filtered to exclude daily records.")
@@ -57,22 +56,22 @@ nodata <-
       message("Notice: season data NOT filtered to exclude daily records.")
     }
     if(is.na(species) == TRUE){
-      tibble(sampled_state = datasets::state.name) %>% 
-        filter(sampled_state != "Hawaii") %>% 
+      tibble(sampled_state = datasets::state.name) |> 
+        filter(sampled_state != "Hawaii") |> 
         left_join(
-          data %>% 
-            select(sampled_state) %>% 
-            distinct() %>% 
+          data |> 
+            select(sampled_state) |> 
+            distinct() |> 
             mutate(has_data = "Y"),
-          by = "sampled_state") %>% 
-        filter(is.na(has_data)) %>% 
+          by = "sampled_state") |> 
+        filter(is.na(has_data)) |> 
         mutate(has_data = "No")}
     else if(species == "all"){
       ref_table <- 
-        ref_data %>% 
-        select(sampled_state = ST, speciesgroup = SpeciesGroup) %>% 
-        distinct() %>% 
-        filter(!is.na(speciesgroup)) %>% 
+        ref_data |> 
+        select(sampled_state = ST, speciesgroup = SpeciesGroup) |> 
+        distinct() |> 
+        filter(!is.na(speciesgroup)) |> 
         mutate(
           spp = 
             case_when(
@@ -102,8 +101,8 @@ nodata <-
                 sampled_state %in% 
                 c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
               speciesgroup == "Coots" ~ "Coots",
-              TRUE ~ NA_character_)) %>%
-        rename(sp_group_estimated = spp) %>% 
+              TRUE ~ NA_character_)) |>
+        rename(sp_group_estimated = spp) |> 
         select(-speciesgroup)
       
       # Duplicate the "Doves" lines so they apply to MODO and WWDO
@@ -111,52 +110,52 @@ nodata <-
       # Duplicate the "CootsGallinules" lines so they apply to Coots and 
       # Gallinules
       special_data <-
-        ref_table %>% 
-        filter(sp_group_estimated == "MODO-WWDO") %>% 
-        mutate(sp_group_estimated = "Mourning Dove") %>% 
+        ref_table |> 
+        filter(sp_group_estimated == "MODO-WWDO") |> 
+        mutate(sp_group_estimated = "Mourning Dove") |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "MODO-WWDO") %>% 
-            mutate(sp_group_estimated = "White-winged Dove")) %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "MODO-WWDO") |> 
+            mutate(sp_group_estimated = "White-winged Dove")) |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "CootsGallinules") %>% 
-            mutate(sp_group_estimated = "Coots")) %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "CootsGallinules") |> 
+            mutate(sp_group_estimated = "Coots")) |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "CootsGallinules") %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "CootsGallinules") |> 
             mutate(sp_group_estimated = "Gallinules")) 
       
-      ref_table %>% 
+      ref_table |> 
         filter(
           !sp_group_estimated %in% 
-            c("MODO-WWDO", "CootsGallinules")) %>% 
-        bind_rows(special_data) %>%
-        distinct() %>% 
+            c("MODO-WWDO", "CootsGallinules")) |> 
+        bind_rows(special_data) |>
+        distinct() |> 
         left_join(
-          data %>% 
-            select(state_name = sampled_state, sp_group_estimated) %>% 
-            distinct() %>%
+          data |> 
+            select(state_name = sampled_state, sp_group_estimated) |> 
+            distinct() |>
             left_join(
               tibble(
                 state_name = datasets::state.name,
                 sampled_state = datasets::state.abb),
-              by = "state_name") %>% 
-            select(-state_name) %>% 
+              by = "state_name") |> 
+            select(-state_name) |> 
             mutate(has_data = "Y"),
-          by = c("sampled_state", "sp_group_estimated")) %>% 
-        filter(is.na(has_data)) %>% 
-        mutate(has_data = "No") %>% 
+          by = c("sampled_state", "sp_group_estimated")) |> 
+        filter(is.na(has_data)) |> 
+        mutate(has_data = "No") |> 
         filter(!is.na(sp_group_estimated))
     }else if(species %in% 
              c("Band-tailed Pigeon", "Coots", "Ducks", "Gallinules", "Geese", 
                "Rails", "Sandhill Crane", "Snipe", 
                "Specially Regulated Sea Ducks", "Woodcock")){
       ref_table <- 
-        ref_data %>% 
-        select(sampled_state = ST, speciesgroup = SpeciesGroup) %>% 
-        distinct() %>% 
-        filter(!is.na(speciesgroup)) %>% 
+        ref_data |> 
+        select(sampled_state = ST, speciesgroup = SpeciesGroup) |> 
+        distinct() |> 
+        filter(!is.na(speciesgroup)) |> 
         mutate(
           spp = 
             case_when(
@@ -187,8 +186,8 @@ nodata <-
                 sampled_state %in% 
                 c("CO", "ID", "MT", "OR", "UT", "WA", "WY") ~ "Coots", 
               speciesgroup == "Coots" ~ "Coots",
-              TRUE ~ NA_character_)) %>% 
-        rename(sp_group_estimated = spp) %>% 
+              TRUE ~ NA_character_)) |> 
+        rename(sp_group_estimated = spp) |> 
         select(-speciesgroup)
       
       # Duplicate the "Doves" lines so they apply to MODO and WWDO
@@ -196,42 +195,42 @@ nodata <-
       # Duplicate the "CootsGallinules" lines so they apply to Coots and 
       # Gallinules
       special_data <-
-        ref_table %>% 
-        filter(sp_group_estimated == "MODO-WWDO") %>% 
-        mutate(sp_group_estimated = "Mourning Dove") %>% 
+        ref_table |> 
+        filter(sp_group_estimated == "MODO-WWDO") |> 
+        mutate(sp_group_estimated = "Mourning Dove") |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "MODO-WWDO") %>% 
-            mutate(sp_group_estimated = "White-winged Dove")) %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "MODO-WWDO") |> 
+            mutate(sp_group_estimated = "White-winged Dove")) |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "CootsGallinules") %>% 
-            mutate(sp_group_estimated = "Coots")) %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "CootsGallinules") |> 
+            mutate(sp_group_estimated = "Coots")) |> 
         bind_rows(
-          ref_table %>% 
-            filter(sp_group_estimated == "CootsGallinules") %>% 
+          ref_table |> 
+            filter(sp_group_estimated == "CootsGallinules") |> 
             mutate(sp_group_estimated = "Gallinules")) 
       
-      ref_table %>% 
+      ref_table |> 
         filter(
           !sp_group_estimated %in% 
-            c("MODO-WWDO", "CootsGallinules")) %>% 
-        bind_rows(special_data) %>%
-        distinct() %>% 
+            c("MODO-WWDO", "CootsGallinules")) |> 
+        bind_rows(special_data) |>
+        distinct() |> 
         left_join(
-          data %>% 
-            select(state_name = sampled_state, sp_group_estimated) %>% 
-            distinct() %>%
+          data |> 
+            select(state_name = sampled_state, sp_group_estimated) |> 
+            distinct() |>
             left_join(
               tibble(
                 state_name = datasets::state.name,
                 sampled_state = datasets::state.abb),
-              by = "state_name") %>% 
-            select(-state_name) %>% 
+              by = "state_name") |> 
+            select(-state_name) |> 
             mutate(has_data = "Y"),
-          by = c("sampled_state", "sp_group_estimated")) %>% 
-        filter(is.na(has_data)) %>%
-        filter(sp_group_estimated == species) %>% 
+          by = c("sampled_state", "sp_group_estimated")) |> 
+        filter(is.na(has_data)) |>
+        filter(sp_group_estimated == species) |> 
         mutate(has_data = "No")
     }else{
       message("Error: `species` must be one of: 'Band-tailed Pigeon', 'Coots', 

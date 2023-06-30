@@ -28,7 +28,7 @@ library(treemapify)
 
 # Write tibble names to list for function compatibility
 tibblelist <-
-  list(ref_data, daily, season) %>% 
+  list(ref_data, daily, season) |> 
   set_names(c("all_seasons", "daily_records", "season_totals"))
 
 # Read in the manually partyproofed daily data
@@ -86,16 +86,16 @@ DT::datatable(bagdays(daily_proofed, output = "table"))
 
 ```{r, bagovertime_d, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-daily_proofed %>% 
+daily_proofed |> 
   mutate(
     sp_group_estimated =
       ifelse(
         str_detect(sp_group_estimated, "Sea"),
         "Sea Ducks",
-        sp_group_estimated)) %>% 
-  group_by(harvested_date, sp_group_estimated) %>% 
-  summarize(sum_daily_retrieved = sum(retrieved)) %>% 
-  ungroup() %>% 
+        sp_group_estimated)) |> 
+  group_by(harvested_date, sp_group_estimated) |> 
+  summarize(sum_daily_retrieved = sum(retrieved)) |> 
+  ungroup() |> 
   ggplot(
     aes(x = harvested_date, y = sum_daily_retrieved, 
         color = sp_group_estimated, fill = sp_group_estimated)) + 
@@ -122,17 +122,17 @@ daily_proofed %>%
 
 ```{r, bagovertime_w, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 12, dpi = 300, out.width = 500, fig.align = "center", echo = F}
 
-daily_proofed %>% 
+daily_proofed |> 
   mutate(
     sp_group_estimated =
       ifelse(
         str_detect(sp_group_estimated, "Sea"),
         "Sea Ducks",
-        sp_group_estimated)) %>% 
-  mutate(harvested_wk = lubridate::week(harvested_date)) %>% 
-  group_by(harvested_wk, sp_group_estimated) %>% 
-  summarize(sum_weekly_retrieved = sum(retrieved)) %>% 
-  ungroup() %>% 
+        sp_group_estimated)) |> 
+  mutate(harvested_wk = lubridate::week(harvested_date)) |> 
+  group_by(harvested_wk, sp_group_estimated) |> 
+  summarize(sum_weekly_retrieved = sum(retrieved)) |> 
+  ungroup() |> 
   ggplot(
     aes(x = harvested_wk, y = sum_weekly_retrieved, 
         color = sp_group_estimated, fill = sp_group_estimated)) + 

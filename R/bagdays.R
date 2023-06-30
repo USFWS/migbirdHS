@@ -2,7 +2,6 @@
 #'
 #' The \code{bagdays} function determines the total number of days hunted per hunter and species group in the daily Harvest Survey data.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -37,25 +36,25 @@
 bagdays <-
   function(data, output = "table"){
     if(output == "table"){
-      data %>%
+      data |>
         select(
-          selected_hunterID, harvested_date, sp_group_estimated, retrieved) %>%
-        group_by(selected_hunterID, sp_group_estimated) %>%
+          selected_hunterID, harvested_date, sp_group_estimated, retrieved) |>
+        group_by(selected_hunterID, sp_group_estimated) |>
         summarize(
           n_days = n(),
-          n_retrieved = sum(retrieved)) %>%
+          n_retrieved = sum(retrieved)) |>
         ungroup()
     }else if(output == "plot"){
-      data %>%
+      data |>
         select(
-          selected_hunterID, harvested_date, sp_group_estimated, retrieved) %>%
-        group_by(selected_hunterID, sp_group_estimated) %>%
+          selected_hunterID, harvested_date, sp_group_estimated, retrieved) |>
+        group_by(selected_hunterID, sp_group_estimated) |>
         summarize(
           n_days = n(),
-          n_retrieved = sum(retrieved)) %>%
-        ungroup() %>% 
-        rename(sp = sp_group_estimated) %>% 
-        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) %>% 
+          n_retrieved = sum(retrieved)) |>
+        ungroup() |> 
+        rename(sp = sp_group_estimated) |> 
+        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) |> 
         ggplot(
           aes(x = n_days, y = n_retrieved, color = sp, fill = sp)) +
         geom_jitter(alpha = 0.2, size = 2) +

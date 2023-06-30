@@ -2,7 +2,7 @@
 #'
 #' The \code{refcheck} function checks for issues in the all_seasons Harvest Survey reference table.
 #' 
-#' @importFrom dplyr %>%
+#' @importFrom dplyr |>
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr distinct
@@ -23,9 +23,9 @@ refcheck <-
     
     if(type == "species"){
       spp_return <-
-        wrangle_ref(ref_data) %>%
-        filter(is.na(spp)) %>%
-        select(seasonyear, state = st, speciesgroup, spp, bag) %>%
+        wrangle_ref(ref_data) |>
+        filter(is.na(spp)) |>
+        select(seasonyear, state = st, speciesgroup, spp, bag) |>
         distinct()
       
       if(nrow(spp_return) == 0) {
@@ -36,8 +36,8 @@ refcheck <-
       
     }else if(type == "season"){
       season_return <-
-        wrangle_ref(ref_data) %>%
-        select(seasonyear, st, speciesgroup, open, close, spp) %>% 
+        wrangle_ref(ref_data) |>
+        select(seasonyear, st, speciesgroup, open, close, spp) |> 
         filter(is.na(spp) | is.na(open) | is.na(close))
       
       if(nrow(season_return) == 0) {

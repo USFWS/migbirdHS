@@ -2,7 +2,6 @@
 #'
 #' The \code{retrieved} function summarizes the total number of birds retrieved in the daily or season data.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -53,28 +52,28 @@ retrieved <-
         dataname <- deparse(substitute(data))
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
         # Additional statement for report template compatibility
       }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
         datayr <- 
-          data %>% 
-          select(season) %>% 
-          distinct() %>% 
+          data |> 
+          select(season) |> 
+          distinct() |> 
           pull()
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
@@ -83,41 +82,41 @@ retrieved <-
     if(type == "both"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, sp_group_estimated, retrieved) %>%
-            group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
+          data |> 
+            select(sampled_state, sp_group_estimated, retrieved) |>
+            group_by(sampled_state, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
             ungroup()}
         else{
-          data %>% 
+          data |> 
             select(
               selected_hunterID, sampled_state, sp_group_estimated, 
-              retrieved) %>%
-            group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state, sp_group_estimated) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
+              retrieved) |>
+            group_by(selected_hunterID, sampled_state, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state, sp_group_estimated) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
+          data |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
-                  sp_group_estimated)) %>% 
-            select(sampled_state, sp_group_estimated, retrieved) %>%
-            group_by(sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_r = sum(n_retrieved, na.rm = T)) %>% 
-            ungroup() %>% 
+                  sp_group_estimated)) |> 
+            select(sampled_state, sp_group_estimated, retrieved) |>
+            group_by(sampled_state, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_r = sum(n_retrieved, na.rm = T)) |> 
+            ungroup() |> 
             mutate(
               prop_sp = n_retrieved/sum(n_retrieved, na.rm = T),
-              prop_tot = tot_r/sum(n_retrieved, na.rm = T)) %>% 
+              prop_tot = tot_r/sum(n_retrieved, na.rm = T)) |> 
             ggplot(
               aes(x = reorder(sampled_state, -prop_tot), 
                   y = prop_sp, 
@@ -137,25 +136,25 @@ retrieved <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
+          data |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
-                  sp_group_estimated)) %>% 
+                  sp_group_estimated)) |> 
             select(
               selected_hunterID, sampled_state, sp_group_estimated, 
-              retrieved) %>%
-            group_by(selected_hunterID, sampled_state, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state, sp_group_estimated) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_r = sum(mean_retrieved)) %>% 
-            ungroup() %>% 
+              retrieved) |>
+            group_by(selected_hunterID, sampled_state, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state, sp_group_estimated) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_r = sum(mean_retrieved)) |> 
+            ungroup() |> 
             ggplot(
               aes(x = reorder(sampled_state, -tot_r), 
                   y = mean_retrieved, 
@@ -181,37 +180,37 @@ retrieved <-
     }else if(type == "species"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sp_group_estimated, retrieved) %>%
-            group_by(sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
+          data |> 
+            select(sp_group_estimated, retrieved) |>
+            group_by(sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
             ungroup()}
         else{
-          data %>% 
-            select(selected_hunterID, sp_group_estimated, retrieved) %>%
-            group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
+          data |> 
+            select(selected_hunterID, sp_group_estimated, retrieved) |>
+            group_by(selected_hunterID, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
+          data |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
-                  sp_group_estimated)) %>% 
-            select(sp_group_estimated, retrieved) %>%
-            group_by(sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            mutate(tot_r = sum(n_retrieved)) %>% 
-            ungroup() %>% 
-            mutate(prop_tot = tot_r/sum(n_retrieved)) %>% 
+                  sp_group_estimated)) |> 
+            select(sp_group_estimated, retrieved) |>
+            group_by(sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            mutate(tot_r = sum(n_retrieved)) |> 
+            ungroup() |> 
+            mutate(prop_tot = tot_r/sum(n_retrieved)) |> 
             ggplot(
               aes(x = reorder(sp_group_estimated, -prop_tot), y = prop_tot)) +
             geom_bar(stat = "identity") +
@@ -226,20 +225,20 @@ retrieved <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
+          data |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"), 
                   "Sea Ducks", 
-                  sp_group_estimated)) %>% 
-            select(selected_hunterID, sp_group_estimated, retrieved) %>%
-            group_by(selected_hunterID, sp_group_estimated) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
-            ungroup() %>% 
+                  sp_group_estimated)) |> 
+            select(selected_hunterID, sp_group_estimated, retrieved) |>
+            group_by(selected_hunterID, sp_group_estimated) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
+            ungroup() |> 
             ggplot(
               aes(x = reorder(sp_group_estimated, -mean_retrieved), 
                   y = mean_retrieved)) +
@@ -263,31 +262,31 @@ retrieved <-
     }else if(type == "state"){
       if(output == "table"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, retrieved) %>%
-            group_by(sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
+          data |> 
+            select(sampled_state, retrieved) |>
+            group_by(sampled_state) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
             ungroup()
         }else{
-          data %>% 
-            select(selected_hunterID, sampled_state, retrieved) %>%
-            group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
+          data |> 
+            select(selected_hunterID, sampled_state, retrieved) |>
+            group_by(selected_hunterID, sampled_state) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
             ungroup()}
       }else if(output == "plot"){
         if(average == FALSE){
-          data %>% 
-            select(sampled_state, retrieved) %>%
-            group_by(sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_r = sum(n_retrieved)) %>% 
-            ungroup() %>% 
-            mutate(prop_tot = tot_r/sum(n_retrieved)) %>% 
+          data |> 
+            select(sampled_state, retrieved) |>
+            group_by(sampled_state) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            mutate(tot_r = sum(n_retrieved)) |> 
+            ungroup() |> 
+            mutate(prop_tot = tot_r/sum(n_retrieved)) |> 
             ggplot(
               aes(x = reorder(sampled_state, -prop_tot), y = prop_tot)) +
             geom_bar(stat = "identity") +
@@ -302,14 +301,14 @@ retrieved <-
             theme_classic() + 
             theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))}
         else{
-          data %>% 
-            select(selected_hunterID, sampled_state, retrieved) %>%
-            group_by(selected_hunterID, sampled_state) %>%
-            summarize(n_retrieved = sum(retrieved, na.rm = T)) %>%
-            ungroup() %>% 
-            group_by(sampled_state) %>% 
-            summarize(mean_retrieved = round(mean(n_retrieved), 1)) %>% 
-            ungroup() %>% 
+          data |> 
+            select(selected_hunterID, sampled_state, retrieved) |>
+            group_by(selected_hunterID, sampled_state) |>
+            summarize(n_retrieved = sum(retrieved, na.rm = T)) |>
+            ungroup() |> 
+            group_by(sampled_state) |> 
+            summarize(mean_retrieved = round(mean(n_retrieved), 1)) |> 
+            ungroup() |> 
             ggplot(
               aes(x = reorder(sampled_state, -mean_retrieved), 
                   y = mean_retrieved)) +

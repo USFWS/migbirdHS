@@ -2,7 +2,6 @@
 #'
 #' The \code{proofHS} function checks for overbag and overdays values in the Harvest Survey season data. In addition to overbag and overdays, daily data are checked for early and late hunts.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr rename_all
 #' @importFrom dplyr filter
 #' @importFrom stringr str_detect
@@ -33,18 +32,18 @@ proofHS <-
     # Format over bags ref table
     suppressWarnings(
       ref_table <-
-        wrangle_ref(ref_data) %>%
-        filter(!is.na(spp) & !is.na(bag)) %>% 
-        select(seasonyear, state = st, speciesgroup, spp, bag) %>% 
-        group_by(seasonyear, state, spp) %>% 
-        summarize(max_bag = max(bag, na.rm = T)) %>% 
-        ungroup() %>% 
+        wrangle_ref(ref_data) |>
+        filter(!is.na(spp) & !is.na(bag)) |> 
+        select(seasonyear, state = st, speciesgroup, spp, bag) |> 
+        group_by(seasonyear, state, spp) |> 
+        summarize(max_bag = max(bag, na.rm = T)) |> 
+        ungroup() |> 
         left_join(
           tibble(
             state = datasets::state.abb,
             sampled_state = datasets::state.name),
-          by = "state") %>% 
-        select(-c("state", "seasonyear")) %>%
+          by = "state") |> 
+        select(-c("state", "seasonyear")) |>
         rename(sp_group_estimated = spp)
     )
     
@@ -52,50 +51,50 @@ proofHS <-
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     special_table <-
-      ref_table %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      ref_table |> 
+      filter(sp_group_estimated == "MODO-WWDO") |> 
+      mutate(sp_group_estimated = "Mourning Dove") |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "MODO-WWDO") |> 
+          mutate(sp_group_estimated = "White-Winged Dove")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
+          mutate(sp_group_estimated = "Coots")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
           mutate(sp_group_estimated = "Gallinules")) 
     
     # Remove specialdates spp from the original dates df
     ref_table <-
-      ref_table %>% 
+      ref_table |> 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "CootsGallinules")) %>% 
-      bind_rows(special_table) %>%
+          c("MODO-WWDO", "CootsGallinules")) |> 
+      bind_rows(special_table) |>
       distinct()
     
     # {Part 2}
     # Format over days ref table
     suppressMessages(
       dates <- 
-        wrangle_ref(ref_data) %>%
-        select(seasonyear, state = st, speciesgroup, open, close, spp) %>% 
-        filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
-        group_by(seasonyear, state, spp) %>% 
+        wrangle_ref(ref_data) |>
+        select(seasonyear, state = st, speciesgroup, open, close, spp) |> 
+        filter(!is.na(spp) & !is.na(open) & !is.na(close)) |> 
+        group_by(seasonyear, state, spp) |> 
         summarize(
           open = min(ymd(open), na.rm = T),
-          close = max(ymd(close), na.rm = T)) %>%
-        ungroup() %>% 
+          close = max(ymd(close), na.rm = T)) |>
+        ungroup() |> 
         left_join(
           tibble(
             state = datasets::state.abb,
             sampled_state = datasets::state.name),
-          by = "state") %>% 
-        select(-c("state", "seasonyear")) %>% 
-        rename(sp_group_estimated = spp) %>% 
+          by = "state") |> 
+        select(-c("state", "seasonyear")) |> 
+        rename(sp_group_estimated = spp) |> 
         # Calculate season length in days
         mutate(season_length = as.numeric(close - open))
     )
@@ -104,44 +103,44 @@ proofHS <-
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     specialdates <-
-      dates %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      dates |> 
+      filter(sp_group_estimated == "MODO-WWDO") |> 
+      mutate(sp_group_estimated = "Mourning Dove") |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "MODO-WWDO") |> 
+          mutate(sp_group_estimated = "White-Winged Dove")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
+          mutate(sp_group_estimated = "Coots")) |> 
       bind_rows(
-        dates %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
+        dates |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
           mutate(sp_group_estimated = "Gallinules")) 
     
     # Remove specialdates spp from the original dates df
     dates <-
-      dates %>% 
+      dates |> 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "CootsGallinules")) %>% 
-      bind_rows(specialdates) %>%
+          c("MODO-WWDO", "CootsGallinules")) |> 
+      bind_rows(specialdates) |>
       distinct()
     
     if(
       nrow(
-        dates %>% 
-        group_by(sp_group_estimated, sampled_state) %>% 
+        dates |> 
+        group_by(sp_group_estimated, sampled_state) |> 
         filter(n() > 1)) > 0){
       message(
         paste0(
           "Warning: More than one season length detected for a given species a",
           "nd state."))
       print(
-        dates %>% 
-          group_by(sp_group_estimated, sampled_state) %>% 
-          filter(n() > 1) %>% 
+        dates |> 
+          group_by(sp_group_estimated, sampled_state) |> 
+          filter(n() > 1) |> 
           ungroup())
     }
     
@@ -153,13 +152,13 @@ proofHS <-
       
       # Season data error flagging: overbags and overdays
       season_errors <- 
-        data %>% 
+        data |> 
         left_join(
           ref_table,
-          by = c("sp_group_estimated", "sampled_state")) %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
         left_join(
           dates,
-          by = c("sp_group_estimated", "sampled_state")) %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
         mutate(
           days_hunted = 
             ifelse(
@@ -176,7 +175,7 @@ proofHS <-
               days_hunted > 0,
               round(as.numeric(retrieved)/as.numeric(days_hunted), 1),
               0),
-          errors = "x") %>% 
+          errors = "x") |> 
         group_by(surveyID, selected_hunterID, sp_group_estimated) |> 
         mutate(
           sum_retrieved = sum(retrieved, na.rm = T), 
@@ -194,7 +193,7 @@ proofHS <-
             ifelse(
               avg_retrieved_over_season > max_bag,
               round(avg_retrieved_over_season - max_bag, 2),
-              NA)) %>% 
+              NA)) |> 
         # Flag overdays
         mutate(
           errors = 
@@ -206,7 +205,7 @@ proofHS <-
             ifelse(
               days_hunted > season_length,
               as.numeric(days_hunted) - as.numeric(season_length),
-              NA)) %>% 
+              NA)) |> 
         # Remove the x from errors
         mutate(
           errors =
@@ -214,7 +213,7 @@ proofHS <-
               errors == "x" | (days_hunted == 0 & retrieved == 0) | 
                 (is.na(days_hunted) & is.na (retrieved)),
               "none",
-              str_remove(errors, "^x\\-"))) %>%
+              str_remove(errors, "^x\\-"))) |>
         select(
           -c("max_bag", "season_length", "bag_per_day", 
              "avg_retrieved_over_season")) 
@@ -223,8 +222,8 @@ proofHS <-
         message("Warning: Not all species matched.")
         
         print(
-          season_errors %>% 
-            filter(is.na(errors)) %>% 
+          season_errors |> 
+            filter(is.na(errors)) |> 
             select(surveyID, sampled_state, sp_group_estimated, retrieved)
         )
       } 
@@ -236,23 +235,23 @@ proofHS <-
       # Daily data error flagging: overbags, overdays, early hunts, late hunts
       
       daily_errors <- 
-        data %>%
+        data |>
         left_join(
           ref_table,
-          by = c("sp_group_estimated", "sampled_state")) %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
         left_join(
           dates,
-          by = c("sp_group_estimated", "sampled_state")) %>% 
-        group_by(selected_hunterID, sampled_state, sp_group_estimated) %>% 
-        mutate(n_days = n()) %>% 
-        ungroup() %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
+        group_by(selected_hunterID, sampled_state, sp_group_estimated) |> 
+        mutate(n_days = n()) |> 
+        ungroup() |> 
         mutate(
           harvested_date = ymd(harvested_date),
           errors = "x",
           overbag = NA,
           overday = NA,
           early = NA,
-          late = NA) %>% 
+          late = NA) |> 
         # Flag overbags
         mutate(
           errors = 
@@ -265,7 +264,7 @@ proofHS <-
             ifelse(
               retrieved > max_bag + 2,
               retrieved - max_bag,
-              NA)) %>% 
+              NA)) |> 
         # Flag overdays
         mutate(
           errors = 
@@ -277,7 +276,7 @@ proofHS <-
             ifelse(
               n_days > season_length,
               n_days - season_length,
-              NA)) %>% 
+              NA)) |> 
         # Flag early hunts
         mutate(
           errors = 
@@ -289,7 +288,7 @@ proofHS <-
             ifelse(
               harvested_date < open,
               open - harvested_date,
-              NA)) %>% 
+              NA)) |> 
         # Flag late hunts
         mutate(
           errors = 
@@ -301,7 +300,7 @@ proofHS <-
             ifelse(
               harvested_date > close,
               harvested_date - close,
-              NA)) %>% 
+              NA)) |> 
         # Join in seaduck/brant reference table
         left_join(
           seaduck_counties |> 
@@ -329,7 +328,7 @@ proofHS <-
             ifelse(
               errors == "x" | (n_days == 0 & retrieved == 0),
               "none",
-              str_remove(errors, "^x\\-"))) %>%
+              str_remove(errors, "^x\\-"))) |>
         select(
           -c("max_bag", "season_length", "n_days", "open", "close", "brant", 
              "seaduck"))
@@ -338,8 +337,8 @@ proofHS <-
         message("Warning: Not all species matched.")
         
         print(
-          daily_errors %>% 
-            filter(is.na(errors)) %>% 
+          daily_errors |> 
+            filter(is.na(errors)) |> 
             select(surveyID, sampled_state, sp_group_estimated, retrieved)
         )
       } 

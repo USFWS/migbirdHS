@@ -2,7 +2,6 @@
 #'
 #' The \code{compare} function takes 2 data tables (daily_data and season_data) to plot 3 data fields (bag size, number of birds retrieved, number of days hunted) and breaks those data into 4 groups: season submitted, daily submitted, season non-submit, and daily non-submit.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -44,36 +43,36 @@
 compare <-
   function(daily_data, season_data, type = "line", ylim = NA){
     versus_data <-
-      daily_data %>% 
+      daily_data |> 
       select(
         selected_hunterID, sampled_state, has_submitted, sp_group_estimated,
-        harvested_date, retrieved) %>% 
+        harvested_date, retrieved) |> 
       group_by(
-        selected_hunterID, sampled_state, sp_group_estimated, has_submitted) %>% 
+        selected_hunterID, sampled_state, sp_group_estimated, has_submitted) |> 
       summarize(
         sum_retrieved = sum(retrieved),
-        days_hunted = n()) %>% 
-      ungroup() %>% 
-      rename(retrieved = sum_retrieved) %>% 
+        days_hunted = n()) |> 
+      ungroup() |> 
+      rename(retrieved = sum_retrieved) |> 
       mutate(
         type = ifelse(has_submitted == "Y", "daily_submit", "daily_nonsub"),
         retrieved = as.numeric(retrieved),
-        days_hunted = as.numeric(days_hunted)) %>%  
+        days_hunted = as.numeric(days_hunted)) |>  
       bind_rows(
-        season_data %>% 
+        season_data |> 
           filter(
             !selected_hunterID %in%
-              c(daily_data %>% select(selected_hunterID) %>% pull())) %>%
+              c(daily_data |> select(selected_hunterID) |> pull())) |>
           select(
             selected_hunterID, sampled_state, sp_group_estimated, has_submitted, 
-            retrieved, days_hunted) %>% 
+            retrieved, days_hunted) |> 
           mutate(
             type = 
               ifelse(has_submitted == "Y", "season_submit", "season_nonsub"),
             retrieved = as.numeric(retrieved),
             days_hunted = as.numeric(days_hunted))) 
     if(type == "line"){
-      versus_data %>% 
+      versus_data |> 
         ggplot(aes(x = days_hunted, y = retrieved, color = type, fill = type)) +
         geom_jitter(aes(shape = type), alpha = 0.5, size = 3) +
         stat_smooth(
@@ -99,15 +98,15 @@ compare <-
           labels = c("Daily non-submit", "Daily submit", "Season non-submit", 
                      "Season submit")) 
     }else if(type == "days"){
-      versus_data %>% 
+      versus_data |> 
         mutate(
           type = 
             factor(type, 
                    levels = c("daily_nonsub", "daily_submit", "season_submit", 
-                              "season_nonsub"), ordered = T)) %>% 
-        group_by(type) %>% 
-        mutate(box_mean = mean(days_hunted)) %>% 
-        ungroup() %>% 
+                              "season_nonsub"), ordered = T)) |> 
+        group_by(type) |> 
+        mutate(box_mean = mean(days_hunted)) |> 
+        ungroup() |> 
         ggplot(
           aes(x = type, y = days_hunted, size = retrieved, color = retrieved)) +
         geom_jitter() +
@@ -122,17 +121,17 @@ compare <-
           labels = c("Daily\nnon-submit", "Daily\nsubmit", "Season\nsubmit", 
                      "Season\nnon-submit"))
     }else if(type == "retrieved"){
-      versus_data %>% 
+      versus_data |> 
         mutate(
           type = 
             factor(
               type, 
               levels = c("daily_nonsub", "daily_submit", "season_submit", 
                          "season_nonsub"), 
-              ordered = T)) %>% 
-        group_by(type) %>% 
-        mutate(box_mean = mean(retrieved)) %>% 
-        ungroup() %>% 
+              ordered = T)) |> 
+        group_by(type) |> 
+        mutate(box_mean = mean(retrieved)) |> 
+        ungroup() |> 
         ggplot(
           aes(
             x = type, y = retrieved, size = days_hunted, color = days_hunted)) +

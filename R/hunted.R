@@ -2,7 +2,6 @@
 #'
 #' The \code{hunted} function checks the days_hunted field in either Harvest Survey daily or season totals data.
 #'
-#' @importFrom dplyr %>%
 #' @importFrom stringr str_detect
 #' @importFrom dplyr filter
 #' @importFrom stringr str_extract
@@ -43,28 +42,28 @@ hunted <-
         dataname <- deparse(substitute(data))
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
         # Additional statement for report template compatibility
       }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
         datayr <- 
-          data %>% 
-          select(season) %>% 
-          distinct() %>% 
+          data |> 
+          select(season) |> 
+          distinct() |> 
           pull()
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
@@ -75,33 +74,33 @@ hunted <-
     if(TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
                    str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       data <-
-        data %>% 
+        data |> 
         mutate(days_hunted = ifelse(has_hunted == "Y", "1", "0"))
     }
     if(type == "totals"){
       if(output == "table"){
-        data %>%
-          select(selected_hunterID, days_hunted) %>% 
-          distinct() %>% 
-          group_by(days_hunted) %>%
-          summarize(n = n()) %>% 
+        data |>
+          select(selected_hunterID, days_hunted) |> 
+          distinct() |> 
+          group_by(days_hunted) |>
+          summarize(n = n()) |> 
           ungroup()
       }else if(output == "plot"){
-        data %>%
-          select(selected_hunterID, days_hunted) %>% 
-          distinct() %>% 
+        data |>
+          select(selected_hunterID, days_hunted) |> 
+          distinct() |> 
           mutate(
             days_hunted = 
               ifelse(
                 str_detect(days_hunted, "NULL"), 
                 NA, 
                 days_hunted),
-            has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
-          group_by(has_hunted) %>%
+            has_hunted = ifelse(days_hunted > 0, "Y", "N")) |> 
+          group_by(has_hunted) |>
           summarize(
             n = n(),
-            prop = n()/nrow(data)) %>% 
-          ungroup() %>% 
+            prop = n()/nrow(data)) |> 
+          ungroup() |> 
           ggplot(aes(x = has_hunted, y = prop)) +
           geom_bar(stat = "identity") +
           geom_text(
@@ -113,34 +112,34 @@ hunted <-
         message("Error: `output` must be 'table' or 'plot'.")}
     }else if(type == "state"){
       if(output == "table"){
-        data %>%
-          select(selected_hunterID, days_hunted, sampled_state) %>% 
-          distinct() %>% 
-          group_by(days_hunted, sampled_state) %>%
+        data |>
+          select(selected_hunterID, days_hunted, sampled_state) |> 
+          distinct() |> 
+          group_by(days_hunted, sampled_state) |>
           summarize(
             n = n(),
-            prop = n()/nrow(data)) %>% 
+            prop = n()/nrow(data)) |> 
           ungroup()
       }else if(output == "plot"){
         suppressWarnings(
-          data %>%
-            select(selected_hunterID, days_hunted, sampled_state) %>% 
-            distinct() %>% 
+          data |>
+            select(selected_hunterID, days_hunted, sampled_state) |> 
+            distinct() |> 
             mutate(
               days_hunted = 
                 ifelse(
                   str_detect(days_hunted, "NULL"), 
                   NA, 
                   days_hunted),
-              has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
-            group_by(has_hunted, sampled_state) %>%
-            summarize(n = n()) %>% 
-            ungroup() %>% 
-            mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
-            group_by(sampled_state) %>% 
-            mutate(tot_n = sum(n)) %>% 
-            ungroup() %>% 
-            mutate(ranks = rank(tot_n)) %>% 
+              has_hunted = ifelse(days_hunted > 0, "Y", "N")) |> 
+            group_by(has_hunted, sampled_state) |>
+            summarize(n = n()) |> 
+            ungroup() |> 
+            mutate(n_n = ifelse(has_hunted == "N", n, NA)) |> 
+            group_by(sampled_state) |> 
+            mutate(tot_n = sum(n)) |> 
+            ungroup() |> 
+            mutate(ranks = rank(tot_n)) |> 
             ggplot(aes(x = reorder(sampled_state, -ranks), y = n)) +
             geom_bar(
               aes(fill = has_hunted), 
@@ -161,44 +160,44 @@ hunted <-
         message("Error: `output` must be 'table' or 'plot'.")}
     }else if(type == "species"){
       if(output == "table"){
-        data %>%
-          select(selected_hunterID, days_hunted, sp_group_estimated) %>% 
-          distinct() %>% 
-          group_by(days_hunted, sp_group_estimated) %>%
+        data |>
+          select(selected_hunterID, days_hunted, sp_group_estimated) |> 
+          distinct() |> 
+          group_by(days_hunted, sp_group_estimated) |>
           summarize(
             n = n(),
-            prop = n()/nrow(data)) %>% 
+            prop = n()/nrow(data)) |> 
           ungroup()
       }else if(output == "plot"){
         suppressWarnings(
-          data %>%
-            select(selected_hunterID, days_hunted, sp_group_estimated) %>% 
-            distinct() %>% 
+          data |>
+            select(selected_hunterID, days_hunted, sp_group_estimated) |> 
+            distinct() |> 
             mutate(
               days_hunted = 
                 ifelse(
                   str_detect(days_hunted, "NULL"), 
                   NA, 
                   days_hunted),
-              has_hunted = ifelse(days_hunted > 0, "Y", "N")) %>% 
+              has_hunted = ifelse(days_hunted > 0, "Y", "N")) |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
                   str_detect(sp_group_estimated, "Sea"),
                   "Sea Ducks",
-                  sp_group_estimated)) %>% 
-            group_by(has_hunted, sp_group_estimated) %>%
-            summarize(n = n()) %>% 
-            ungroup() %>% 
-            filter(!is.na(has_hunted)) %>% 
-            mutate(n_n = ifelse(has_hunted == "N", n, NA)) %>% 
-            group_by(sp_group_estimated) %>% 
-            mutate(tot_n = sum(n)) %>% 
-            ungroup() %>% 
-            group_by(sp_group_estimated) %>% 
-            mutate(ranker = tot_n - n) %>% 
-            ungroup() %>% 
-            mutate(ranks = rank(ranker)) %>% 
+                  sp_group_estimated)) |> 
+            group_by(has_hunted, sp_group_estimated) |>
+            summarize(n = n()) |> 
+            ungroup() |> 
+            filter(!is.na(has_hunted)) |> 
+            mutate(n_n = ifelse(has_hunted == "N", n, NA)) |> 
+            group_by(sp_group_estimated) |> 
+            mutate(tot_n = sum(n)) |> 
+            ungroup() |> 
+            group_by(sp_group_estimated) |> 
+            mutate(ranker = tot_n - n) |> 
+            ungroup() |> 
+            mutate(ranks = rank(ranker)) |> 
             ggplot(aes(x = reorder(sp_group_estimated, -ranks), y = n)) +
             geom_bar(
               aes(fill = has_hunted), 

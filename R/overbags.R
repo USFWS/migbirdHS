@@ -2,7 +2,6 @@
 #'
 #' The \code{overbags} function checks for retrieved values over the bag limit per state and species in the Harvest Survey daily data.
 #' 
-#' @importFrom dplyr %>%
 #' @importFrom dplyr rename_all
 #' @importFrom dplyr filter
 #' @importFrom stringr str_detect
@@ -47,20 +46,20 @@ overbags <-
   function(data, ref_data, state = NA, over = T, summary = F){
     suppressMessages(
       ref_table <-
-        wrangle_ref(ref_data) %>%
-        filter(!is.na(spp)) %>% 
-        select(seasonyear, state = st, speciesgroup, spp, bag, possession) %>% 
-        group_by(seasonyear, state, spp) %>% 
+        wrangle_ref(ref_data) |>
+        filter(!is.na(spp)) |> 
+        select(seasonyear, state = st, speciesgroup, spp, bag, possession) |> 
+        group_by(seasonyear, state, spp) |> 
         summarize(
           max_bag = max(bag),
-          max_poss = max(possession)) %>% 
-        ungroup() %>% 
+          max_poss = max(possession)) |> 
+        ungroup() |> 
         left_join(
           tibble(
             state = datasets::state.abb,
             sampled_state = datasets::state.name),
-          by = "state") %>% 
-        select(-c("state", "seasonyear")) %>%
+          by = "state") |> 
+        select(-c("state", "seasonyear")) |>
         rename(sp_group_estimated = spp)
     )
     
@@ -69,60 +68,60 @@ overbags <-
     # Duplicate the "CootsGallinules" lines so they apply to Coots and 
     # Gallinules
     special_table <-
-      ref_table %>% 
-      filter(sp_group_estimated == "MODO-WWDO") %>% 
-      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      ref_table |> 
+      filter(sp_group_estimated == "MODO-WWDO") |> 
+      mutate(sp_group_estimated = "Mourning Dove") |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "MODO-WWDO") %>% 
-          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "MODO-WWDO") |> 
+          mutate(sp_group_estimated = "White-Winged Dove")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Geese")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Geese")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "GeeseBrant") %>% 
-          mutate(sp_group_estimated = "Brant")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "GeeseBrant") |> 
+          mutate(sp_group_estimated = "Brant")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
-          mutate(sp_group_estimated = "Coots")) %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
+          mutate(sp_group_estimated = "Coots")) |> 
       bind_rows(
-        ref_table %>% 
-          filter(sp_group_estimated == "CootsGallinules") %>% 
+        ref_table |> 
+          filter(sp_group_estimated == "CootsGallinules") |> 
           mutate(sp_group_estimated = "Gallinules")) 
     
     # Remove specialdates spp from the original dates df
     ref_table <-
-      ref_table %>% 
+      ref_table |> 
       filter(
         !sp_group_estimated %in% 
-          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
-      bind_rows(special_table) %>%
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) |> 
+      bind_rows(special_table) |>
       distinct()
     
     if(
       TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
                   str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
       bag_errors <-
-        data %>% 
+        data |> 
         left_join(
           ref_table, 
-          by = c("sp_group_estimated", "sampled_state")) %>% 
+          by = c("sp_group_estimated", "sampled_state")) |> 
         mutate(
           error = 
             case_when(
               retrieved > max_poss ~ "over_possession",
               retrieved > max_bag ~ "over_bag",
-              TRUE ~ NA_character_)) %>% 
-        filter(!is.na(error)) %>% 
+              TRUE ~ NA_character_)) |> 
+        filter(!is.na(error)) |> 
         select(
           selected_hunterID, surveyID, sampled_state, county, 
           sp_group_estimated, harvested_date, max_bag, retrieved, 
-          unretrieved) %>% 
-        arrange(desc(retrieved)) %>% 
-        rename(bag_limit = max_bag) %>% 
+          unretrieved) |> 
+        arrange(desc(retrieved)) |> 
+        rename(bag_limit = max_bag) |> 
         arrange(selected_hunterID)
       
       if(over == TRUE){
@@ -131,54 +130,54 @@ overbags <-
             return(bag_errors)
           }else{
             return(
-              bag_errors %>% 
-                group_by(sampled_state, sp_group_estimated, bag_limit) %>% 
+              bag_errors |> 
+                group_by(sampled_state, sp_group_estimated, bag_limit) |> 
                 summarize(
                   max = max(retrieved, na.rm = T),
                   mean = round(mean(retrieved), 1),
                   min = min(retrieved),
-                  n = n()) %>% 
+                  n = n()) |> 
                 ungroup()
             )
           }
         }else{
           if(summary == F){
             return(
-              bag_errors %>% 
+              bag_errors |> 
                 filter(sampled_state == state)
             )
           }else{
-            bag_errors %>% 
-              filter(sampled_state == state) %>% 
-              group_by(sampled_state, sp_group_estimated, bag_limit) %>% 
+            bag_errors |> 
+              filter(sampled_state == state) |> 
+              group_by(sampled_state, sp_group_estimated, bag_limit) |> 
               summarize(
                 max = max(retrieved, na.rm = T),
                 mean = round(mean(retrieved), 1),
                 min = min(retrieved),
-                n = n()) %>% 
+                n = n()) |> 
               ungroup() 
           }
         }
       }else{
         # Non-overbags
         return(
-          data %>% 
+          data |> 
             left_join(
               ref_table, 
-              by = c("sp_group_estimated", "sampled_state")) %>% 
+              by = c("sp_group_estimated", "sampled_state")) |> 
             mutate(
               error = 
                 case_when(
                   retrieved > max_poss ~ "over_possession",
                   retrieved > max_bag ~ "over_bag",
-                  TRUE ~ NA_character_)) %>% 
-            filter(is.na(error)) %>% 
+                  TRUE ~ NA_character_)) |> 
+            filter(is.na(error)) |> 
             select(
               selected_hunterID, surveyID, sampled_state, county, 
               sp_group_estimated, harvested_date, max_bag, retrieved, 
-              unretrieved) %>% 
-            arrange(desc(retrieved)) %>% 
-            rename(bag_limit = max_bag) %>% 
+              unretrieved) |> 
+            arrange(desc(retrieved)) |> 
+            rename(bag_limit = max_bag) |> 
             arrange(selected_hunterID)
         )
       }
@@ -192,50 +191,50 @@ overbags <-
         dataname <- deparse(substitute(data))
         
         data <- 
-          data %>% 
+          data |> 
           filter(
             !selected_hunterID %in%
-              c(get("daily_records") %>%
-                  select(selected_hunterID) %>%
+              c(get("daily_records") |>
+                  select(selected_hunterID) |>
                   pull())
           )
         message("Notice: season data filtered to exclude daily records.")
         # Additional statement for report template compatibility
         }else if(str_detect(deparse(substitute(data)), "tibblelist\\[3\\]")){
           datayr <- 
-            data %>% 
-            select(season) %>% 
-            distinct() %>% 
+            data |> 
+            select(season) |> 
+            distinct() |> 
             pull()
           
           data <- 
-            data %>% 
+            data |> 
             filter(
               !selected_hunterID %in%
-                c(get("daily_records") %>%
-                    select(selected_hunterID) %>%
+                c(get("daily_records") |>
+                    select(selected_hunterID) |>
                     pull())
             )
           message("Notice: season data filtered to exclude daily records.")
       }
       
-      data %>% 
+      data |> 
         select(
           selected_hunterID, sampled_state, sp_group_estimated, retrieved, 
-          days_hunted) %>% 
-        filter(days_hunted != 0) %>% 
+          days_hunted) |> 
+        filter(days_hunted != 0) |> 
         mutate(bag_per_day = 
-                 round(as.numeric(retrieved)/as.numeric(days_hunted), 1)) %>% 
+                 round(as.numeric(retrieved)/as.numeric(days_hunted), 1)) |> 
         left_join(
-          ref_table %>% 
+          ref_table |> 
             select(-max_poss),
-          by = c("sampled_state", "sp_group_estimated")) %>% 
-        filter(bag_per_day > max_bag) %>% 
+          by = c("sampled_state", "sp_group_estimated")) |> 
+        filter(bag_per_day > max_bag) |> 
         rename(
           ID = selected_hunterID,
           state = sampled_state,
-          sp = sp_group_estimated) %>% 
-        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) %>% 
+          sp = sp_group_estimated) |> 
+        mutate(sp = ifelse(str_detect(sp, "Sea"), "Sea Ducks", sp)) |> 
         arrange(desc(retrieved))
     }else{
       message(
