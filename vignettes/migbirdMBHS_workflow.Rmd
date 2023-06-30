@@ -84,15 +84,8 @@ read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 ```r
 daily_records <-
   daily_records |> 
-  dplyr::mutate(record_id = row_number()) |> 
+  dplyr::mutate(record_id = dplyr::row_number()) |> 
   dplyr::relocate(record_id, .before = "surveyID")
-```
-
-```
-## Error in `dplyr::mutate()`:
-## ℹ In argument: `record_id = row_number()`.
-## Caused by error in `row_number()`:
-## ! could not find function "row_number"
 ```
 
 ### add_seaducks
@@ -838,9 +831,7 @@ The `retrievedmap` function creates a hex bin map of the United States from dail
 retrievedmap(daily_records, output = "grid")
 ```
 
-```
-## Error in retrievedmap(daily_records, output = "grid"): cannot open file 'C:/Users/awalter/AppData/Local/R/win-library/4.2/migbirdMBHS/R/sysdata.rdb': No such file or directory
-```
+<img src="figure/retrievedmap-1.png" alt="plot of chunk retrievedmap" width="600" style="display: block; margin: auto;" />
 
 ### bagdays
 

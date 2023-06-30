@@ -78,7 +78,7 @@ read_dhs("C:/HarvestSurvey/vignette/", year = "2020")
 
 daily_records <-
   daily_records |> 
-  dplyr::mutate(record_id = row_number()) |> 
+  dplyr::mutate(record_id = dplyr::row_number()) |> 
   dplyr::relocate(record_id, .before = "surveyID")
 ```
 
