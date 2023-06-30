@@ -85,7 +85,7 @@ daily_records <-
 
 ### add_seaducks
 
-The `add_seaducks` function adds seaduck take and season values to the reference table. This is done in each state with seaduck harvest using the same values as ducks.
+The `add_seaducks` function adds seaduck bag and possession limits to the reference table. This is done in each state with seaduck harvest using the same values as ducks.
 
 ```{r, addseaducks, message = FALSE, warning = FALSE}
 all_seasons <- add_seaducks(all_seasons)

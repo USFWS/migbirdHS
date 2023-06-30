@@ -2,15 +2,15 @@
 % Please edit documentation in R/add_seaducks.R
 \name{add_seaducks}
 \alias{add_seaducks}
-\title{Append sea duck information to the Harvest Survey reference table}
+\title{Add sea duck dates for eligible states}
 \usage{
 add_seaducks(ref_data)
 }
 \arguments{
-\item{ref_data}{A reference data table}
+\item{ref_data}{The reference data table that corresponds to the year of the daily data}
 }
 \description{
-The \code{add_seaducks} function includes the sea duck open date, close date, and bag limit for California and Washington in the reference table. The California and Washington sea duck seasons match the same dates and bags as the states' duck seasons.
+The \code{add_seaducks} function amends the ref_data for AK, CT, DE, ME, MD, MA, NH, NJ, NY, OR, RI, VA, WA, and CA by adding lines to account for seaduck seasons; it uses the same values as duck harvest for open, close, bag, and possession.
 }
 \references{
 \url{https://github.com/USFWS/migbirdMBHS}
