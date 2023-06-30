@@ -343,25 +343,18 @@ hunted(season_totals, type = "species", output = "plot")
 The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
 
 
+
+
 ```r
 overdays(daily_records, ref_data = all_seasons)
 ```
 
+
 ```
-## # A tibble: 3,778 × 5
-##    selected_hunterID state    sp    n_days season_length
-##                <dbl> <chr>    <chr>  <int>         <dbl>
-##  1              2314 Arkansas Ducks      8          -Inf
-##  2              3219 Arkansas Ducks      3          -Inf
-##  3              4878 Arkansas Ducks      1          -Inf
-##  4              4939 Arkansas Ducks      5          -Inf
-##  5              4939 Arkansas Geese      1          -Inf
-##  6              5123 Arkansas Ducks      5          -Inf
-##  7              5123 Arkansas Geese      1          -Inf
-##  8              5483 Arkansas Ducks      3          -Inf
-##  9              6685 Arkansas Ducks      1          -Inf
-## 10              7789 Arkansas Ducks     11          -Inf
-## # ℹ 3,768 more rows
+## Error in `mutate()`:
+## ℹ In argument: `open_date = mdy(open)`.
+## Caused by error in `mdy()`:
+## ! could not find function "mdy"
 ```
 
 
@@ -369,27 +362,13 @@ overdays(daily_records, ref_data = all_seasons)
 overdays(season_totals, ref_data = all_seasons)
 ```
 
-```
-## Notice: season data filtered to exclude daily records.
-```
 
 ```
-## # A tibble: 15,514 × 5
-##    selected_hunterID state    sp    days_hunted season_length
-##                <dbl> <chr>    <chr>       <dbl>         <dbl>
-##  1              1514 Arkansas Ducks           0          -Inf
-##  2              1514 Arkansas Geese           0          -Inf
-##  3              1612 Arkansas Ducks           0          -Inf
-##  4              1612 Arkansas Geese           0          -Inf
-##  5              1706 Arkansas Ducks          20          -Inf
-##  6              1706 Arkansas Geese          20          -Inf
-##  7              1719 Arkansas Ducks          18          -Inf
-##  8              1719 Arkansas Geese          12          -Inf
-##  9              1733 Arkansas Ducks           0          -Inf
-## 10              1733 Arkansas Geese           0          -Inf
-## # ℹ 15,504 more rows
+## Error in `mutate()`:
+## ℹ In argument: `open_date = mdy(open)`.
+## Caused by error in `mdy()`:
+## ! could not find function "mdy"
 ```
-
 
 ### overbags
 
@@ -404,20 +383,21 @@ overbags(daily_records, ref_data = all_seasons)
 
 ```
 ## # A tibble: 128 × 9
-##    selected_hunterID surveyID sampled_state county       sp_group_estimated harvested_date bag_limit retrieved
-##                <dbl>    <dbl> <chr>         <chr>        <chr>              <date>             <dbl>     <dbl>
-##  1            138144    16720 Minnesota     Brown        Ducks              2020-09-26            11        19
-##  2            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-24            11        22
-##  3            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-18            11        21
-##  4            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-16            11        18
-##  5            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-17            11        14
-##  6            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-15            11        12
-##  7            146742    16851 Minnesota     Otter Tail   Ducks              2020-10-25            11        12
-##  8            154433    39570 South Dakota  Hamlin       Ducks              2020-10-12            11        12
-##  9            185088    17349 Minnesota     St Louis     Ducks              2020-10-10            11        12
-## 10            308507    58944 Washington    Grays Harbor Ducks              2020-11-25             7        19
+##    selected_hunterID surveyID sampled_state county     sp_group_estimated
+##                <dbl>    <dbl> <chr>         <chr>      <chr>             
+##  1            138144    16720 Minnesota     Brown      Ducks             
+##  2            146742    16851 Minnesota     Otter Tail Ducks             
+##  3            146742    16851 Minnesota     Otter Tail Ducks             
+##  4            146742    16851 Minnesota     Otter Tail Ducks             
+##  5            146742    16851 Minnesota     Otter Tail Ducks             
+##  6            146742    16851 Minnesota     Otter Tail Ducks             
+##  7            146742    16851 Minnesota     Otter Tail Ducks             
+##  8            154433    39570 South Dakota  Hamlin     Ducks             
+##  9            185088    17349 Minnesota     St Louis   Ducks             
+## 10            308507    58944 Washington    Grays Har… Ducks             
 ## # ℹ 118 more rows
-## # ℹ 1 more variable: unretrieved <chr>
+## # ℹ 4 more variables: harvested_date <date>, bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
 ```
 
 Using `summary = TRUE` returns an easy-to-read format:
@@ -453,24 +433,25 @@ overbags(daily_records, ref_data = all_seasons, state = "Arkansas")
 
 ```
 ## # A tibble: 15 × 9
-##    selected_hunterID surveyID sampled_state county    sp_group_estimated harvested_date bag_limit retrieved
-##                <dbl>    <dbl> <chr>         <chr>     <chr>              <date>             <dbl>     <dbl>
-##  1           1040149     1219 Arkansas      Woodruff  Ducks              2020-12-27            11        14
-##  2           1040149     1219 Arkansas      Cross     Ducks              2020-11-22            11        13
-##  3           1741611    56530 Arkansas      Monroe    Geese              2021-02-10            20        42
-##  4           2052902    71303 Arkansas      Arkansas  Ducks              2020-11-24            11        12
-##  5           2059087    72100 Arkansas      Monroe    Ducks              2020-11-21            11        25
-##  6           2566099    82950 Arkansas      Unknown   Geese              2021-01-26            20        22
-##  7           2570123    83419 Arkansas      Boone     Ducks              2020-11-29            11        16
-##  8           2595713    86802 Arkansas      Prairie   Ducks              2021-01-16            11        12
-##  9           3105564    10221 Arkansas      Craighead Ducks              2020-12-15            11        12
-## 10           3108680    10250 Arkansas      Unknown   Ducks              2020-12-11            11        18
-## 11           3463175    11030 Arkansas      Desha     Ducks              2021-01-08            11        32
-## 12           3463175    11030 Arkansas      Desha     Ducks              2021-01-07            11        12
-## 13           4000112    12818 Arkansas      Monroe    Ducks              2021-01-24            11        24
-## 14           4032629    13221 Arkansas      Arkansas  Ducks              2021-01-31            11        23
-## 15           4216584    13537 Arkansas      Monroe    Geese              2021-02-01            20        62
-## # ℹ 1 more variable: unretrieved <chr>
+##    selected_hunterID surveyID sampled_state county    sp_group_estimated
+##                <dbl>    <dbl> <chr>         <chr>     <chr>             
+##  1           1040149     1219 Arkansas      Woodruff  Ducks             
+##  2           1040149     1219 Arkansas      Cross     Ducks             
+##  3           1741611    56530 Arkansas      Monroe    Geese             
+##  4           2052902    71303 Arkansas      Arkansas  Ducks             
+##  5           2059087    72100 Arkansas      Monroe    Ducks             
+##  6           2566099    82950 Arkansas      Unknown   Geese             
+##  7           2570123    83419 Arkansas      Boone     Ducks             
+##  8           2595713    86802 Arkansas      Prairie   Ducks             
+##  9           3105564    10221 Arkansas      Craighead Ducks             
+## 10           3108680    10250 Arkansas      Unknown   Ducks             
+## 11           3463175    11030 Arkansas      Desha     Ducks             
+## 12           3463175    11030 Arkansas      Desha     Ducks             
+## 13           4000112    12818 Arkansas      Monroe    Ducks             
+## 14           4032629    13221 Arkansas      Arkansas  Ducks             
+## 15           4216584    13537 Arkansas      Monroe    Geese             
+## # ℹ 4 more variables: harvested_date <date>, bag_limit <dbl>,
+## #   retrieved <dbl>, unretrieved <chr>
 ```
 
 ### retrieved
@@ -612,22 +593,30 @@ The basic version of the function returns an unsummarized table:
 openclose(daily_records, ref_data = all_seasons)
 ```
 
+
 ```
-## # A tibble: 14,185 × 6
-##    selected_hunterID sampled_state sp_group_estimated open   close  error     
-##                <dbl> <chr>         <chr>              <date> <date> <chr>     
-##  1              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  2              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  3              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  4              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  5              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  6              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  7              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  8              2314 Arkansas      Ducks              Inf    -Inf   Early hunt
-##  9              3219 Arkansas      Ducks              Inf    -Inf   Early hunt
-## 10              3219 Arkansas      Ducks              Inf    -Inf   Early hunt
-## # ℹ 14,175 more rows
+## Error in `mutate()`:
+## ℹ In argument: `open_date = mdy(open)`.
+## Caused by error in `mdy()`:
+## ! could not find function "mdy"
 ```
+
+```
+## Error in filter(., sp_group_estimated == "MODO-WWDO"): object 'dates' not found
+```
+
+```
+## Error in filter(., !sp_group_estimated %in% c("MODO-WWDO", "GeeseBrant", : object 'dates' not found
+```
+
+```
+## Error in is.data.frame(y): object 'dates' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'date_errors' not found
+```
+
 
 But `summary = TRUE` can be used to get a summary:
 
@@ -679,19 +668,20 @@ partyhunt(daily_records)
 
 ```
 ## # A tibble: 45 × 6
-##    sampled_state sp_group_estimated retrieved unretrieved comment                                     party_size
-##    <chr>         <chr>                  <dbl> <chr>       <chr>                                       <chr>     
-##  1 Minnesota     Ducks                     18 NULL        3 people                                    3         
-##  2 Minnesota     Ducks                     14 NULL        3 hunters                                   3         
-##  3 Minnesota     Ducks                     21 NULL        4 hunters                                   4         
-##  4 Minnesota     Ducks                     22 NULL        4 hunters                                   4         
-##  5 Minnesota     Ducks                     12 NULL        2 hunters                                   2         
-##  6 Minnesota     Ducks                      8 NULL        2 hunters                                   2         
-##  7 Missouri      Ducks                      3 0           2 hunters.  Jake got 1 green wing real, 1 … 2         
-##  8 Missouri      Ducks                      2 NULL        2 hunters, saw 2 killed 2.  Marshal has re… 2         
-##  9 Tennessee     Ducks                      2 0           Saw a bunch of wood ducks this year, zero … 20        
-## 10 California    Ducks                      7 1           5mal, 2gad, 31 snow geese, 4 people         4         
+##    sampled_state sp_group_estimated retrieved unretrieved comment        
+##    <chr>         <chr>                  <dbl> <chr>       <chr>          
+##  1 Minnesota     Ducks                     18 NULL        3 people       
+##  2 Minnesota     Ducks                     14 NULL        3 hunters      
+##  3 Minnesota     Ducks                     21 NULL        4 hunters      
+##  4 Minnesota     Ducks                     22 NULL        4 hunters      
+##  5 Minnesota     Ducks                     12 NULL        2 hunters      
+##  6 Minnesota     Ducks                      8 NULL        2 hunters      
+##  7 Missouri      Ducks                      3 0           2 hunters.  Ja…
+##  8 Missouri      Ducks                      2 NULL        2 hunters, saw…
+##  9 Tennessee     Ducks                      2 0           Saw a bunch of…
+## 10 California    Ducks                      7 1           5mal, 2gad, 31…
 ## # ℹ 35 more rows
+## # ℹ 1 more variable: party_size <chr>
 ```
 
 ### huntdays

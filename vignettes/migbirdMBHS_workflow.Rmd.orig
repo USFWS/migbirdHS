@@ -206,14 +206,245 @@ hunted(season_totals, type = "species", output = "plot")
 
 The `overdays` function checks daily or season data to determine if total days hunted exceed the length of the state and species' season. If the season data are used in the function, daily data are filtered out of it. This helps to make direct comparisons between them.
 
-```{r, overdays1, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
+```{r overdays_old, echo = FALSE}
+
+# This overdays2 function is an older version that was compatable with the 
+# original type of file; the updated overdays function accounts for a different
+# date format, so for the purposes of providing an example we apply the old
+# function
+
+overdays2 <-
+  function(data, ref_data){
+    suppressMessages(
+      dates <- 
+        ref_data %>% 
+        rename_all(~tolower(.)) %>% 
+        filter(st != "PR" & st != "HI") %>% 
+        filter(seasontype != "ExFalc") %>% 
+        filter(!str_detect(speciesgroup, "Swan")) %>% 
+        mutate(
+          speciesgroup = 
+            ifelse(
+              is.na(speciesgroup),
+              species,
+              speciesgroup)) %>% 
+        mutate(
+          speciesgroup = 
+            case_when(
+              species == "Brant" ~ "Brant",
+              species == "MODO" ~ "MODO",
+              str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
+              TRUE ~ speciesgroup)) %>% 
+        filter(!is.na(speciesgroup) & !str_detect(speciesgroup, "Swan")) %>% 
+        select(seasonyear, state = st, speciesgroup, open, close) %>% 
+        mutate(
+          spp = 
+            case_when(
+              str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
+              str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
+              speciesgroup == "Brant" ~ "Brant",
+              speciesgroup == "CAGO" ~ "Geese",
+              speciesgroup == "Geese" ~ "Geese",
+              speciesgroup == "Ducks" ~ "Ducks",
+              speciesgroup == "AMWO" ~ "Woodcock",
+              speciesgroup == "COSN" ~ "Snipe",
+              speciesgroup == "MODO" ~ "Mourning Dove",
+              speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
+              speciesgroup == "Mergansers" ~ "Ducks",
+              speciesgroup == "Rails" ~ "Rails",
+              speciesgroup == "COMO-PUGA" ~ "Gallinules",
+              # For NM "AMCO-COMO", set as "Coots" (they have a separate
+              # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
+              speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
+              # The "MODO-WWDO" category below should be used for MODO and WWDO
+              speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+              speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
+              # The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+              # "Brant"
+              speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
+              # For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+              # "Coots" AND "Gallinules"
+              speciesgroup == "AMCO-COMO" & 
+                state %in% c("AZ", "CA", "MN", "NV") ~ "CootsGallinules", 
+              speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
+              TRUE ~ NA_character_),
+          open_date = mdy(open),
+          close_date = mdy(close)) %>% 
+        filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
+        group_by(seasonyear, state, spp) %>% 
+        summarize(
+          open = min(open_date, na.rm = T),
+          close = max(close_date, na.rm = T)) %>%
+        ungroup() %>% 
+        left_join(
+          tibble(
+            state = datasets::state.abb,
+            sampled_state = datasets::state.name),
+          by = "state") %>% 
+        select(-c("state", "seasonyear")) %>% 
+        rename(sp_group_estimated = spp) %>% 
+        # Calculate season length in days
+        mutate(season_length = as.numeric(close - open)) %>% 
+        select(-c("open", "close"))
+    )
+    
+    # Duplicate the "Doves" lines so they apply to MODO and WWDO
+    # Duplicate the "GeeseBrant" lines so they apply to Geese and Brant
+    # Duplicate the "CootsGallinules" lines so they apply to Coots and 
+    # Gallinules
+    specialdates <-
+      dates %>% 
+      filter(sp_group_estimated == "MODO-WWDO") %>% 
+      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "MODO-WWDO") %>% 
+          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Geese")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Brant")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Coots")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Gallinules")) 
+    
+    # Remove specialdates spp from the original dates df
+    dates <-
+      dates %>% 
+      filter(
+        !sp_group_estimated %in% 
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+      bind_rows(specialdates) %>%
+      distinct()
+    
+    if(TRUE %in% c(str_detect(deparse(substitute(data)), "daily"), 
+                   str_detect(deparse(substitute(data)), "tibblelist\\[2\\]"))){
+      # Daily records
+      suppressMessages(
+        overday_table <-
+          data %>% 
+          select(
+            selected_hunterID, sampled_state, sp_group_estimated, 
+            harvested_date) %>% 
+          distinct() %>% 
+          group_by(selected_hunterID, sampled_state, sp_group_estimated) %>% 
+          summarize(n_days = n()) %>% 
+          ungroup() %>% 
+          left_join(
+            dates,
+            by = c("sp_group_estimated", "sampled_state")) %>% 
+          filter(n_days >= season_length) %>% 
+          rename(
+            state = sampled_state,
+            sp = sp_group_estimated)
+      )
+      
+      if(nrow(overday_table > 0)){
+        return(overday_table)
+      }else{
+        message("No records found with too many days hunted.")}
+    }
+    else if(
+      TRUE %in% c(str_detect(deparse(substitute(data)), "season"),
+                  str_detect(deparse(substitute(data)), "tibblelist\\[3\\]"))){
+      # If a season totals table was used in this function, exclude daily
+      # records from the season totals table. This allows the season totals data
+      # to be evaluated separately from daily data
+      if(str_detect(deparse(substitute(data)), "season") == TRUE){
+        dataname <- deparse(substitute(data))
+        
+        data <- 
+          data %>% 
+          filter(
+            !selected_hunterID %in%
+              c(get(paste0(
+                "daily_records_",
+                str_extract(dataname, "[0-9]{4}")
+              )) %>%
+                select(selected_hunterID) %>%
+                pull())
+          )
+        message("Notice: season data filtered to exclude daily records.")
+      # Additional statement for report template compatibility
+      }else{
+        datayr <- 
+          data %>% 
+          select(season) %>% 
+          distinct() %>% 
+          pull()
+        
+        data <- 
+          data %>% 
+          filter(
+            !selected_hunterID %in%
+              c(get(paste0(
+                "daily_records_",
+                as.character(datayr)
+              )) %>%
+                select(selected_hunterID) %>%
+                pull())
+          )
+        message("Notice: season data filtered to exclude daily records.")
+      }
+      
+      # Season totals
+      overday_table <-
+        data %>% 
+        select(
+          selected_hunterID, sampled_state, sp_group_estimated, days_hunted) %>% 
+        left_join(
+          dates,
+          by = c("sp_group_estimated", "sampled_state")) %>% 
+        mutate(
+          days_hunted = 
+            ifelse(
+              str_detect(days_hunted, "NULL"), 
+              NA, 
+              days_hunted),
+          days_hunted = as.numeric(days_hunted)) %>% 
+        filter(days_hunted >= season_length) %>%
+        rename(
+          state = sampled_state,
+          sp = sp_group_estimated)
+      
+      if(nrow(overday_table > 0)){
+        return(overday_table)
+      }else{
+        message("No records found with too many days hunted.")}
+    }
+    else{
+      message(
+        paste0(
+          "Error: unrecognized `data`. Please supply a daily_records or ",
+          "season_totals dataframe."))
+    }
+  }
+```
+
+```{r, overdays1, eval = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
 overdays(daily_records, ref_data = all_seasons)
 ```
 
-```{r, overdays2, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
+```{r, overdays1_old, echo = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
+overdays2(daily_records, ref_data = all_seasons)
+```
+
+```{r, overdays2, eval = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
 overdays(season_totals, ref_data = all_seasons)
 ```
 
+```{r, overdays2_old, echo = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
+overdays2(season_totals, ref_data = all_seasons)
+```
 
 ### overbags
 
@@ -311,9 +542,146 @@ The `openclose` function checks if harvest dates fall outside of a state's and s
 
 The basic version of the function returns an unsummarized table:
 
-```{r, openclose1, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
+```{r, openclose1, eval = FALSE, message = FALSE, warning = FALSE, fig.align = "center", fig.width = 6, fig.height = 4, dpi = 300, out.width = 500}
 openclose(daily_records, ref_data = all_seasons)
 ```
+
+```{r, openclose_old, echo = FALSE, message = F, warning = F}
+
+# Similar to what was done in this vignette for overdays, the function piece 
+# below is an older version that was compatable with the original type of file; 
+# so for the purposes of providing an example we apply the old function code
+
+dates <- 
+      all_seasons %>% 
+      rename_all(~tolower(.)) %>% 
+      filter(st != "PR" & st != "HI") %>% 
+      filter(seasontype != "ExFalc") %>% 
+      filter(!str_detect(speciesgroup, "Swan")) %>% 
+      mutate(
+        speciesgroup = 
+          ifelse(
+            is.na(speciesgroup),
+            species,
+            speciesgroup)) %>% 
+      mutate(
+        speciesgroup = 
+          case_when(
+            species == "Brant" ~ "Brant",
+            species == "MODO" ~ "MODO",
+            str_detect(species, "MODO-WWDO") ~ "MODO-WWDO",
+            TRUE ~ speciesgroup)) %>% 
+      select(seasonyear, state = st, speciesgroup, open, close) %>% 
+      mutate(
+        spp = 
+          case_when(
+            str_detect(speciesgroup, "Sea") ~ "Specially Regulated Sea Ducks",
+            str_detect(speciesgroup, "Crane") ~ "Sandhill Crane",
+            speciesgroup == "Brant" ~ "Brant",
+            speciesgroup == "CAGO" ~ "Geese",
+            speciesgroup == "Geese" ~ "Geese",
+            speciesgroup == "Ducks" ~ "Ducks",
+            speciesgroup == "AMWO" ~ "Woodcock",
+            speciesgroup == "COSN" ~ "Snipe",
+            speciesgroup == "MODO" ~ "Mourning Dove",
+            speciesgroup == "BTPI" ~ "Band-tailed Pigeon",
+            speciesgroup == "Mergansers" ~ "Ducks",
+            speciesgroup == "Rails" ~ "Rails",
+            speciesgroup == "COMO-PUGA" ~ "Gallinules",
+            # For NM "AMCO-COMO", set as "Coots" (they have a separate
+            # speciesgroup for "COMO-PUGA" that becomes "Gallinules", above)
+            speciesgroup =="AMCO-COMO" & state == "NM" ~ "Coots", 
+            # **The "MODO-WWDO" category below should be used for MODO and WWDO
+            speciesgroup == "MODO-WWDO" ~ "MODO-WWDO",
+            speciesgroup == "MODO-WWDO-WTDO" ~ "MODO-WWDO",
+            # **The NM "CAGO-CACG-Brant" category should apply to "Geese" AND
+            # "Brant"
+            speciesgroup == "CAGO-CACG-Brant" ~ "GeeseBrant",
+            # **For AZ, CA, MN, and NV: the "AMCO-COMO" category should apply to
+            # "Coots" AND "Gallinules"
+            speciesgroup == "AMCO-COMO" & state %in% c("AZ", "CA", "MN", "NV") ~ 
+              "CootsGallinules", 
+            speciesgroup %in% c("Coots", "COOTS", "AMCO") ~ "Coots",
+            TRUE ~ NA_character_),
+        open_date = mdy(open),
+        close_date = mdy(close)) %>% 
+      filter(!is.na(spp) & !is.na(open) & !is.na(close)) %>% 
+      group_by(seasonyear, state, spp) %>% 
+      summarize(
+        open = min(open_date, na.rm = T),
+        close = max(close_date, na.rm = T)) %>%
+      ungroup() %>% 
+      left_join(
+        tibble(
+          state = datasets::state.abb,
+          sampled_state = datasets::state.name),
+        by = "state") %>% 
+      select(-c("state", "seasonyear")) %>% 
+      rename(sp_group_estimated = spp)
+    
+    # Duplicate the "Doves" lines so they apply to MODO and WWDO
+    # Duplicate the "GeeseBrant" lines so they apply to Geese and Brant
+    # Duplicate the "CootsGallinules" lines so they apply to Coots and 
+    # Gallinules
+    specialdates <-
+      dates %>% 
+      filter(sp_group_estimated == "MODO-WWDO") %>% 
+      mutate(sp_group_estimated = "Mourning Dove") %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "MODO-WWDO") %>% 
+          mutate(sp_group_estimated = "White-Winged Dove")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Geese")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "GeeseBrant") %>% 
+          mutate(sp_group_estimated = "Brant")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Coots")) %>% 
+      bind_rows(
+        dates %>% 
+          filter(sp_group_estimated == "CootsGallinules") %>% 
+          mutate(sp_group_estimated = "Gallinules")) 
+    
+    # Remove specialdates spp from the original dates df
+    dates <-
+      dates %>% 
+      filter(
+        !sp_group_estimated %in% 
+          c("MODO-WWDO", "GeeseBrant", "CootsGallinules")) %>% 
+      bind_rows(specialdates) %>%
+      distinct()
+    
+    date_errors <-
+      daily_records %>% 
+      left_join(
+        dates,
+        by = c("sp_group_estimated", "sampled_state")) %>% 
+      mutate(no_season = ifelse(is.na(open), "No season", NA)) %>%
+      mutate(
+        harvested_date = ymd(harvested_date),
+        error = 
+          case_when(
+            harvested_date < open ~ "Early hunt",
+            harvested_date > close ~ "Late hunt",
+            no_season == "No season" ~ "No season",
+            TRUE ~ NA_character_)) %>% 
+      select(
+        selected_hunterID, sampled_state, sp_group_estimated, open, close, 
+        error) %>% 
+      filter(!is.na(error)) 
+
+rm(dates)
+rm(specialdates)
+
+date_errors 
+```
+
 
 But `summary = TRUE` can be used to get a summary:
 
