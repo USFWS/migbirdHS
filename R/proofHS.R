@@ -256,13 +256,13 @@ proofHS <-
         mutate(
           errors = 
             case_when(
-              # Overbag error if max_bag + 2 is exceeded 
-              retrieved > max_bag + 2 ~ paste(errors, "overbag", sep = "-"),
+              # Overbag error if max_bag is exceeded 
+              retrieved > max_bag ~ paste(errors, "overbag", sep = "-"),
               is.na(max_bag) ~ errors,
               TRUE ~ errors),
           overbag = 
             ifelse(
-              retrieved > max_bag + 2,
+              retrieved > max_bag,
               retrieved - max_bag,
               NA)) |> 
         # Flag overdays
@@ -329,9 +329,27 @@ proofHS <-
               errors == "x" | (n_days == 0 & retrieved == 0),
               "none",
               str_remove(errors, "^x\\-"))) |>
+        # Per hunter, state, and species group, calculate a col for each of:
+        # - total overbag
+        # - total number of days w/ overbag 
+        # - 2 or more days with 2 or more overbag
+        group_by(selected_hunterID, sampled_state, county, sp_group_estimated) |> 
+        mutate(
+          total_overbag = sum(overbag, na.rm = T),
+          total_days_with_overbag = length(overbag[!is.na(overbag)]),
+          twoplus_overbag = ifelse(overbag >= 2, "Y", NA),
+          twoplus_days_with_twoplus_overbag = 
+            ifelse(
+              total_days_with_overbag >= 2 & 
+                length(twoplus_overbag[!is.na(twoplus_overbag)]) >= 2,
+              "Y",
+              NA
+            )
+        ) |> 
+        ungroup() |> 
         select(
           -c("max_bag", "season_length", "n_days", "open", "close", "brant", 
-             "seaduck"))
+             "seaduck", "twoplus_overbag"))
       
       if(nrow(filter(daily_errors, is.na(errors))) > 0){
         message("Warning: Not all species matched.")

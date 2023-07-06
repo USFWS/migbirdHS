@@ -82,6 +82,9 @@ utils::globalVariables(
     "COUNTY",
     "brant",
     "seaduck",
-    "avg_retrieved_over_season"
+    "avg_retrieved_over_season",
+    "overbag",
+    "total_days_with_overbag",
+    "twoplus_overbag"
     )
 )
