@@ -2,11 +2,8 @@
 #'
 #' The \code{retrievedmap} function creates a hex bin map of the United States from daily Harvest Survey data. Maps are plotted in a grid to display all species. States that are red have the highest mean harvest, states that are yellow have the lowest mean harvest, and blank (or white) states have no data.
 #' 
-#' @importFrom geojsonio geojson_read
 #' @importFrom dplyr mutate
 #' @importFrom dplyr rename
-#' @importFrom rgeos gCentroid
-#' @importFrom broom tidy
 #' @importFrom dplyr left_join
 #' @importFrom dplyr filter
 #' @importFrom tibble tibble
@@ -17,12 +14,11 @@
 #' @importFrom dplyr pull
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
-#' @importFrom ggplot2 geom_polygon
-#' @importFrom ggplot2 geom_text
+#' @importFrom ggplot2 geom_sf
+#' @importFrom ggplot2 geom_sf_text
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 theme_void
 #' @importFrom ggplot2 scale_fill_gradientn
-#' @importFrom ggplot2 coord_map
 #' @importFrom patchwork wrap_plots
 #' @importFrom ggplot2 theme
 #' @importFrom ggplot2 unit
@@ -39,24 +35,13 @@
 #' 
 retrievedmap <- 
   function(data, output = "grid"){
-    spdf <- 
-      spdf_retrievedmap
-    
-    spdf@data <- 
-      spdf@data |>
-      mutate(google_name = gsub(" \\(United States\\)", "", google_name))
     
     spp_data <- 
       retrieved(data) |>  
       rename(id = sampled_state)
     
-    centers <- 
-      cbind.data.frame(
-        data.frame(gCentroid(spdf, byid = TRUE), id = spdf@data$iso3166_2)) |> 
-      filter(!id %in% c("DC", "HI")) 
-    
-    spdf_fortified <- 
-      tidy(spdf, region = "google_name") |> 
+    hexmap_complete <-
+      hexmap |> 
       left_join(spp_data, by = "id") |> 
       filter(!is.na(sp_group_estimated)) |> 
       left_join(
@@ -78,7 +63,7 @@ retrievedmap <-
                 sp_group_estimated)) |> 
           pull(),
         function(.x){
-          spdf_fortified |> 
+          hexmap_complete |> 
             mutate(
               sp_group_estimated = 
                 ifelse(
@@ -87,17 +72,17 @@ retrievedmap <-
                   sp_group_estimated)) |> 
             filter(sp_group_estimated == .x) |> 
             ggplot() +
-            geom_polygon(
-              aes(x = long, y = lat, group = group, fill = mean_retrieved),
+            geom_sf(
+              ggplot2::aes(geometry = geometry, fill = mean_retrieved),
               color = "white") +
-            geom_text(
-              data = centers, 
-              aes(x = x, y = y, label = id), nudge_y = 0, size = 2.5) +
-            labs(title = .x, fill = "Mean\nRetrieved") +             theme_void() +
+            geom_sf_text(
+              ggplot2::aes(label = state),
+              nudge_y = 0, size = 3.5) +
+            labs(title = .x, fill = "Mean\nRetrieved") +  
+            theme_void() +
             scale_fill_gradientn(
               colors = c("#ffffb2",  "#fb9e4f", "#e91332"),
-              na.value = "white") +
-            coord_map(xlim = c(-132, -70), ylim = c(27, 55)) 
+              na.value = "white")  
         }
       )
     
