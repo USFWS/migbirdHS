@@ -186,7 +186,7 @@ What values in the retrieved field of daily data were over the limit per species
 
 ```{r, overbags2, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 4, dpi = 300, out.width = 600, fig.align = "center", echo  = F}
 overbags_tbl <- 
-  migbirdMBHS::overbags(daily_records, all_seasons) |> 
+  migbirdHS::overbags(daily_records, all_seasons) |> 
   rename(
     state = sampled_state,
     sp = sp_group_estimated) |> 
