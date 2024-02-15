@@ -30,7 +30,7 @@
 #' @param outpath Path to write the change log .csv; must end with a forward slash
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 partyproof <- 
   function(data, ref_data, outpath){

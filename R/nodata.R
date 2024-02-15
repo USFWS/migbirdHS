@@ -28,7 +28,7 @@
 #' @param report Is this function being used in the R markdown season report? Defaults to FALSE.
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 nodata <-
   function(data, ref_data = NA, species = NA, report = FALSE){

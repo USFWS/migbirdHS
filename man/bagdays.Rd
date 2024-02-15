@@ -19,7 +19,7 @@ bagdays(data, output = "table")
 The \code{bagdays} function determines the total number of days hunted per hunter and species group in the daily Harvest Survey data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

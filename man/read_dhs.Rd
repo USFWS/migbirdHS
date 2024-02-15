@@ -15,7 +15,7 @@ read_dhs(path, year)
 The \code{read_dhs} function reads in daily, season, and reference Harvest Survey .csv data files from a specified filepath. It will automatically read in all files by default unless a year is specified.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

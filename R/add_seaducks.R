@@ -12,7 +12,7 @@
 #' @param ref_data The reference data table that corresponds to the year of the daily data
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 
 add_seaducks <-

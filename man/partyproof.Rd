@@ -17,7 +17,7 @@ partyproof(data, ref_data, outpath)
 The \code{partyproof} function checks for, and allows the user to edit, any group hunts in the daily Harvest Survey data. Comments are parsed to determine party size. Adjustments to number of birds retrieved must be entered manually, and if deemed necessary, the retrieved value will be divided by the party size. A report file is written out as a .csv to record all changes made.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

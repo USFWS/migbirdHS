@@ -32,7 +32,7 @@ retrieved(data, type = "both", output = "table", average = TRUE)
 The \code{retrieved} function summarizes the total number of birds retrieved in the daily or season data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

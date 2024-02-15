@@ -17,7 +17,7 @@ hunted(data, type = "totals", output = "table")
 The \code{hunted} function checks the days_hunted field in either Harvest Survey daily or season totals data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

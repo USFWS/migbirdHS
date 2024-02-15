@@ -25,7 +25,7 @@ orange_mall <-
 # PNG sticker
 MBHS_hex <- hexSticker::sticker(
   orange_mall, 
-  package = "migbirdMBHS", p_color = "#FFFFFF",
+  package = "migbirdHS", p_color = "#FFFFFF",
   p_size = 19, s_x = 1, s_y = .75, s_width = 1.2, s_height = .9,
   h_fill = "#faa225", h_color = "#ffd151", 
   dpi = 320,
@@ -35,7 +35,7 @@ print(MBHS_hex)
 # SVG sticker
 MBHS_hex <- hexSticker::sticker(
   orange_mall, 
-  package = "migbirdMBHS", p_color = "#FFFFFF",
+  package = "migbirdHS", p_color = "#FFFFFF",
   p_size = 6, s_x = 1, s_y = .75, s_width = 1.2, s_height = .9,
   h_fill = "#faa225", h_color = "#ffd151", 
   dpi = 320,

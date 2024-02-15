@@ -33,7 +33,7 @@
 #'  }
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 bagspp <-
   function(data, output = "table"){

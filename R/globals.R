@@ -85,6 +85,7 @@ utils::globalVariables(
     "avg_retrieved_over_season",
     "overbag",
     "total_days_with_overbag",
-    "twoplus_overbag"
+    "twoplus_overbag",
+    "geometry"
     )
 )

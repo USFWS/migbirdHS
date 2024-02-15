@@ -40,7 +40,7 @@
 #' 
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 overbags <-
   function(data, ref_data, state = NA, over = T, summary = F){

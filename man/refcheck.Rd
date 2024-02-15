@@ -19,7 +19,7 @@ refcheck(ref_data, type = "species")
 The \code{refcheck} function checks for issues in the all_seasons Harvest Survey reference table.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

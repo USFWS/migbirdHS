@@ -13,7 +13,7 @@ add_seaducks(ref_data)
 The \code{add_seaducks} function amends the ref_data for AK, CT, DE, ME, MD, MA, NH, NJ, NY, OR, RI, VA, WA, and CA by adding lines to account for seaduck seasons; it uses the same values as duck harvest for open, close, bag, and possession.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

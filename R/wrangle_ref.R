@@ -1,6 +1,6 @@
 #' Consistent reference data wrangling
 #'
-#' The internal \code{wrangle_ref} function edits the reference data table consistently among all functions in the migbirdMBHS package.
+#' The internal \code{wrangle_ref} function edits the reference data table consistently among all functions in the migbirdHS package.
 #' 
 #' @importFrom dplyr rename_all
 #' @importFrom dplyr mutate
@@ -9,7 +9,7 @@
 #' 
 #' @param ref_data The reference data table that corresponds to the year of the data
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 wrangle_ref <-
   function(ref_data){

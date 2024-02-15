@@ -21,7 +21,7 @@ bagspp(data, output = "table")
 The \code{bagspp} function summarizes daily Harvest Survey data to determine the total number of retrieved birds per hunter. The hunter’s data are further broken down to determine which species groups the hunter responded to harvesting.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

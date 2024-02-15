@@ -31,7 +31,7 @@
 #'  }
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 retrievedmap <- 
   function(data, output = "grid"){

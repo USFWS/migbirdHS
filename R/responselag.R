@@ -28,7 +28,7 @@
 #'  }
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 responselag <- 
   function(data, type = "count"){

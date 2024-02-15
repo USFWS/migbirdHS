@@ -1,5 +1,8 @@
-# migbirdMBHS (dev version)
+# migbirdHS (dev version)
 
+# migbirdHS 1.0.0
+
+- Renamed to `migbirdHS` (previously `migbirdMBHS`)
 - Added a `NEWS.md` file to track changes to the package.
 - Edited `proofHS()` function to show additional informative decision-making columns in output.
 

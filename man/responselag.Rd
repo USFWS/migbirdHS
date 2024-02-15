@@ -20,7 +20,7 @@ responselag(data, type = "count")
 The \code{responselag} function creates plots to visualize the amount of time between hunt date and response date in daily Harvest Survey data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

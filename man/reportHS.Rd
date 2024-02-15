@@ -13,7 +13,7 @@ reportHS(daily, season, ref_data, partypath, type, year, outpath, file)
 
 \item{ref_data}{Reference data table for the same year as the daily data}
 
-\item{partypath}{File path to the folder containing results from partyproof function}
+\item{partypath}{File path to the folder containing results from \code{\link{partyproof}} function}
 
 \item{type}{Type of report. One of the following options may be supplied:
 \itemize{
@@ -30,7 +30,7 @@ reportHS(daily, season, ref_data, partypath, type, year, outpath, file)
 Create documentation with figures and tables that summarizes Harvest Survey daily and season data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdHarvestData}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

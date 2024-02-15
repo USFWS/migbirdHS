@@ -26,7 +26,7 @@ nodata(data, ref_data = NA, species = NA, report = FALSE)
 The \code{nodata} function checks to see if any states or species are missing from the daily or season Harvest Survey online data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

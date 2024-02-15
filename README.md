@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# migbirdMBHS <img width=150px src="man/figures/logo.svg" align="right" />
+# migbirdHS <img width=150px src="man/figures/logo.svg" align="right" />
 
 ## Overview
 
-The migbirdMBHS package provides an easy-to-use set of R functions for
-the U.S. Fish and Wildlife Service Migratory Bird Program to process
-online [Harvest Survey](https://www.fws.gov/harvestsurvey) data.
+The migbirdHS package provides an easy-to-use set of R functions for the
+U.S. Fish and Wildlife Service Migratory Bird Program to process online
+[Harvest Survey](https://www.fws.gov/harvestsurvey) data.
 
 Tasks that can be accomplished with this package include:
 
@@ -35,18 +35,18 @@ Tasks that can be accomplished with this package include:
 ## Installation
 
 ``` r
-devtools::install_github("USFWS/migbirdMBHS", build_vignettes = T, upgrade = F, quiet = T)
+devtools::install_github("USFWS/migbirdHS", build_vignettes = T, upgrade = F, quiet = T)
 ```
 
 ## Vignette
 
 ``` r
-vignette(topic = "migbirdMBHS_workflow", package = "migbirdMBHS")
+vignette(topic = "migbirdHS_workflow", package = "migbirdHS")
 ```
 
 ## Function Flow
 
-<img src="vignettes/image/migbirdMBHS_flow_chart.svg" title="Overview of migbirdMBHS functions in a flowchart format." alt="Overview of migbirdMBHS functions in a flowchart format." width="100%" style="display: block; margin: auto;" />
+<img src="vignettes/image/migbirdHS_flow_chart.svg" title="Overview of migbirdHS functions in a flowchart format." alt="Overview of migbirdHS functions in a flowchart format." width="100%" style="display: block; margin: auto;" />
 
 ## USFWS Disclaimer
 

@@ -26,7 +26,7 @@ openclose(data, ref_data, state = NA, summary = F)
 The \code{openclose} function checks if harvest dates fall outside of a state's and species's season in the daily data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

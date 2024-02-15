@@ -10,10 +10,10 @@ wrangle_ref(ref_data)
 \item{ref_data}{The reference data table that corresponds to the year of the data}
 }
 \description{
-The internal \code{wrangle_ref} function edits the reference data table consistently among all functions in the migbirdMBHS package.
+The internal \code{wrangle_ref} function edits the reference data table consistently among all functions in the migbirdHS package.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

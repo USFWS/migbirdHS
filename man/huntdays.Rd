@@ -32,7 +32,7 @@ huntdays(data, type = "both", output = "table", average = TRUE)
 The \code{huntdays} function summarizes the total number of days hunted in the daily data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

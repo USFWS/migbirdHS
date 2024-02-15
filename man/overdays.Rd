@@ -15,7 +15,7 @@ overdays(data, ref_data)
 The \code{overdays} function checks Harvest Survey daily or season data to determine if total days hunted exceed the length of the state and species' season.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

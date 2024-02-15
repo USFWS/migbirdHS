@@ -7,7 +7,7 @@
 #' @param daily Daily data table
 #' @param season Season data table
 #' @param ref_data Reference data table for the same year as the daily data
-#' @param partypath File path to the folder containing results from partyproof function
+#' @param partypath File path to the folder containing results from \code{\link{partyproof}} function
 #' @param type Type of report. One of the following options may be supplied:
 #' \itemize{
 #' \item survey_analytics - for a summary report of survey analytics
@@ -17,7 +17,7 @@
 #' @param file What the report file should be named
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdHarvestData}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 reportHS <-
   function(daily, season, ref_data, partypath, type, year, outpath, file){
@@ -30,7 +30,7 @@ reportHS <-
           system.file(
             "templates",
             paste0(type, ".Rmd"),
-            package = "migbirdMBHS"),
+            package = "migbirdHS"),
         # Include the specified parameters so the functions can run
         params =
           list(
@@ -51,7 +51,7 @@ reportHS <-
           system.file(
             "templates",
             paste0(type, "_HS", ".Rmd"),
-            package = "migbirdMBHS"),
+            package = "migbirdHS"),
         # Include the specified parameters so the functions can run
         params =
           list(

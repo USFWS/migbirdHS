@@ -14,7 +14,7 @@
 #' @param year Season for which files should be read in
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 read_dhs <-
   function(path, year){

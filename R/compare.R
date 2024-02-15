@@ -38,7 +38,7 @@
 #' @param ylim Optional value to be supplied if an outlier stretches the y-axis; defaults to NA
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 #' 
 compare <-
   function(daily_data, season_data, type = "line", ylim = NA){

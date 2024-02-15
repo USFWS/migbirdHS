@@ -24,7 +24,7 @@ compare(daily_data, season_data, type = "line", ylim = NA)
 The \code{compare} function takes 2 data tables (daily_data and season_data) to plot 3 data fields (bag size, number of birds retrieved, number of days hunted) and breaks those data into 4 groups: season submitted, daily submitted, season non-submit, and daily non-submit.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

@@ -13,7 +13,7 @@ partyhunt(data)
 The \code{partyhunt} function checks to see if any comments in the daily Harvest Survey data indicate that the bag value reported was for two or more people.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

@@ -32,7 +32,7 @@ overbags(data, ref_data, state = NA, over = T, summary = F)
 The \code{overbags} function checks for retrieved values over the bag limit per state and species in the Harvest Survey daily data.
 }
 \references{
-\url{https://github.com/USFWS/migbirdMBHS}
+\url{https://github.com/USFWS/migbirdHS}
 }
 \author{
 Abby Walter, \email{abby_walter@fws.gov}

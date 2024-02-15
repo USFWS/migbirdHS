@@ -29,7 +29,7 @@
 #' @param output "table" or "plot"
 #' @export
 #' @author Abby Walter, \email{abby_walter@@fws.gov}
-#' @references \url{https://github.com/USFWS/migbirdMBHS}
+#' @references \url{https://github.com/USFWS/migbirdHS}
 
 hunted <- 
   function(data, type = "totals", output = "table"){
