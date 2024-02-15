@@ -18,7 +18,8 @@ Imports:
     rmarkdown
 Suggests:
     knitr,
-    DT
+    DT,
+    ggnewscale
 VignetteBuilder: knitr
 Authors@R: 
     person(given = "Abby",
