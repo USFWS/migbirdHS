@@ -22,9 +22,11 @@ partyhunt <-
     data %>% 
       filter(
         str_detect(comment, "[0-9]{1,2} man") |
+          str_detect(comment, "[0-9]{1,2} men") |
           str_detect(comment, "[0-9]{1,2} person") | 
           str_detect(comment, "[0-9]{1,2} people") | 
           str_detect(comment, "[0-9]{1,2} hunter") | 
+          str_detect(comment, "[0-9]{1,2} guy") | 
           str_detect(comment, "group of") | 
           str_detect(comment, "party of")) %>% 
       select(
@@ -37,12 +39,18 @@ partyhunt <-
             str_detect(comment, "[0-9]{1,2} man") & retrieved != 0 ~ 
               str_extract(comment, "[0-9]{1,2} man") %>% 
               str_remove(., " man"),
+            str_detect(comment, "[0-9]{1,2} men") & retrieved != 0 ~ 
+              str_extract(comment, "[0-9]{1,2} men") %>% 
+              str_remove(., " men"),
             str_detect(comment, "[0-9]{1,2} person") & retrieved != 0 ~ 
               str_extract(comment, "[0-9]{1,2} person") %>% 
               str_remove(., " person"),
             str_detect(comment, "[0-9]{1,2} hunter") & retrieved != 0 ~ 
               str_extract(comment, "[0-9]{1,2} hunter") %>% 
               str_remove(., " hunter"),
+            str_detect(comment, "[0-9]{1,2} guy") & retrieved != 0 ~ 
+              str_extract(comment, "[0-9]{1,2} guy") %>% 
+              str_remove(., " guy"),
             str_detect(comment, "[0-9]{1,2} people") & retrieved != 0 ~ 
               str_extract(comment, "[0-9]{1,2} people") %>% 
               str_remove(., " people"),
@@ -50,7 +58,8 @@ partyhunt <-
               str_extract(comment, "party of [0-9]{1,2}") %>% 
               str_remove(., "party of "),
             str_detect(
-              comment, "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") & 
+              comment, 
+              "party of one|party of two|party of three|party of four|party of five|party of six|party of seven|party of eight|party of nine|party of ten") &
               retrieved != 0 ~ 
               str_extract(
                 comment, 
@@ -60,7 +69,8 @@ partyhunt <-
               str_extract(comment, "group of [0-9]{1,2}") %>% 
               str_remove(., "group of "),
             str_detect(
-              comment, "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") & 
+              comment, 
+              "group of one|group of two|group of three|group of four|group of five|group of six|group of seven|group of eight|group of nine|group of ten") & 
               retrieved != 0 ~ 
               str_extract(
                 comment, 
